@@ -17,6 +17,7 @@ class FailureCategory(StrEnum):
     CONSTRAINT_VIOLATION = "constraint_violation"
     OBJECTIVE_FAILURE = "objective_failure"
     INVALID_ACTION = "invalid_action"
+    INVALID_SCENARIO = "invalid_scenario"
     INVALID_OBSERVATION = "invalid_observation"
     NUMERICAL_INSTABILITY = "numerical_instability"
     CONTROLLER_EXCEPTION = "controller_exception"
@@ -51,6 +52,10 @@ class FailureRecord:
 class EvaluationError(RuntimeError):
     """An execution error with an explicit, inspectable failure category."""
 
-    def __init__(self, record: FailureRecord) -> None:
+    def __init__(
+        self, record: FailureRecord, *, partial_trace: list[dict[str, Any]] | None = None
+    ) -> None:
         self.record = record
+        self.partial_trace = partial_trace or []
+        self.experiment_id: str | None = None
         super().__init__(f"{record.category.value}: {record.explanation}")

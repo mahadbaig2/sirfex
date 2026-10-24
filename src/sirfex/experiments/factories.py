@@ -21,7 +21,7 @@ def make_controller(
 ) -> Any:
     config = config or {}
     if controller_id == "random":
-        return RandomController(environment.action_space, seed=config.get("seed"))
+        return RandomController(environment.action_space, seed=config.get("seed", 0))
     if controller_id == "pump-rule" and environment.id == "pump":
         return PumpRuleController(
             low_level=float(config.get("low_level", 0.42)),

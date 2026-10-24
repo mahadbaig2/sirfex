@@ -182,6 +182,9 @@ class EvaluationRunner:
                 ),
                 failures=failures,
             )
+        except EvaluationError as exc:
+            exc.partial_trace = trace
+            raise
         finally:
             LOGGER.debug(
                 "Finished episode for %s with controller %s", environment.id, controller.id
