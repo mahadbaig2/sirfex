@@ -15,6 +15,12 @@ import gymnasium as gym
 import numpy as np
 
 from sirfex.core.interfaces import Scenario
+from sirfex.core.scenarios import (
+    ParameterSpec,
+    ScenarioValidationError,
+    validate_parameter_specs,
+    validate_scenario_basics,
+)
 
 
 @dataclass(frozen=True)
@@ -35,8 +41,28 @@ class PumpEnvironment:
     id = "pump"
     version = "sirfex-pump:1"
 
-    def __init__(self, parameters: PumpParameters | None = None) -> None:
+    _parameter_specs = (
+        ParameterSpec("dt", "number", 0.1, "s", "Fixed Euler integration step", 1e-9, None),
+        ParameterSpec("horizon", "integer", 200, "steps", "Maximum episode length", 1, None),
+        ParameterSpec("target_level", "number", 0.5, "fraction", "Desired tank level", 0.0, 1.0),
+        ParameterSpec("initial_level", "number", 0.5, "fraction", "Initial tank level", 0.0, 1.0),
+        ParameterSpec("demand", "number", 0.5, "normalized flow", "Demand outflow", 0.0, 1.0),
+        ParameterSpec(
+            "pump_capacity", "number", 0.8, "normalized flow", "Maximum pump inflow", 0.0, None
+        ),
+        ParameterSpec("efficiency", "number", 1.0, "fraction", "Pump efficiency", 0.0, 1.0),
+        ParameterSpec(
+            "leak", "number", 0.0, "normalized flow", "Level-proportional leakage", 0.0, None
+        ),
+        ParameterSpec("min_level", "number", 0.05, "fraction", "Low operating boundary", 0.0, 1.0),
+        ParameterSpec("max_level", "number", 0.95, "fraction", "High operating boundary", 0.0, 1.0),
+    )
+
+    def __init__(
+        self, parameters: PumpParameters | None = None, *, allow_action_clipping: bool = False
+    ) -> None:
         self.parameters = parameters or PumpParameters()
+        self.allow_action_clipping = allow_action_clipping
         self._active_parameters = self.parameters
         self.observation_space = gym.spaces.Box(
             low=np.array([0.0, 0.0, 0.0], dtype=np.float32),
@@ -53,8 +79,7 @@ class PumpEnvironment:
         self._demand = 0.0
 
     def reset(self, scenario: Scenario) -> tuple[np.ndarray, dict[str, Any]]:
-        values = {**self.parameters.__dict__, **scenario.parameters}
-        self._validate_parameters(values)
+        values = self.validate_scenario(scenario)
         self._active_parameters = PumpParameters(
             **{key: values[key] for key in PumpParameters.__dataclass_fields__}
         )
@@ -63,10 +88,33 @@ class PumpEnvironment:
         self._step_count = 0
         return self._observation(values), {"demand": self._demand, "seed": scenario.seed}
 
+    def scenario_spec(self) -> dict[str, Any]:
+        return {
+            "environment_id": self.id,
+            "environment_version": self.version,
+            "parameters": [spec.to_dict() for spec in self._parameter_specs],
+        }
+
+    def validate_scenario(self, scenario: Scenario) -> dict[str, Any]:
+        validate_scenario_basics(scenario, self.id, self.version)
+        defaults = {
+            spec.name: getattr(self.parameters, spec.name) for spec in self._parameter_specs
+        }
+        validated = validate_parameter_specs(scenario.parameters, self._parameter_specs)
+        resolved = {**defaults, **{name: validated[name] for name in scenario.parameters}}
+        if resolved["min_level"] >= resolved["max_level"]:
+            raise ScenarioValidationError("min_level must be less than max_level")
+        if not resolved["min_level"] <= resolved["initial_level"] <= resolved["max_level"]:
+            raise ScenarioValidationError("initial_level must be within [min_level, max_level]")
+        if not resolved["min_level"] <= resolved["target_level"] <= resolved["max_level"]:
+            raise ScenarioValidationError("target_level must be within [min_level, max_level]")
+        return resolved
+
     def step(self, action: Any) -> tuple[np.ndarray, float, bool, bool, dict[str, Any]]:
-        command = float(np.asarray(action).reshape(-1)[0])
+        command = self._validate_action(action)
         p = self._active_parameters
-        command = float(np.clip(command, 0.0, 1.0))
+        if self.allow_action_clipping:
+            command = float(np.clip(command, 0.0, 1.0))
         inflow = p.pump_capacity * p.efficiency * command
         outflow = p.demand + p.leak * self._level
         self._level += p.dt * (inflow - outflow)
@@ -99,18 +147,21 @@ class PumpEnvironment:
         demand = self._demand if values is None else float(values["demand"])
         return np.array([self._level, target, demand], dtype=np.float32)
 
-    @staticmethod
-    def _validate_parameters(values: dict[str, Any]) -> None:
-        if not 0.0 <= float(values["initial_level"]) <= 1.0:
-            raise ValueError("initial_level must be in [0, 1]")
-        if float(values["dt"]) <= 0 or int(values["horizon"]) < 1:
-            raise ValueError("dt must be positive and horizon must be at least 1")
-        if not 0.0 <= float(values["demand"]) <= 1.0:
-            raise ValueError("demand must be in [0, 1]")
-        if not 0.0 <= float(values["efficiency"]) <= 1.0:
-            raise ValueError("efficiency must be in [0, 1]")
-        if not 0.0 <= float(values["leak"]) <= 1.0:
-            raise ValueError("leak must be in [0, 1]")
+    def _validate_action(self, action: Any) -> float:
+        try:
+            value = np.asarray(action)
+        except Exception as exc:
+            raise ValueError("Pump action must be a one-element numeric array") from exc
+        if value.shape != (1,) or not np.issubdtype(value.dtype, np.number):
+            raise ValueError("Pump action must have numeric shape (1,)")
+        command = float(value[0])
+        if not np.isfinite(command):
+            raise ValueError("Pump action must be finite")
+        if not self.allow_action_clipping and not 0.0 <= command <= 1.0:
+            raise ValueError(
+                "Pump action must be in [0, 1]; enable action clipping explicitly to clip"
+            )
+        return command
 
     def metadata(self) -> dict[str, Any]:
         return {"environment_version": self.version, "model": "single-tank mass balance"}

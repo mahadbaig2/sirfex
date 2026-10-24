@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from sirfex.core.failures import FailureCategory, FailureRecord
 from sirfex.core.interfaces import ControllerAdapter, EnvironmentAdapter, Scenario
 from sirfex.core.results import EpisodeResult
 
@@ -34,19 +35,22 @@ class EvaluationRunner:
                 f"but environment is {environment.id!r}"
             )
 
-        observation, reset_info = environment.reset(scenario)
-        controller.reset()
-        if not environment.observation_space.contains(observation):
-            raise ValueError("Environment returned an observation outside its observation space")
-
         trace: list[dict[str, Any]] = []
         total_reward = 0.0
         terminated = False
         truncated = False
-        step_info = dict(reset_info)
+        reset_info: dict[str, Any] = {}
+        step_info: dict[str, Any] = {}
         steps_executed = 0
 
         try:
+            observation, reset_info = environment.reset(scenario)
+            controller.reset()
+            if not environment.observation_space.contains(observation):
+                raise ValueError(
+                    "Environment returned an observation outside its observation space"
+                )
+            step_info = dict(reset_info)
             for step_index in range(self.max_steps):
                 action = controller.act(observation, deterministic=deterministic)
                 if not environment.action_space.contains(action):
@@ -79,6 +83,18 @@ class EvaluationRunner:
                 step_info = {**step_info, "termination_reason": "runner_max_steps"}
 
             failure = environment.evaluate_failure(total_reward, terminated, step_info)
+            failures = []
+            if failure.get("failure_category"):
+                failures.append(
+                    FailureRecord(
+                        category=FailureCategory(failure["failure_category"]),
+                        explanation=str(failure.get("explanation", "")),
+                        step=failure.get("failure_step"),
+                        measurements=failure.get("measurements"),
+                        threshold=failure.get("threshold"),
+                        evidence_source=str(failure.get("evidence_source", "environment")),
+                    )
+                )
             return EpisodeResult(
                 environment_id=environment.id,
                 controller_id=controller.id,
@@ -91,6 +107,10 @@ class EvaluationRunner:
                 outcome=str(failure.get("outcome", "unknown")),
                 metrics={**environment.metadata(), **failure, "reset_info": reset_info},
                 trace=trace,
+                observed_outcome=str(
+                    failure.get("observed_outcome", failure.get("outcome", "unknown"))
+                ),
+                failures=failures,
             )
         finally:
             LOGGER.debug(
