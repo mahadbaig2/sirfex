@@ -21,3 +21,18 @@ jobs:
         run: python -m ruff check src tests scripts
       - name: Test
         run: python -m pytest
+
+  training:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CPU training dependencies
+        run: |
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e ".[dev,training]"
+      - name: Test optional CPU training and validation
+        run: python -m pytest tests/unit/test_training.py tests/unit/test_validation.py tests/integration/test_validation_pipeline.py

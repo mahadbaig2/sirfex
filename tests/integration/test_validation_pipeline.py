@@ -129,3 +129,79 @@ def test_extended_gym_checker_and_deadline_checkpoint(tmp_path):
     assert 0 < model.num_timesteps < 10000
     model.save(str(tmp_path / "partial"))
     assert (tmp_path / "partial.zip").exists()
+
+
+def test_controlled_continuation_wiring_with_explicit_gate_stub(tmp_path, monkeypatch):
+    """Exercise orchestration; the stub is NOT evidence of learned competence."""
+    pytest.importorskip("stable_baselines3")
+    experiments = ExperimentStore(tmp_path / "experiments")
+    scenario = Scenario(
+        "pump",
+        {"pump_capacity": 8.0, "demand": 0.3, "horizon": 200},
+        seed=99,
+        environment_version="sirfex-pump:1",
+    )
+    manifest = run_and_save_experiment(experiments, scenario, "pump-rule", max_steps=200)
+    discovery = {
+        "discovery_id": "test",
+        "scenario": scenario.to_dict(),
+        "observed_failure": True,
+        "evidence_status": "observed",
+        "objective": {"objective_id": "pump.constraint_violation"},
+        "experiment_ids": [manifest.experiment_id],
+    }
+
+    class Searches:
+        def load(self, _):
+            return {"manifest": {"schema_version": "1"}, "discoveries": [discovery]}
+
+    monkeypatch.setattr("sirfex.training.validation.competence", lambda _: {"passed": True})
+    store = TrainingStore(tmp_path / "training")
+    result = run_validation(
+        {
+            "profile": "smoke",
+            "budgets": [128],
+            "continuation_steps": 128,
+            "schemas": ["pump-minimal:1"],
+            "dataset_count": 1,
+        },
+        store,
+        Searches(),
+        experiments,
+        search_ids=["fixture"],
+        continue_training=True,
+    )
+    assert result["continuation_performed"]
+    assert result["classification"] == "inconclusive"
+    saved = store.load(result["training_run_id"])
+    pair = saved["continuation_results"]["pairs"][0]
+    assert pair["budget_verification"]["matched"]
+    assert set(pair["baseline"]) == {"nominal_holdout", "known_stress", "held_out_stress"}
+    assert pair["training_records"]["normal"]["additional_timesteps"] == 128
+    assert pair["training_records"]["robust"]["additional_timesteps"] == 128
+
+
+def test_keyboard_interrupt_preserves_active_model(tmp_path, monkeypatch):
+    class Model:
+        num_timesteps = 7
+
+        def save(self, path):
+            from pathlib import Path
+
+            Path(path).write_bytes(b"partial checkpoint fixture")
+
+    def interrupted(*args, **kwargs):
+        kwargs["on_model"](Model())
+        raise KeyboardInterrupt()
+
+    monkeypatch.setattr("sirfex.training.validation.train_ppo", interrupted)
+    store = TrainingStore(tmp_path / "training")
+    result = run_validation(
+        {"profile": "smoke", "dataset_count": 1},
+        store,
+        SearchStore(tmp_path / "searches"),
+        ExperimentStore(tmp_path / "experiments"),
+    )
+    saved = store.load(result["training_run_id"], allow_partial=True)
+    assert saved["manifest"]["checkpoints"]["partial"]["training_timesteps"] == 7
+    assert result["status"] == "interrupted"

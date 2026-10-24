@@ -13,6 +13,7 @@ from sirfex.training.protocol import (
     compare_paired,
     competence,
     content_hash,
+    curriculum_compatibility,
     datasets,
     leakage_check,
     matched_budget,
@@ -105,6 +106,24 @@ def test_reproducible_disjoint_physical_partitions():
         seed=s.seed + 1,
     )
     assert not leakage_check({"train": [s], "test": [near]})["passed"]
+
+
+def test_curriculum_excludes_unobserved_variable_timestep_and_bounds():
+    assert curriculum_compatibility(Scenario("pump"))["compatible"]
+    assert not curriculum_compatibility(Scenario("pump", {"dt": 0.2}))["compatible"]
+    assert not curriculum_compatibility(Scenario("pump", {"horizon": 30}))["compatible"]
+
+
+def test_failed_atomic_write_preserves_previous_artifact(tmp_path):
+    from sirfex.training.checkpoints import write_json
+
+    path = tmp_path / "evidence.json"
+    write_json(path, {"measured": 1})
+    original = path.read_bytes()
+    with pytest.raises(ValueError):
+        write_json(path, {"invalid": float("nan")})
+    assert path.read_bytes() == original
+    assert list(tmp_path.iterdir()) == [path]
 
 
 def test_curriculum_probability_applies_to_each_reset():

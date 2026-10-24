@@ -24,6 +24,7 @@ from sirfex.training.protocol import (
     compare_paired,
     competence,
     content_hash,
+    curriculum_compatibility,
     datasets,
     leakage_check,
     matched_budget,
@@ -232,6 +233,19 @@ def run_validation(
         write_json(directory / "feasibility_report.json", report)
         partitions = datasets(config["dataset_seed"], config["dataset_count"])
         stress = [Scenario.from_dict(row["scenario"]) for row in report["selected"]]
+        compatibility = [{**scenario_record(s), **curriculum_compatibility(s)} for s in stress]
+        stress = [s for s, row in zip(stress, compatibility, strict=True) if row["compatible"]]
+        write_json(
+            directory / "curriculum.json",
+            {
+                "schema_version": "validated-curriculum:1",
+                "candidates": compatibility,
+                "stress_ratio": config["stress_ratio"],
+                "reason": (
+                    "dt, bounds and horizon are fixed because neither observation exposes them"
+                ),
+            },
+        )
         if stress:
             partitions["curriculum"] = stress
         check = leakage_check(partitions)
@@ -408,6 +422,25 @@ def run_validation(
             for seed in config["seeds"]:
                 base = selections[f"{chosen}/{seed}"]["checkpoint"]
                 pair, records = {"seed": seed}, {}
+                base_metadata = CheckpointMetadata(
+                    **{
+                        **base,
+                        "observation_shape": tuple(base["observation_shape"]),
+                        "action_shape": tuple(base["action_shape"]),
+                    }
+                )
+                baseline_controller = PPOController.load(base["path"], base_metadata)
+                pair["baseline"] = {
+                    k: evaluate_controller(
+                        lambda c=baseline_controller: c,
+                        v,
+                        k,
+                        max_steps=200,
+                        observation_schema=chosen,
+                    ).to_dict()
+                    for k, v in evaluation_sets.items()
+                }
+                pairs.append(pair)
                 for group, ratio in (("normal", 0.0), ("robust", config["stress_ratio"])):
                     if time.perf_counter() >= deadline:
                         raise TimeoutError("Continuation deadline exhausted")
@@ -448,19 +481,22 @@ def run_validation(
                         else "partial",
                         "sampled_episodes": dict(active_env.sample_counts),
                     }
+                    pair["training_records"] = records
+                    write_json(directory / "continuation_results.json", {"pairs": pairs})
+                    write_json(directory / "manifest.json", manifest)
                     if records[group]["status"] != "completed":
                         raise TimeoutError("Partial continuation cannot enter a matched comparison")
                     pair[group] = {
                         k: _evaluate(active_model, metadata, v, k)
                         for k, v in evaluation_sets.items()
                     }
+                    write_json(directory / "continuation_results.json", {"pairs": pairs})
                     active_env.close()
                     active_env = None
                 pair["budget_verification"] = matched_budget(records["normal"], records["robust"])
                 pair["training_records"] = records
                 if not pair["budget_verification"]["matched"]:
                     raise ValueError("Unmatched continuation budgets")
-                pairs.append(pair)
                 write_json(directory / "continuation_results.json", {"pairs": pairs})
             summary["continuation_performed"] = True
         regression = compare_paired(pairs)

@@ -33,6 +33,15 @@ def scenario_record(scenario):
     return {"scenario_id": content_hash(physical_key(scenario)), "scenario": scenario.to_dict()}
 
 
+def curriculum_compatibility(scenario):
+    p = PumpEnvironment().validate_scenario(scenario)
+    fixed = {"dt": 0.1, "horizon": 200, "min_level": 0.05, "max_level": 0.95}
+    mismatches = [key for key, value in fixed.items() if p[key] != value]
+    if p["pump_capacity"] > 10 or p["leak"] > 10:
+        mismatches.append("calibrated_observation_bounds")
+    return {"compatible": not mismatches, "mismatches": mismatches}
+
+
 def leakage_check(partitions):
     """Exclude seed, provenance and horizon from physical near-duplicate detection."""
     issues = []

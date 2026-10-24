@@ -131,7 +131,7 @@ def _checkpoint(
         action_shape=(1,),
         ppo_config=config.ppo.to_dict(),
         training_seed=config.training_seed,
-        training_timesteps=config.training_timesteps,
+        training_timesteps=model.num_timesteps,
         dependencies=dependency_versions(),
     )
     write_json(directory / "checkpoints" / f"{name}.metadata.json", metadata.to_dict())
@@ -244,6 +244,7 @@ def run_improvement(
                 seed=config.training_seed,
                 timesteps=config.training_timesteps,
                 checkpoint=baseline_meta.path,
+                expected_sha256=baseline_meta.sha256,
             )
             return _checkpoint(model, directory, run_id, name, config)
         finally:
