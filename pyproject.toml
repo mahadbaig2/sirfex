@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sirfex"
+version = "0.1.0"
+description = "An open-source, local-first Physical AI testing engine for autonomous controllers."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+authors = [{ name = "SIRFEX contributors" }]
+license = { text = "License to be selected" }
+dependencies = [
+  "numpy>=1.26,<3",
+  "gymnasium>=1.0,<2",
+]
+
+[project.optional-dependencies]
+simulation = [
+  "gymnasium[box2d]>=1.0,<2",
+]
+benchmark = [
+  "psutil>=5.9",
+  "stable-baselines3>=2.4,<3",
+  "torch>=2.2",
+]
+dev = [
+  "pytest>=8.0,<9",
+  "pytest-cov>=5.0,<7",
+  "ruff>=0.8,<1",
+]
+
+[project.scripts]
+sirfex = "sirfex.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sirfex"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.coverage.run]
+source = ["sirfex"]

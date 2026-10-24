@@ -1,0 +1,47 @@
+# SIRFEX Phase 0 Architecture
+
+SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keeps the execution path in one process and does not introduce a database, web service, plugin registry, or distributed worker system.
+
+## Package boundaries
+
+- `sirfex.core`: serializable `Scenario` and `EpisodeResult` types, adapter protocols, and the environment-agnostic `EvaluationRunner`.
+- `sirfex.environments`: environment-specific physics and API translation. `LunarLanderEnvironment` wraps stock Gymnasium; `PumpEnvironment` owns the simplified single-tank model.
+- `sirfex.controllers`: controller adapters. Phase 0 provides a random controller and a pump hysteresis controller.
+- `sirfex.benchmarks`: measured machine and simulation benchmark helpers.
+- `sirfex.cli`: the small `sirfex` command-line entry point.
+
+## Execution flow
+
+1. A CLI command selects an environment and controller.
+2. A `Scenario` supplies an environment identifier, parameters, version, and seed.
+3. `EvaluationRunner` resets the adapter, resets the controller, validates spaces, and executes up to the configured step limit.
+4. The adapter reports environment-specific outcome classification and metadata.
+5. `EpisodeResult.to_dict()` provides a JSON-serializable record.
+
+The runner does not branch on LunarLander or pump behavior. Physics, termination rules, and environment metrics stay in the adapters.
+
+## Pump model assumptions
+
+The pump adapter uses a normalized tank level `h` in `[0, 1]`, a normalized pump command `u` in `[0, 1]`, and a fixed time step `dt`:
+
+```text
+h[t+1] = h[t] + dt * (pump_capacity * efficiency * u[t]
+                       - demand - leak * h[t])
+```
+
+The model terminates when the level crosses the configured low or high operating limits and truncates at the configured horizon. These assumptions make conservation and numerical behavior testable without claiming that the model is a validated industrial plant.
+
+## Dependency decisions
+
+Python 3.12 is the supported Phase 0 development target because it has broad compatibility with Gymnasium, Box2D, and the optional Stable-Baselines3/PyTorch stack. NumPy and Gymnasium are runtime dependencies. Box2D and pygame are installed through the `simulation` extra. Ruff and pytest are development dependencies. PPO dependencies are optional and isolated in the `benchmark` extra.
+
+## Reproducibility
+
+Scenarios carry an explicit seed and version. LunarLander resets and seeds its action space. Evaluation results include environment/controller identifiers, scenario configuration, seed, termination state, outcome, metrics, and optional numerical traces. Exact reproducibility remains best-effort and is subject to dependency and platform behavior.
+
+## Known limitations
+
+- Stock LunarLander runtime physics are not modified by Phase 0. Gravity, wind, and degradation stress axes require future tested wrappers or custom dynamics.
+- The pump is a transparent numerical model, not a validated industrial plant.
+- Controllers are trusted Python code and are not sandboxed.
+- Benchmark output is local evidence for the current machine, not a universal performance guarantee.
