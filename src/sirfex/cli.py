@@ -39,7 +39,7 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--seed", type=int, default=0)
     evaluate.add_argument("--max-steps", type=int, default=1_000)
     benchmark = subparsers.add_parser("benchmark", help="run the Phase 0 benchmark suite")
-    benchmark.add_argument("--profile", choices=["quick", "standard"], default="quick")
+    benchmark.add_argument("--profile", choices=["quick", "standard", "stress"], default="quick")
     scenarios = subparsers.add_parser("scenarios", help="inspect and validate scenarios")
     scenarios_sub = scenarios.add_subparsers(dest="scenarios_command", required=True)
     scenario_list = scenarios_sub.add_parser("list")

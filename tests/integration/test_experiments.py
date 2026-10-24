@@ -24,3 +24,13 @@ def test_pump_experiment_save_reload_replay_and_compare(tmp_path) -> None:
     comparison = compare_experiments(store, first.experiment_id, second.experiment_id)
     assert comparison.comparable is True
     assert comparison.differences["seed"]["first"] != comparison.differences["seed"]["second"]
+
+
+def test_replay_detects_modified_result(tmp_path) -> None:
+    store = ExperimentStore(tmp_path / "experiments")
+    manifest = run_and_save_experiment(store, Scenario("pump", seed=2), "pump-rule", max_steps=4)
+    result_path = tmp_path / "experiments" / manifest.experiment_id / "result.json"
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    result["episode_reward"] += 1.0
+    result_path.write_text(json.dumps(result), encoding="utf-8")
+    assert replay_experiment(store, manifest.experiment_id).status == "mismatch"

@@ -3,13 +3,25 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from typing import Any
 
-from sirfex.core.failures import FailureCategory, FailureRecord
+from sirfex.core.failures import EvaluationError, FailureCategory, FailureRecord
 from sirfex.core.interfaces import ControllerAdapter, EnvironmentAdapter, Scenario
 from sirfex.core.results import EpisodeResult
 
 LOGGER = logging.getLogger(__name__)
+
+
+@contextmanager
+def managed_environment(factory: Callable[[], EnvironmentAdapter]) -> Iterator[EnvironmentAdapter]:
+    """Create and reliably close an environment owned by the caller's context."""
+    environment = factory()
+    try:
+        yield environment
+    finally:
+        environment.close()
 
 
 class EvaluationRunner:
@@ -44,20 +56,78 @@ class EvaluationRunner:
         steps_executed = 0
 
         try:
-            observation, reset_info = environment.reset(scenario)
-            controller.reset()
+            try:
+                observation, reset_info = environment.reset(scenario)
+            except Exception as exc:
+                raise EvaluationError(
+                    FailureRecord(
+                        FailureCategory.ENVIRONMENT_EXCEPTION,
+                        f"Environment reset failed: {exc}",
+                        evidence_source="runner",
+                    )
+                ) from exc
+            try:
+                controller.reset()
+            except Exception as exc:
+                raise EvaluationError(
+                    FailureRecord(
+                        FailureCategory.CONTROLLER_EXCEPTION,
+                        f"Controller reset failed: {exc}",
+                        evidence_source="runner",
+                    )
+                ) from exc
             if not environment.observation_space.contains(observation):
-                raise ValueError(
-                    "Environment returned an observation outside its observation space"
+                raise EvaluationError(
+                    FailureRecord(
+                        FailureCategory.INVALID_OBSERVATION,
+                        "Environment returned an observation outside its observation space",
+                        evidence_source="runner",
+                    )
                 )
             step_info = dict(reset_info)
             for step_index in range(self.max_steps):
-                action = controller.act(observation, deterministic=deterministic)
+                try:
+                    action = controller.act(observation, deterministic=deterministic)
+                except Exception as exc:
+                    raise EvaluationError(
+                        FailureRecord(
+                            FailureCategory.CONTROLLER_EXCEPTION,
+                            f"Controller action generation failed at step {step_index}: {exc}",
+                            step=step_index,
+                            evidence_source="runner",
+                        )
+                    ) from exc
                 if not environment.action_space.contains(action):
-                    raise ValueError(f"Controller returned action outside action space: {action!r}")
-                next_observation, reward, terminated, env_truncated, step_info = environment.step(
-                    action
-                )
+                    raise EvaluationError(
+                        FailureRecord(
+                            FailureCategory.INVALID_ACTION,
+                            f"Controller returned action outside action space: {action!r}",
+                            step=step_index,
+                            evidence_source="runner",
+                        )
+                    )
+                try:
+                    next_observation, reward, terminated, env_truncated, step_info = (
+                        environment.step(action)
+                    )
+                except Exception as exc:
+                    raise EvaluationError(
+                        FailureRecord(
+                            FailureCategory.ENVIRONMENT_EXCEPTION,
+                            f"Environment step failed at step {step_index}: {exc}",
+                            step=step_index,
+                            evidence_source="runner",
+                        )
+                    ) from exc
+                if not environment.observation_space.contains(next_observation):
+                    raise EvaluationError(
+                        FailureRecord(
+                            FailureCategory.INVALID_OBSERVATION,
+                            f"Environment returned an invalid observation at step {step_index}",
+                            step=step_index,
+                            evidence_source="runner",
+                        )
+                    )
                 steps_executed += 1
                 total_reward += float(reward)
                 if record_trace:

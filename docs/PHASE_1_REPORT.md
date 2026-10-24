@@ -20,11 +20,14 @@ Phase 1 adds reproducible experiment infrastructure, explicit failure semantics,
 Executed locally on Windows 11 x64 with Python 3.12.10:
 
 - Ruff format/check: passed.
-- Pytest: 16 passed, 0 failed.
+- Pytest: 26 passed, 0 failed.
 - Pump experiment save/reload/replay: `exact_match`.
 - LunarLander experiment save/reload/replay: `exact_match`.
 - Pump and LunarLander CLI commands: passed.
 - Apache metadata editable installation: passed.
+- Quick benchmark: 5 episodes per environment; persistence artifact size 8,719 bytes; saved pump replay `exact_match`.
+
+The measured quick run reported 41.44 LunarLander episodes/s and 4,011.25 steps/s, and 41.29 pump episodes/s and 8,258.52 steps/s. RSS deltas were approximately 369 KiB for LunarLander and 24 KiB for pump in that run. Persistence took 0.1553 seconds and replay took 0.0966 seconds. These are single-run local observations, not performance guarantees.
 
 The suite emits three Box2D SWIG deprecation warnings from the third-party dependency; they do not fail tests.
 

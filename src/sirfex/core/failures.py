@@ -46,3 +46,11 @@ class FailureRecord:
         value["category"] = self.category.value
         value["evidence_status"] = self.evidence_status.value
         return value
+
+
+class EvaluationError(RuntimeError):
+    """An execution error with an explicit, inspectable failure category."""
+
+    def __init__(self, record: FailureRecord) -> None:
+        self.record = record
+        super().__init__(f"{record.category.value}: {record.explanation}")

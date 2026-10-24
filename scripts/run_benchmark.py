@@ -9,7 +9,7 @@ from sirfex.benchmarks.runner import run_benchmark
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--profile", choices=["quick", "standard"], default="quick")
+    parser.add_argument("--profile", choices=["quick", "standard", "stress"], default="quick")
     parser.add_argument("--output-dir", type=Path, default=Path("artifacts/benchmarks"))
     args = parser.parse_args()
     report = run_benchmark(args.profile, args.output_dir)
