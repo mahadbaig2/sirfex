@@ -9,6 +9,7 @@ SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keep
 - `sirfex.controllers`: controller adapters. Phase 0 provides a random controller and a pump hysteresis controller.
 - `sirfex.benchmarks`: measured machine and simulation benchmark helpers.
 - `sirfex.cli`: the small `sirfex` command-line entry point.
+- `sirfex.experiments`: versioned manifests, atomic file storage, controller reconstruction, replay, and descriptive comparison.
 
 ## Execution flow
 
@@ -19,6 +20,16 @@ SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keep
 5. `EpisodeResult.to_dict()` provides a JSON-serializable record.
 
 The runner does not branch on LunarLander or pump behavior. Physics, termination rules, and environment metrics stay in the adapters.
+
+## Experiment workflow
+
+The Phase 1 workflow is:
+
+```text
+Configure → Validate → Execute → Classify → Persist → Reload → Replay → Compare
+```
+
+The file store records a manifest, scenario, result summary, and JSONL trajectory. Replay uses explicit environment/controller factories and reports exact match, tolerance match, mismatch, or unavailable. Comparison is descriptive and only marks experiments comparable when their environment identifiers and versions match.
 
 ## Pump model assumptions
 

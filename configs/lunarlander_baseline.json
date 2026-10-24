@@ -1,0 +1,10 @@
+{
+  "environment_id": "lunarlander",
+  "environment_version": "gymnasium:LunarLander-v3",
+  "schema_version": "1",
+  "parameters": {},
+  "seed": 0,
+  "description": "Stock LunarLander baseline with no runtime disturbances",
+  "tags": ["baseline", "stock-api"],
+  "provenance": {"source": "phase-1"}
+}

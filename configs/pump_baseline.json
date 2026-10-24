@@ -1,0 +1,10 @@
+{
+  "environment_id": "pump",
+  "environment_version": "sirfex-pump:1",
+  "schema_version": "1",
+  "parameters": {},
+  "seed": 0,
+  "description": "Nominal pump baseline scenario",
+  "tags": ["baseline", "nominal"],
+  "provenance": {"source": "phase-1"}
+}

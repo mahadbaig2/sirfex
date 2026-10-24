@@ -21,6 +21,17 @@ The project is intentionally CPU-first and local-first. It will not require paid
 - `sirfex` CLI for environment listing, evaluation, and quick benchmarks.
 - CPU benchmark suite and a short CPU-only PPO save/load smoke test.
 
+## Implemented in Phase 1
+
+- Versioned scenario JSON with strict pump validation.
+- Explicit failure taxonomy and evidence-based LunarLander outcome semantics.
+- Atomic local experiment manifests, results, and JSONL trajectories.
+- Pump and LunarLander deterministic replay with verification reports.
+- Descriptive experiment comparison without a misleading universal score.
+- Apache-2.0 licensing and dependency/version provenance in manifests.
+
+See the [Phase 1 report](docs/PHASE_1_REPORT.md) for the verified status and limitations.
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -53,14 +64,20 @@ sirfex environments
 sirfex evaluate --env lunarlander --controller random
 sirfex evaluate --env pump --controller rule-based
 sirfex benchmark --profile quick
+sirfex scenarios list --env pump
+sirfex scenarios validate --file configs/pump_baseline.json
+sirfex experiments run --scenario configs/pump_baseline.json --controller pump-rule
+sirfex experiments list
+sirfex experiments replay <experiment-id>
+sirfex experiments compare <experiment-a> <experiment-b>
 python scripts/ppo_smoke_test.py --steps 256
 ```
 
-The benchmark suite records machine-specific measurements; it does not promise universal throughput.
+The benchmark suite records machine-specific measurements; it does not promise universal throughput. Phase 1 experiment artifacts are local and ignored by Git by default.
 
 ## License
 
-The project license has not yet been selected. MIT and Apache-2.0 are under consideration; the choice will be documented before licensing the repository.
+SIRFEX is licensed under the [Apache License 2.0](LICENSE). The license does not cover third-party dependencies, which retain their own licenses and notices.
 
 ## History
 

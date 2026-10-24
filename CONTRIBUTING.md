@@ -21,3 +21,7 @@ python -m pytest
 ```
 
 Keep environment-specific physics in environment adapters and keep the evaluation runner environment-agnostic. Do not add cloud services, paid APIs, or GPU requirements without a documented architectural decision.
+
+## License
+
+By submitting a contribution, you agree that it is provided under the Apache License 2.0, as described in `LICENSE`. This project does not require a separate contributor license agreement.
