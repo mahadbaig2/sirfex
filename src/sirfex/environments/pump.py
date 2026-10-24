@@ -121,6 +121,7 @@ class PumpEnvironment:
         self._step_count += 1
         low_violation = self._level < p.min_level
         high_violation = self._level > p.max_level
+        violation_magnitude = max(p.min_level - self._level, self._level - p.max_level, 0.0)
         self._level = float(np.clip(self._level, 0.0, 1.0))
         error = self._level - p.target_level
         reward = -float(error * error + 0.01 * command * command)
@@ -132,6 +133,9 @@ class PumpEnvironment:
             "inflow": inflow,
             "outflow": outflow,
             "constraint_violation": low_violation or high_violation,
+            "violation_magnitude": violation_magnitude,
+            "min_level": p.min_level,
+            "max_level": p.max_level,
             "termination_reason": "level_constraint"
             if terminated
             else ("horizon" if truncated else None),
@@ -171,7 +175,22 @@ class PumpEnvironment:
     ) -> dict[str, Any]:
         del total_reward
         if terminated:
-            return {"outcome": "failure", "termination_reason": info.get("termination_reason")}
+            return {
+                "outcome": "failure",
+                "observed_outcome": "constraint_violation",
+                "failure_category": "constraint_violation",
+                "explanation": "Tank level crossed a configured operating constraint.",
+                "failure_step": self._step_count - 1,
+                "measurements": {
+                    "level": info.get("level"),
+                    "violation_magnitude": info.get("violation_magnitude", 0.0),
+                },
+                "threshold": (
+                    f"level outside [{self._active_parameters.min_level}, "
+                    f"{self._active_parameters.max_level}]"
+                ),
+                "termination_reason": info.get("termination_reason"),
+            }
         return {
             "outcome": "nominal",
             "termination_reason": info.get("termination_reason", "horizon"),

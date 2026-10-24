@@ -1,0 +1,10 @@
+{
+  "environment_id": "lunarlander",
+  "environment_version": "gymnasium:LunarLander-v3",
+  "schema_version": "1",
+  "description": "Stock LunarLander observation risk-proxy search",
+  "controller_id": "random",
+  "objective": "lunarlander.terminal_instability_proxy",
+  "parameters": {},
+  "fixed_parameters": {}
+}

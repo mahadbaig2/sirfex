@@ -1,0 +1,58 @@
+{
+  "environment_id": "pump",
+  "environment_version": "sirfex-pump:1",
+  "schema_version": "1",
+  "description": "Bounded pump operating-condition search space",
+  "controller_id": "pump-rule",
+  "objective": "pump.constraint_violation",
+  "parameters": {
+    "demand": {
+      "type": "float",
+      "low": 0.1,
+      "high": 0.9,
+      "unit": "normalized flow",
+      "description": "Demand outflow"
+    },
+    "pump_capacity": {
+      "type": "float",
+      "low": 0.2,
+      "high": 0.8,
+      "unit": "normalized flow",
+      "description": "Maximum pump inflow"
+    },
+    "efficiency": {
+      "type": "float",
+      "low": 0.4,
+      "high": 1.0,
+      "unit": "fraction",
+      "description": "Pump efficiency"
+    },
+    "initial_level": {
+      "type": "float",
+      "low": 0.2,
+      "high": 0.8,
+      "unit": "fraction",
+      "description": "Initial tank level"
+    },
+    "target_level": {
+      "type": "float",
+      "low": 0.2,
+      "high": 0.8,
+      "unit": "fraction",
+      "description": "Target tank level"
+    },
+    "leak": {
+      "type": "float",
+      "low": 0.0,
+      "high": 0.2,
+      "unit": "normalized flow",
+      "description": "Level-proportional leakage"
+    }
+  },
+  "fixed_parameters": {
+    "dt": 0.1,
+    "horizon": 200,
+    "min_level": 0.05,
+    "max_level": 0.95
+  }
+}

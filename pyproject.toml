@@ -25,6 +25,9 @@ benchmark = [
   "stable-baselines3>=2.4,<3",
   "torch>=2.2",
 ]
+search = [
+  "optuna>=4,<5",
+]
 dev = [
   "pytest>=8.0,<9",
   "pytest-cov>=5.0,<7",
