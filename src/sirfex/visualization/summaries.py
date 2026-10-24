@@ -12,6 +12,7 @@ def search_comparison(first: dict[str, Any], second: dict[str, Any]) -> dict[str
         "controller": a.get("controller_id") == b.get("controller_id"),
         "objective": a.get("objective_id") == b.get("objective_id"),
         "space": first.get("space") == second.get("space"),
+        "trial_budget": a.get("trial_budget") == b.get("trial_budget"),
         "seed_policy": a.get("scenario_seeds") == b.get("scenario_seeds"),
     }
     return {
