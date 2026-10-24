@@ -34,6 +34,7 @@ The suite emits three Box2D SWIG deprecation warnings from the third-party depen
 ## Licensing
 
 The repository now uses Apache License 2.0 with attribution to Mahad Mirza Baig. Third-party dependencies retain their own licenses; no dependency license is replaced by the project license.
+The dependency inventory and redistribution reminders are documented in [DEPENDENCY_LICENSES.md](DEPENDENCY_LICENSES.md).
 
 ## Known limitations
 

@@ -77,7 +77,7 @@ The benchmark suite records machine-specific measurements; it does not promise u
 
 ## License
 
-SIRFEX is licensed under the [Apache License 2.0](LICENSE). The license does not cover third-party dependencies, which retain their own licenses and notices.
+SIRFEX is licensed under the [Apache License 2.0](LICENSE). The license does not cover third-party dependencies, which retain their own licenses and notices; see [dependency license notes](docs/DEPENDENCY_LICENSES.md).
 
 ## History
 
