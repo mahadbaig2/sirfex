@@ -16,3 +16,6 @@ Search reproducibility additionally records the bounded space, strategy identifi
 ```powershell
 sirfex experiments replay <experiment-id>
 ```
+## Phase 3 training
+
+Phase 3 records Python/library versions, Git commit, PPO configuration, CPU device, Torch thread count, training seed, scenario curriculum, checkpoint hashes, and evaluation sets. PPO training is reproducible within documented dependency and platform limits, not guaranteed bitwise-identical across operating systems. The `smoke`, `quick`, `standard`, and opt-in `extended` profiles make runtime intent explicit.

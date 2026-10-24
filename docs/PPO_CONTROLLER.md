@@ -1,0 +1,9 @@
+# Phase 3 PPO Controller
+
+Phase 3 uses Stable-Baselines3 PPO as an optional CPU-only training dependency. SIRFEX owns scenario construction, evaluation, evidence, and provenance; SB3 owns rollout collection, policy updates, optimizer state, and PPO loss calculations.
+
+The trainable pump adapter exposes a three-value observation `[level, target, demand]` and a one-value continuous command in `[0, 1]`. It delegates every physical transition to `PumpEnvironment`, so training and evaluation use the same tank dynamics. The training reward is the existing pump reward minus `10 * violation_magnitude` for a transparent constraint penalty. A reward value is never used to redefine a physical failure.
+
+The default policy is a small MLP with hidden layers `[64, 64]`, CPU device, conservative rollout sizes, and four Torch threads. Profiles are `smoke`, `quick`, `standard`, and opt-in `extended`. Smoke and quick runs are pipeline checks, not claims of controller competence.
+
+PPO checkpoints are trusted local files only. Each checkpoint has a run-scoped ID, SHA-256 digest, environment and space metadata, PPO configuration, seed, timestep budget, and dependency versions. Loading verifies the path and hash before Stable-Baselines3 deserialization. Remote URLs and unknown artifact directories are not loaded automatically.

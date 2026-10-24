@@ -54,6 +54,16 @@ See the [Phase 2 report](docs/PHASE_2_REPORT.md) and [search benchmark methodolo
 
 See [Evidence Explorer usage](docs/EVIDENCE_EXPLORER.md) and the [Phase 2.5 report](docs/PHASE_2_5_REPORT.md).
 
+## Implemented in Phase 3
+
+- CPU-only Stable-Baselines3 PPO training for the existing pump environment.
+- Hashed, provenance-rich PPO checkpoints and local training artifacts.
+- Failure-informed curricula consuming eligible Phase 2 discoveries.
+- Matched normal and failure-informed continuations with nominal, known-stress, and held-out-stress evaluation.
+- Explicit `improved`, `regressed`, or `inconclusive` regression classification.
+
+See the [Phase 3 report](docs/PHASE_3_REPORT.md) and [training commands](docs/PPO_CONTROLLER.md). Phase 3 smoke results do not claim PPO robustness improvement.
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -76,6 +86,8 @@ py -3.12 -m venv .venv
 python -m pip install -e ".[dev,simulation,benchmark,search]"
 ```
 
+For Phase 3 PPO workflows, install the isolated optional training dependencies with `python -m pip install -e ".[training]"` (the broader `benchmark` extra also includes them).
+
 Run the verified checks and commands:
 
 ```powershell
@@ -92,6 +104,13 @@ sirfex experiments run --scenario configs/pump_baseline.json --controller pump-r
 sirfex experiments list
 sirfex experiments replay <experiment-id>
 sirfex experiments compare <experiment-a> <experiment-b>
+sirfex train baseline --config configs/training/pump_ppo.json
+sirfex train improve --baseline <training-run-id> --search <search-id> --config configs/training/pump_robustness.json
+sirfex train list
+sirfex train show <training-run-id>
+sirfex train evaluate <training-run-id>
+sirfex train compare <training-run-id>
+sirfex train verify <training-run-id>
 python scripts/ppo_smoke_test.py --steps 256
 python scripts/run_search_benchmark.py --trials 20 --seed 11
 pip install -e ".[studio]"

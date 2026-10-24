@@ -27,4 +27,17 @@ def make_controller(
             low_level=float(config.get("low_level", 0.42)),
             high_level=float(config.get("high_level", 0.58)),
         )
+    if controller_id == "ppo" and environment.id == "pump":
+        from sirfex.training.checkpoints import CheckpointMetadata
+        from sirfex.training.controller import PPOController
+
+        checkpoint = config.get("checkpoint", config)
+        metadata = CheckpointMetadata(
+            **checkpoint
+            | {
+                "observation_shape": tuple(checkpoint["observation_shape"]),
+                "action_shape": tuple(checkpoint["action_shape"]),
+            }
+        )
+        return PPOController.load(metadata.path, metadata)
     raise ValueError(f"Controller {controller_id!r} cannot be reconstructed for {environment.id!r}")

@@ -12,6 +12,7 @@ SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keep
 - `sirfex.experiments`: versioned manifests, atomic file storage, controller reconstruction, replay, and descriptive comparison.
 - `sirfex.search`: bounded candidate spaces, risk objectives, strategies, trial orchestration, discovery ranking, search persistence, and fair comparison.
 - `sirfex.visualization`: UI-independent, read-only evidence readers and chart/playback transformations. It has no Streamlit or Plotly dependency.
+- `sirfex.training`: optional Gymnasium pump adapter, lazy Stable-Baselines3 PPO orchestration, trusted checkpoint metadata, curricula, fixed-set evaluation, regression criteria, and local training persistence.
 
 The optional `studio/app.py` Streamlit application consumes `sirfex.visualization` and persisted artifacts. It is not part of the engine execution path and cannot create experiments, searches, or scenarios.
 
@@ -43,6 +44,16 @@ ExperimentStore/SearchStore → EvidenceReader → recorded transformations → 
 ```
 
 The Explorer never calls an environment's `step()` while browsing a stored trajectory and never changes authoritative ranking or failure classification.
+
+Phase 3 composes training after failure evidence without making the evaluator depend on Stable-Baselines3:
+
+```text
+Phase 2 search artifacts → eligible discoveries → ScenarioCurriculum
+                       → PumpGymEnv (delegates PumpEnvironment physics)
+                       → optional Stable-Baselines3 PPO
+                       → checkpoint integrity → EvaluationRunner metrics
+                       → regression report and local training artifacts
+```
 
 ## Search workflow
 

@@ -25,6 +25,10 @@ benchmark = [
   "stable-baselines3>=2.4,<3",
   "torch>=2.2",
 ]
+training = [
+  "stable-baselines3>=2.4,<3",
+  "torch>=2.2",
+]
 search = [
   "optuna>=4,<5",
 ]

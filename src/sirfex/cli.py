@@ -58,7 +58,14 @@ def build_parser() -> argparse.ArgumentParser:
     experiments_sub = experiments.add_subparsers(dest="experiments_command", required=True)
     experiment_run = experiments_sub.add_parser("run")
     experiment_run.add_argument("--scenario", required=True)
-    experiment_run.add_argument("--controller", choices=["random", "pump-rule"], required=True)
+    experiment_run.add_argument(
+        "--controller", choices=["random", "pump-rule", "ppo"], required=True
+    )
+    experiment_run.add_argument(
+        "--controller-config",
+        default=None,
+        help="JSON controller configuration, including trusted PPO checkpoint metadata",
+    )
     experiment_run.add_argument("--max-steps", type=int, default=1_000)
     experiments_sub.add_parser("list").add_argument("--env")
     experiments_sub.choices["list"].add_argument("--controller")
@@ -95,6 +102,27 @@ def build_parser() -> argparse.ArgumentParser:
     search_compare = search_sub.add_parser("compare")
     search_compare.add_argument("first_id")
     search_compare.add_argument("second_id")
+    train = subparsers.add_parser("train", help="run optional local PPO robustness experiments")
+    train.add_argument("--store", default="artifacts/training")
+    train.add_argument("--search-store", default="artifacts/searches")
+    train_sub = train.add_subparsers(dest="train_command", required=True)
+    train_baseline = train_sub.add_parser("baseline")
+    train_baseline.add_argument("--config", required=True)
+    train_baseline.add_argument("--seed", type=int, default=0)
+    train_improve = train_sub.add_parser("improve")
+    train_improve.add_argument("--baseline", required=True)
+    train_improve.add_argument("--search", required=True)
+    train_improve.add_argument("--config", required=True)
+    train_improve.add_argument("--seed", type=int, default=0)
+    train_sub.add_parser("list")
+    train_show = train_sub.add_parser("show")
+    train_show.add_argument("training_run_id")
+    train_evaluate = train_sub.add_parser("evaluate")
+    train_evaluate.add_argument("training_run_id")
+    train_compare = train_sub.add_parser("compare")
+    train_compare.add_argument("training_run_id")
+    train_verify = train_sub.add_parser("verify")
+    train_verify.add_argument("training_run_id")
     return parser
 
 
@@ -149,8 +177,16 @@ def main(argv: list[str] | None = None) -> int:
         try:
             if args.experiments_command == "run":
                 scenario = load_scenario_file(args.scenario)
+                controller_config = None
+                if args.controller_config:
+                    with open(args.controller_config, encoding="utf-8") as stream:
+                        controller_config = json.load(stream)
                 manifest = run_and_save_experiment(
-                    store, scenario, args.controller, max_steps=args.max_steps
+                    store,
+                    scenario,
+                    args.controller,
+                    max_steps=args.max_steps,
+                    controller_config=controller_config,
                 )
                 print(json.dumps(manifest.to_dict(), indent=2, sort_keys=True))
                 return 0
@@ -306,6 +342,74 @@ def main(argv: list[str] | None = None) -> int:
                 )
                 return 0
         except (SearchStorageError, StorageError, ValueError, OSError, json.JSONDecodeError) as exc:
+            parser.error(str(exc))
+    if args.command == "train":
+        from sirfex.training.checkpoints import verify_checkpoint
+        from sirfex.training.config import training_profile
+        from sirfex.training.persistence import TrainingStorageError, TrainingStore
+        from sirfex.training.runner import run_baseline, run_improvement
+
+        training_store = TrainingStore(args.store)
+        try:
+            if args.train_command == "list":
+                print(json.dumps(training_store.list(), indent=2, sort_keys=True))
+                return 0
+            if args.train_command in {"show", "evaluate", "compare", "verify"}:
+                loaded = training_store.load(args.training_run_id)
+                if args.train_command == "show":
+                    print(json.dumps(loaded, indent=2, sort_keys=True))
+                elif args.train_command == "evaluate":
+                    print(json.dumps(loaded.get("evaluation", {}), indent=2, sort_keys=True))
+                elif args.train_command == "compare":
+                    print(json.dumps(loaded.get("regression", {}), indent=2, sort_keys=True))
+                else:
+                    checkpoints = loaded["manifest"].get("checkpoints", {})
+                    if "checkpoint" in loaded["manifest"]:
+                        checkpoints["baseline"] = loaded["manifest"]["checkpoint"]
+                    verified = []
+                    for name, metadata in checkpoints.items():
+                        verify_checkpoint(metadata["path"], metadata["sha256"])
+                        verified.append(
+                            {"name": name, "status": "verified", "sha256": metadata["sha256"]}
+                        )
+                    print(
+                        json.dumps(
+                            {"training_run_id": args.training_run_id, "checkpoints": verified},
+                            indent=2,
+                            sort_keys=True,
+                        )
+                    )
+                return 0
+            with open(args.config, encoding="utf-8") as stream:
+                config_value = json.load(stream)
+            profile = str(config_value.pop("profile", "smoke"))
+            seed = int(config_value.pop("training_seed", getattr(args, "seed", 0)))
+            config = training_profile(profile, seed=seed, overrides=config_value)
+            if args.train_command == "baseline":
+                print(json.dumps(run_baseline(config, training_store), indent=2, sort_keys=True))
+            elif args.train_command == "improve":
+                print(
+                    json.dumps(
+                        run_improvement(
+                            config,
+                            training_store,
+                            args.baseline,
+                            args.search,
+                            SearchStore(args.search_store),
+                        ),
+                        indent=2,
+                        sort_keys=True,
+                    )
+                )
+            return 0
+        except (
+            TrainingStorageError,
+            SearchStorageError,
+            ValueError,
+            OSError,
+            json.JSONDecodeError,
+            ImportError,
+        ) as exc:
             parser.error(str(exc))
     parser.error("unknown command")
     return 2

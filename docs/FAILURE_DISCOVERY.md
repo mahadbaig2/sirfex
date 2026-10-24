@@ -6,4 +6,6 @@ Discovery ranking is local to one objective and direction. Near-duplicates are g
 
 An observed pump constraint violation is distinct from a tracking proxy, a LunarLander instability proxy, an invalid candidate, and an execution error. A discovery is only replay-verified when all supporting experiment replays report an acceptable verification status.
 
+Phase 3 consumes only observed, valid, replay-verified pump discoveries for failure-informed curricula. It preserves the Phase 2 ranking and records selected discovery and supporting experiment IDs in the training manifest.
+
 Held-out seeds are evaluated after search and are recorded as validation evidence, not fed back into optimization.

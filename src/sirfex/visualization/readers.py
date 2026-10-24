@@ -10,6 +10,7 @@ from typing import Any
 from sirfex.experiments.replay import ReplayReport, replay_experiment
 from sirfex.experiments.storage import ExperimentStore, StorageError, StoredExperiment
 from sirfex.search.persistence import SearchStorageError, SearchStore
+from sirfex.training.persistence import TrainingStorageError, TrainingStore
 
 
 class EvidenceReadError(RuntimeError):
@@ -37,6 +38,7 @@ class EvidenceReader:
     ) -> None:
         self.experiments = ExperimentStore(experiment_root)
         self.searches = SearchStore(search_root)
+        self.training = TrainingStore(Path(search_root).parent / "training")
 
     def list_experiments(self) -> list[ExperimentSummary]:
         return [
@@ -86,6 +88,15 @@ class EvidenceReader:
             return replay_experiment(self.experiments, experiment_id, tolerance)
         except Exception as exc:  # the UI must render unavailable evidence, not crash
             return ReplayReport("unavailable", experiment_id, str(exc))
+
+    def list_training_runs(self) -> list[dict[str, Any]]:
+        return self.training.list()
+
+    def load_training_run(self, training_run_id: str) -> dict[str, Any]:
+        try:
+            return self.training.load(training_run_id)
+        except (TrainingStorageError, OSError, ValueError) as exc:
+            raise EvidenceReadError(str(exc)) from exc
 
     def overview(self) -> dict[str, int]:
         experiments = self.list_experiments()

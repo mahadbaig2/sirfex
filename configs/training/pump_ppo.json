@@ -1,0 +1,20 @@
+{
+  "profile": "smoke",
+  "training_timesteps": 256,
+  "max_episode_steps": 200,
+  "curriculum_ratio": 0.3,
+  "discovery_limit": 8,
+  "ppo": {
+    "learning_rate": 0.0003,
+    "n_steps": 64,
+    "batch_size": 32,
+    "n_epochs": 2,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "ent_coef": 0.0,
+    "vf_coef": 0.5,
+    "net_arch": [64, 64],
+    "device": "cpu",
+    "torch_threads": 4
+  }
+}
