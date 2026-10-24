@@ -444,7 +444,8 @@ def run_validation(
                 for group, ratio in (("normal", 0.0), ("robust", config["stress_ratio"])):
                     if time.perf_counter() >= deadline:
                         raise TimeoutError("Continuation deadline exhausted")
-                    active_schema, active_seed = chosen, seed
+                    active_schema, active_seed = chosen, seed + 5000
+                    active_model = None
                     active_env = PumpGymEnv(
                         partitions["training"],
                         seed=seed + 5000,
@@ -463,7 +464,13 @@ def run_validation(
                         on_model=remember_model,
                     )
                     metadata = _checkpoint(
-                        active_model, directory, run_id, f"{group}_{seed}", config, seed, chosen
+                        active_model,
+                        directory,
+                        run_id,
+                        f"{group}_{seed}",
+                        config,
+                        seed + 5000,
+                        chosen,
                     )
                     manifest["checkpoints"][metadata.checkpoint_id] = metadata.to_dict()
                     additional = active_model.num_timesteps - base["training_timesteps"]
