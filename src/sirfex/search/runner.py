@@ -242,6 +242,18 @@ class SearchRunner:
             [discovery.to_dict() for discovery in ranked],
             summary,
         )
+        for discovery in ranked:
+            self.search_store.save_verification(
+                search_id,
+                discovery.discovery_id,
+                {
+                    "discovery_id": discovery.discovery_id,
+                    "search_id": search_id,
+                    "status": discovery.replay_status,
+                    "experiment_ids": discovery.experiment_ids,
+                    "verified_at_utc": datetime.now(UTC).isoformat(),
+                },
+            )
         return {
             "manifest": manifest,
             "summary": summary,

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 _SEARCH_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{5,80}$")
+_DISCOVERY_ID = re.compile(r"^disc_[A-Za-z0-9_-]{5,80}$")
 
 
 class SearchStorageError(RuntimeError):
@@ -127,3 +128,17 @@ class SearchStore:
                 if discovery.get("discovery_id") == discovery_id:
                     return manifest["search_id"], discovery
         raise SearchStorageError(f"Discovery not found: {discovery_id}")
+
+    def save_verification(
+        self, search_id: str, discovery_id: str, verification: dict[str, Any]
+    ) -> Path:
+        directory = self._directory(search_id)
+        if not directory.is_dir() or (directory / ".incomplete").exists():
+            raise SearchStorageError(f"Search not available: {search_id}")
+        if not _DISCOVERY_ID.fullmatch(discovery_id):
+            raise SearchStorageError("Invalid discovery ID")
+        verification_dir = directory / "verification"
+        verification_dir.mkdir(exist_ok=True)
+        path = verification_dir / f"{discovery_id}.json"
+        self._atomic_write(path, json.dumps(verification, indent=2, allow_nan=False))
+        return path

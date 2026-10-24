@@ -11,6 +11,8 @@ Replay reconstructs only controllers with an explicit factory. Phase 1 supports 
 
 Replay is deterministic on the verified local Python 3.12 environment for the Phase 1 controllers. Exact cross-platform or cross-version reproducibility is not promised. Different hardware, dependency versions, or unrecorded controller state can change numerical traces.
 
+Search reproducibility additionally records the bounded space, strategy identifier, strategy seed, objective direction, trial budget, and scenario seed policy. Random search owns a controller-independent NumPy generator; TPE records its Optuna seed and startup-trial caveat. Held-out seeds are evaluated after optimization and are not used to update the strategy.
+
 ```powershell
 sirfex experiments replay <experiment-id>
 ```

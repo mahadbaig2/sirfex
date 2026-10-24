@@ -13,6 +13,8 @@ The manifest schema is version `1`. It records the environment/controller identi
 
 Writes use a temporary file plus atomic replacement. A `.incomplete` marker makes interrupted writes detectable. Existing experiment IDs are never overwritten. IDs and artifact paths are validated to prevent traversal. Artifacts are JSON/JSONL only; Python pickle is not used.
 
+Search runs reference these experiment artifacts instead of duplicating trajectories. Search-level persistence is documented in `docs/FAILURE_DISCOVERY.md` and uses a separate verification artifact for discovery replay status.
+
 Inspect saved evidence with:
 
 ```powershell

@@ -4,7 +4,7 @@ Phase 1 separates execution status, observed outcome, and failure classification
 
 ## Execution status
 
-`completed` means the runner completed an episode and produced a result. Exceptions remain visible to callers and are not silently converted into successful results. Future persistence layers may record failed execution manifests.
+`completed` means the runner completed an episode and produced a result. Exceptions remain visible to callers and are not silently converted into successful results. Phase 2 persists failed execution attempts as `execution_failed` experiment artifacts when storage is available.
 
 ## Failure categories
 
@@ -12,6 +12,7 @@ Phase 1 separates execution status, observed outcome, and failure classification
 - `constraint_violation`: a declared physical or operating constraint was violated.
 - `objective_failure`: the environment reported failure of its declared objective.
 - `invalid_action`: a controller produced an invalid action.
+- `invalid_scenario`: a candidate scenario was outside the declared valid search/configuration space.
 - `invalid_observation`: an environment produced an observation outside its declared space.
 - `numerical_instability`: the model produced non-finite or otherwise invalid numerical state.
 - `controller_exception`: controller code raised an exception.

@@ -42,3 +42,5 @@ def test_search_finds_and_persists_observed_pump_violation(tmp_path) -> None:
     assert discovery["replay_status"] == "exact_match"
     loaded = search_store.load(result["summary"]["search_id"])
     assert len(loaded["trials"]) == 2
+    verification_dir = search_store.root / result["summary"]["search_id"] / "verification"
+    assert any(verification_dir.iterdir())

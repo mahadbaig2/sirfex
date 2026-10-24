@@ -32,6 +32,17 @@ The project is intentionally CPU-first and local-first. It will not require paid
 
 See the [Phase 1 report](docs/PHASE_1_REPORT.md) for the verified status and limitations.
 
+## Implemented in Phase 2
+
+- Bounded, versioned search-space definitions for valid scenarios.
+- Pump constraint-violation and tracking-degradation objectives.
+- LunarLander observation-derived instability risk proxy.
+- Deterministic random search and seeded Optuna TPE search.
+- Multi-seed aggregation, held-out validation, discovery ranking, and near-duplicate grouping.
+- Persisted search runs, discovery evidence, and replay verification.
+
+See the [Phase 2 report](docs/PHASE_2_REPORT.md) and [search benchmark methodology](docs/SEARCH_BENCHMARKS.md). Search results are evidence within documented simulations, not real-world safety certification.
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -51,7 +62,7 @@ The supported Phase 0 interpreter is Python 3.12:
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev,simulation,benchmark]"
+python -m pip install -e ".[dev,simulation,benchmark,search]"
 ```
 
 Run the verified checks and commands:
@@ -71,6 +82,7 @@ sirfex experiments list
 sirfex experiments replay <experiment-id>
 sirfex experiments compare <experiment-a> <experiment-b>
 python scripts/ppo_smoke_test.py --steps 256
+python scripts/run_search_benchmark.py --trials 20 --seed 11
 ```
 
 The benchmark suite records machine-specific measurements; it does not promise universal throughput. Phase 1 experiment artifacts are local and ignored by Git by default.

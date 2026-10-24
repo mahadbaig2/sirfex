@@ -275,6 +275,15 @@ def main(argv: list[str] | None = None) -> int:
                     replay_experiment(experiment_store, experiment_id).to_dict()
                     for experiment_id in discovery["experiment_ids"]
                 ]
+                search_store.save_verification(
+                    search_id,
+                    args.discovery_id,
+                    {
+                        "discovery_id": args.discovery_id,
+                        "search_id": search_id,
+                        "verification": statuses,
+                    },
+                )
                 print(
                     json.dumps(
                         {

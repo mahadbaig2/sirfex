@@ -10,6 +10,7 @@ SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keep
 - `sirfex.benchmarks`: measured machine and simulation benchmark helpers.
 - `sirfex.cli`: the small `sirfex` command-line entry point.
 - `sirfex.experiments`: versioned manifests, atomic file storage, controller reconstruction, replay, and descriptive comparison.
+- `sirfex.search`: bounded candidate spaces, risk objectives, strategies, trial orchestration, discovery ranking, search persistence, and fair comparison.
 
 ## Execution flow
 
@@ -30,6 +31,18 @@ Configure → Validate → Execute → Classify → Persist → Reload → Repla
 ```
 
 The file store records a manifest, scenario, result summary, and JSONL trajectory. Replay uses explicit environment/controller factories and reports exact match, tolerance match, mismatch, or unavailable. Comparison is descriptive and only marks experiments comparable when their environment identifiers and versions match.
+
+## Search workflow
+
+Phase 2 composes the experiment layer rather than duplicating it:
+
+```text
+SearchSpace → Strategy → Scenario validation → EvaluationRunner
+           → RiskObjective → ExperimentStore → Trial/Discovery persistence
+           → Replay verification → Strategy comparison
+```
+
+Search orchestration does not mutate third-party simulators. Environment adapters remain responsible for supported physical bounds and evidence; objectives label observed measurements versus inferred proxies.
 
 ## Pump model assumptions
 

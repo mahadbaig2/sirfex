@@ -9,7 +9,7 @@ Use Python 3.12, create a virtual environment, and install the development and s
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev,simulation]"
+python -m pip install -e ".[dev,simulation,search]"
 ```
 
 Run formatting, linting, and tests before opening a pull request:

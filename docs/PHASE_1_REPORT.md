@@ -38,7 +38,7 @@ The dependency inventory and redistribution reminders are documented in [DEPENDE
 
 ## Known limitations
 
-- Exception execution manifests are not yet persisted as first-class failed experiments; exceptions remain visible to the caller.
+- Exception execution manifests were a Phase 1 limitation and are persisted as first-class failed experiments in Phase 2.
 - The random controller relies on the environment action-space seed for replay determinism.
 - Stock LunarLander does not expose a documented terminal landing outcome through this adapter, so terminal episodes are classified as unknown unless explicit evidence appears in `info`.
 - Storage is file-based and single-process; concurrent writers are not coordinated.
