@@ -31,6 +31,8 @@ class TrainingStore:
 
     def save(self, run_id: str, files: dict[str, dict[str, Any]]) -> Path:
         directory = self.directory(run_id)
+        if any(Path(name).name != name or not name.endswith(".json") for name in files):
+            raise TrainingStorageError("Unsafe training artifact filename")
         marker = directory / ".incomplete"
         if directory.exists():
             if (directory / "manifest.json").exists() or not marker.exists():
@@ -46,11 +48,11 @@ class TrainingStore:
             raise
         return directory
 
-    def load(self, run_id: str) -> dict[str, Any]:
+    def load(self, run_id: str, *, allow_partial: bool = False) -> dict[str, Any]:
         directory = self.directory(run_id)
         if not directory.is_dir():
             raise TrainingStorageError(f"Training run not found: {run_id}")
-        if (directory / ".incomplete").exists():
+        if (directory / ".incomplete").exists() and not allow_partial:
             raise TrainingStorageError(f"Training run is incomplete: {run_id}")
         result = {}
         for name in (
@@ -60,8 +62,18 @@ class TrainingStore:
             "evaluation.json",
             "regression.json",
             "summary.json",
+            "protocol.json",
+            "feasibility_report.json",
+            "reward_diagnostics.json",
+            "learning_curve.json",
+            "dataset_partitions.json",
+            "baseline_selection.json",
+            "continuation_results.json",
+            "uncertainty.json",
         ):
             path = directory / name
+            if path.resolve().parent != directory:
+                raise TrainingStorageError("Unsafe training artifact path")
             if path.is_file():
                 try:
                     result[name.removesuffix(".json")] = json.loads(
@@ -71,6 +83,10 @@ class TrainingStore:
                     raise TrainingStorageError(f"Malformed training artifact: {name}") from exc
         if "manifest" not in result:
             raise TrainingStorageError("Training manifest is missing")
+        if result["manifest"].get("schema_version") not in ("1", "2"):
+            raise TrainingStorageError("Unsupported training manifest schema")
+        if result["manifest"].get("training_run_id") != run_id:
+            raise TrainingStorageError("Training manifest identity mismatch")
         return result
 
     def list(self) -> list[dict[str, Any]]:
@@ -78,7 +94,7 @@ class TrainingStore:
         for directory in sorted(self.root.iterdir()):
             if directory.is_dir() and _RUN_ID.fullmatch(directory.name):
                 try:
-                    values.append(self.load(directory.name)["manifest"])
+                    values.append(self.load(directory.name, allow_partial=True)["manifest"])
                 except TrainingStorageError:
                     continue
         return values

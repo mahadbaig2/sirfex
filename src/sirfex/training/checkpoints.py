@@ -24,6 +24,8 @@ class CheckpointMetadata:
     training_seed: int
     training_timesteps: int
     dependencies: dict[str, str]
+    observation_schema: str = "pump-minimal:1"
+    reward_schema: str = "pump-violation-magnitude:1"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -33,9 +35,9 @@ class CheckpointMetadata:
         }
 
 
-def sha256_file(path: Path) -> str:
+def sha256_file(path: Path | str) -> str:
     digest = hashlib.sha256()
-    with path.open("rb") as stream:
+    with Path(path).open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
@@ -54,6 +56,8 @@ def write_json(path: Path, value: dict[str, Any]) -> None:
         with os.fdopen(handle, "w", encoding="utf-8", newline="\n") as stream:
             json.dump(value, stream, indent=2, allow_nan=False)
             stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
         Path(temporary).replace(path)
     finally:
         if Path(temporary).exists():

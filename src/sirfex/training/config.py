@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
@@ -21,6 +22,13 @@ class PPOConfig:
     torch_threads: int = 4
 
     def validate(self) -> None:
+        if not all(
+            math.isfinite(v)
+            for v in (self.learning_rate, self.gamma, self.gae_lambda, self.ent_coef, self.vf_coef)
+        ):
+            raise ValueError("PPO coefficients must be finite")
+        if any(type(v) is not int or v < 1 for v in self.net_arch):
+            raise ValueError("Network dimensions must be positive integers")
         if self.learning_rate <= 0 or self.n_steps < 2 or self.batch_size < 2:
             raise ValueError("PPO learning rate, rollout steps, and batch size must be positive")
         if self.n_steps % self.batch_size != 0:

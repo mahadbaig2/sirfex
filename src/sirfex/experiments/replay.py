@@ -103,7 +103,7 @@ def replay_experiment(
             environment,
             stored.manifest.controller_config,
         )
-    except (StorageError, ValueError, ImportError) as exc:
+    except (StorageError, ValueError, ImportError, OSError, KeyError, TypeError) as exc:
         return ReplayReport("unavailable", experiment_id, str(exc))
     try:
         scenario = Scenario.from_dict(stored.manifest.scenario)

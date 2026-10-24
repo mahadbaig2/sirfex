@@ -105,7 +105,16 @@ def build_parser() -> argparse.ArgumentParser:
     train = subparsers.add_parser("train", help="run optional local PPO robustness experiments")
     train.add_argument("--store", default="artifacts/training")
     train.add_argument("--search-store", default="artifacts/searches")
+    train.add_argument("--experiment-store", default="artifacts/experiments")
     train_sub = train.add_subparsers(dest="train_command", required=True)
+    for command in ("diagnose", "feasibility"):
+        train_sub.add_parser(command).add_argument("--search", action="append")
+    for command in ("learning-curve", "validate"):
+        study = train_sub.add_parser(command)
+        study.add_argument("--config", required=True)
+        study.add_argument("--search", action="append")
+        study.add_argument("--allow-extended", action="store_true")
+    train_sub.add_parser("report").add_argument("training_run_id")
     train_baseline = train_sub.add_parser("baseline")
     train_baseline.add_argument("--config", required=True)
     train_baseline.add_argument("--seed", type=int, default=0)
@@ -351,6 +360,52 @@ def main(argv: list[str] | None = None) -> int:
 
         training_store = TrainingStore(args.store)
         try:
+            if args.train_command in {"feasibility", "diagnose"}:
+                from sirfex.training.selection import discovery_report
+
+                searches = SearchStore(args.search_store)
+                sources = (
+                    args.search
+                    if args.search is not None
+                    else [row["search_id"] for row in searches.list()]
+                )
+                report = discovery_report(searches, ExperimentStore(args.experiment_store), sources)
+                if args.train_command == "diagnose":
+                    from sirfex.training.evaluation import evaluate_controller
+                    from sirfex.training.protocol import competence, datasets
+
+                    reference = evaluate_controller(
+                        PumpRuleController, datasets()["validation"], "validation", max_steps=200
+                    ).to_dict()
+                    report["rule_validation"] = reference
+                    report["rule_competence"] = competence(reference)
+                print(json.dumps(report, indent=2, sort_keys=True))
+                return 0
+            if args.train_command == "report":
+                print(
+                    json.dumps(
+                        training_store.load(args.training_run_id, allow_partial=True),
+                        indent=2,
+                        sort_keys=True,
+                    )
+                )
+                return 0
+            if args.train_command in {"learning-curve", "validate"}:
+                from sirfex.training.validation import run_validation
+
+                with open(args.config, encoding="utf-8") as stream:
+                    value = json.load(stream)
+                result = run_validation(
+                    value,
+                    training_store,
+                    SearchStore(args.search_store),
+                    ExperimentStore(args.experiment_store),
+                    search_ids=args.search,
+                    continue_training=args.train_command == "validate",
+                    allow_extended=args.allow_extended,
+                )
+                print(json.dumps(result, indent=2, sort_keys=True))
+                return 0 if result["status"] == "completed" else 1
             if args.train_command == "list":
                 print(json.dumps(training_store.list(), indent=2, sort_keys=True))
                 return 0

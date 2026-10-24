@@ -5,12 +5,14 @@ from __future__ import annotations
 from typing import Any
 
 from sirfex.controllers import PumpRuleController, RandomController
-from sirfex.environments import LunarLanderEnvironment, PumpEnvironment
+from sirfex.environments import LunarLanderEnvironment
 
 
 def make_environment(environment_id: str) -> Any:
     if environment_id == "pump":
-        return PumpEnvironment()
+        from sirfex.environments.pump_observations import PumpObservationEnvironment
+
+        return PumpObservationEnvironment()
     if environment_id == "lunarlander":
         return LunarLanderEnvironment()
     raise ValueError(f"Unsupported environment: {environment_id}")
@@ -39,5 +41,9 @@ def make_controller(
                 "action_shape": tuple(checkpoint["action_shape"]),
             }
         )
+        if hasattr(environment, "set_observation_schema"):
+            environment.set_observation_schema(metadata.observation_schema)
+        elif tuple(environment.observation_space.shape) != metadata.observation_shape:
+            raise ValueError("Environment and checkpoint observation schemas differ")
         return PPOController.load(metadata.path, metadata)
     raise ValueError(f"Controller {controller_id!r} cannot be reconstructed for {environment.id!r}")

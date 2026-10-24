@@ -1,0 +1,11 @@
+{
+  "profile": "standard",
+  "budgets": [10240, 25600, 51200],
+  "seeds": [3, 17, 41],
+  "wall_seconds": 3600,
+  "continuation_steps": 25600,
+  "dataset_seed": 3102,
+  "dataset_count": 24,
+  "stress_ratio": 0.3,
+  "ppo": {"n_steps": 128, "batch_size": 32, "n_epochs": 4, "torch_threads": 2}
+}

@@ -18,6 +18,23 @@ def classify_regression(
     known_robust: dict[str, Any],
     tolerances: dict[str, float],
 ) -> dict[str, Any]:
+    for summary in (
+        normal_control,
+        robust,
+        held_out_control,
+        held_out_robust,
+        known_control,
+        known_robust,
+    ):
+        if summary.get("execution_failures", 0) or any(
+            summary.get(k) is None
+            for k in (
+                "mean_tracking_error",
+                "constraint_violation_frequency",
+                "maximum_violation_magnitude",
+            )
+        ):
+            return {"classification": "inconclusive", "reason": "Incomplete execution evidence"}
     checks = {
         "nominal_tracking": _relative_change(
             normal_control["mean_tracking_error"], robust["mean_tracking_error"]

@@ -1,0 +1,10 @@
+{
+  "profile": "pilot",
+  "budgets": [10240, 25600],
+  "seeds": [3],
+  "wall_seconds": 900,
+  "dataset_seed": 3101,
+  "dataset_count": 12,
+  "schemas": ["pump-minimal:1", "pump-calibrated:1"],
+  "ppo": {"n_steps": 128, "batch_size": 32, "n_epochs": 4, "torch_threads": 2}
+}

@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from sirfex.core import EvaluationRunner
-from sirfex.environments.pump import PumpEnvironment
+from sirfex.environments.pump_observations import MINIMAL, PumpObservationEnvironment
+from sirfex.training.diagnostics import reward_components
 
 
 @dataclass(frozen=True)
@@ -16,22 +17,30 @@ class EvaluationSummary:
     controller_id: str
     scenarios: int
     episodes: int
-    constraint_violation_frequency: float
-    maximum_violation_magnitude: float
-    mean_violation_magnitude: float
-    mean_tracking_error: float
-    worst_tracking_error: float
-    mean_reward: float
-    mean_episode_length: float
+    constraint_violation_frequency: float | None
+    maximum_violation_magnitude: float | None
+    mean_violation_magnitude: float | None
+    mean_tracking_error: float | None
+    worst_tracking_error: float | None
+    mean_reward: float | None
+    mean_episode_length: float | None
     execution_failures: int
     experiment_ids: tuple[str, ...] = ()
+    full_horizon_frequency: float | None = None
+    mean_duration_seconds: float | None = None
+    episode_results: list[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self) | {"experiment_ids": list(self.experiment_ids)}
 
 
 def evaluate_controller(
-    controller_factory: Callable[[], Any], scenarios: list[Any], set_name: str, *, max_steps: int
+    controller_factory: Callable[[], Any],
+    scenarios: list[Any],
+    set_name: str,
+    *,
+    max_steps: int,
+    observation_schema: str = MINIMAL,
 ) -> EvaluationSummary:
     if not scenarios:
         raise ValueError(f"Evaluation set {set_name!r} is empty")
@@ -42,8 +51,12 @@ def evaluate_controller(
     lengths = []
     failures = 0
     controller_id = "unknown"
+    episode_results = []
+    full_horizons, durations = [], []
     for scenario in scenarios:
-        environment = PumpEnvironment()
+        environment = PumpObservationEnvironment(observation_schema)
+        row = {"scenario": scenario.to_dict(), "status": "execution_failed"}
+        episode_results.append(row)
         try:
             controller = controller_factory()
             controller_id = controller.id
@@ -59,26 +72,78 @@ def evaluate_controller(
                 )
             )
             target = float(scenario.parameters.get("target_level", 0.5))
-            tracking.extend(abs(float(item["level"]) - target) for item in infos if "level" in item)
+            errors = [abs(float(item["level"]) - target) for item in infos]
+            tracking.append(sum(errors) / len(errors))
             rewards.append(result.episode_reward)
             lengths.append(result.episode_length)
-        except Exception:
+            p = environment.validate_scenario(scenario)
+            full_horizons.append(result.episode_length == p["horizon"] and not result.terminated)
+            durations.append(result.episode_length * p["dt"])
+            first = next(
+                (x["step"] + 1 for x in result.trace if x["info"].get("constraint_violation")), None
+            )
+            parts = [
+                reward_components(
+                    x["info"]["level"],
+                    target,
+                    x["action"][0],
+                    x["info"].get("violation_magnitude", 0),
+                )
+                for x in result.trace
+            ]
+            row.update(
+                status="completed",
+                constraint_violation=violations[-1],
+                maximum_violation_magnitude=violation_magnitudes[-1],
+                mean_tracking_error=tracking[-1],
+                maximum_tracking_error=max(errors),
+                time_to_first_violation_seconds=first * p["dt"] if first else None,
+                episode_reward=result.episode_reward,
+                episode_length=result.episode_length,
+                duration_seconds=durations[-1],
+                full_horizon=full_horizons[-1],
+                reward_components={
+                    key: sum(x[key] for x in parts)
+                    for key in (
+                        "tracking_penalty",
+                        "actuator_penalty",
+                        "constraint_penalty",
+                        "total",
+                    )
+                },
+            )
+        except Exception as exc:
             failures += 1
+            row["error"] = {"type": type(exc).__name__, "message": str(exc)}
         finally:
             environment.close()
     completed = len(scenarios) - failures
+    successful = [row for row in episode_results if row["status"] == "completed"]
+    violations = [r["constraint_violation"] for r in successful]
+    violation_magnitudes = [r["maximum_violation_magnitude"] for r in successful]
+    tracking = [r["mean_tracking_error"] for r in successful]
+    rewards = [r["episode_reward"] for r in successful]
+    lengths = [r["episode_length"] for r in successful]
+    full_horizons = [r["full_horizon"] for r in successful]
+    durations = [r["duration_seconds"] for r in successful]
     denominator = max(completed, 1)
     return EvaluationSummary(
         set_name,
         controller_id,
         len(scenarios),
         completed,
-        sum(violations) / denominator if completed else 0.0,
-        max(violation_magnitudes, default=0.0),
-        sum(violation_magnitudes) / denominator if completed else 0.0,
-        sum(tracking) / max(len(tracking), 1),
-        max(tracking, default=0.0),
-        sum(rewards) / denominator if completed else 0.0,
-        sum(lengths) / denominator if completed else 0.0,
+        sum(violations) / denominator if completed else None,
+        max(violation_magnitudes, default=None),
+        sum(violation_magnitudes) / denominator if completed else None,
+        sum(tracking) / len(tracking) if tracking else None,
+        max(
+            (r["maximum_tracking_error"] for r in episode_results if r["status"] == "completed"),
+            default=None,
+        ),
+        sum(rewards) / denominator if completed else None,
+        sum(lengths) / denominator if completed else None,
         failures,
+        full_horizon_frequency=sum(full_horizons) / denominator if completed else None,
+        mean_duration_seconds=sum(durations) / denominator if completed else None,
+        episode_results=episode_results,
     )

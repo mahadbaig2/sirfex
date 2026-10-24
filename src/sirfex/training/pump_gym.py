@@ -8,7 +8,8 @@ import gymnasium as gym
 import numpy as np
 
 from sirfex.core.interfaces import Scenario
-from sirfex.environments.pump import PumpEnvironment
+from sirfex.environments.pump_observations import MINIMAL, PumpObservationEnvironment
+from sirfex.training.diagnostics import reward_components
 
 
 class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
@@ -22,12 +23,15 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
         *,
         seed: int = 0,
         violation_weight: float = 10.0,
+        observation_schema: str = MINIMAL,
+        stress_scenarios: list[Scenario] | None = None,
+        stress_ratio: float = 0.0,
     ) -> None:
         super().__init__()
-        self._adapter = PumpEnvironment()
+        self._adapter = PumpObservationEnvironment(observation_schema)
         self.observation_space = self._adapter.observation_space
         self.action_space = self._adapter.action_space
-        self.scenarios = list(scenarios or [Scenario("pump")])
+        self.scenarios = list([Scenario("pump")] if scenarios is None else scenarios)
         if not self.scenarios:
             raise ValueError("At least one pump scenario is required")
         if any(item.environment_id != "pump" for item in self.scenarios):
@@ -35,6 +39,14 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
         self._rng = np.random.default_rng(seed)
         self.violation_weight = float(violation_weight)
         self._scenario = self.scenarios[0]
+        self.stress_scenarios = list(stress_scenarios or [])
+        if not 0 <= stress_ratio <= 1 or (stress_ratio > 0 and not self.stress_scenarios):
+            raise ValueError("Positive stress ratio requires stress scenarios and ratio <= 1")
+        self.stress_ratio = stress_ratio
+        self.sample_counts = {"normal": 0, "stress": 0}
+        for scenario in self.scenarios + self.stress_scenarios:
+            self._adapter.validate_scenario(scenario)
+        reward_components(0, 0, 0, 0, self.violation_weight)
 
     @property
     def current_scenario(self) -> Scenario:
@@ -50,7 +62,10 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
                 candidate if isinstance(candidate, Scenario) else Scenario.from_dict(candidate)
             )
         else:
-            self._scenario = self.scenarios[int(self._rng.integers(len(self.scenarios)))]
+            stress = self.stress_ratio > 0 and self._rng.random() < self.stress_ratio
+            pool = self.stress_scenarios if stress else self.scenarios
+            self._scenario = pool[int(self._rng.integers(len(pool)))]
+            self.sample_counts["stress" if stress else "normal"] += 1
         observation, info = self._adapter.reset(self._scenario)
         return observation, {**info, "scenario": self._scenario.to_dict()}
 
@@ -58,7 +73,20 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
         observation, reward, terminated, truncated, info = self._adapter.step(action)
         violation = float(info.get("violation_magnitude", 0.0))
         shaped_reward = float(reward - self.violation_weight * violation)
-        return observation, shaped_reward, terminated, truncated, {**info, "base_reward": reward}
+        parts = reward_components(
+            info["level"],
+            self._adapter._active_parameters.target_level,
+            float(action[0]),
+            violation,
+            self.violation_weight,
+        )
+        return (
+            observation,
+            shaped_reward,
+            terminated,
+            truncated,
+            {**info, "base_reward": reward, "reward_components": parts},
+        )
 
     def close(self) -> None:
         self._adapter.close()

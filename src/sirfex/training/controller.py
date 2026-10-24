@@ -7,6 +7,7 @@ from typing import Any
 
 import numpy as np
 
+from sirfex.environments.pump_observations import observation_space
 from sirfex.training.checkpoints import CheckpointMetadata, verify_checkpoint
 
 
@@ -16,6 +17,11 @@ class PPOController:
     def __init__(self, model: Any, metadata: CheckpointMetadata) -> None:
         self._model = model
         self._metadata = metadata
+        self._observation_space = observation_space(metadata.observation_schema)
+        if tuple(metadata.observation_shape) != self._observation_space.shape:
+            raise ValueError("Checkpoint observation schema/shape mismatch")
+        if metadata.environment_id != "pump":
+            raise ValueError("PPO controller supports pump checkpoints only")
 
     @classmethod
     def load(cls, path: Path | str, metadata: CheckpointMetadata) -> PPOController:
@@ -38,6 +44,9 @@ class PPOController:
         return None
 
     def act(self, observation: Any, deterministic: bool = True) -> np.ndarray:
+        observation = np.asarray(observation, dtype=np.float32)
+        if not self._observation_space.contains(observation):
+            raise ValueError("PPO observation violates the checkpoint schema")
         value, _ = self._model.predict(
             np.asarray(observation, dtype=np.float32), deterministic=deterministic
         )
@@ -46,6 +55,8 @@ class PPOController:
             raise ValueError(
                 f"PPO returned action shape {action.shape}, expected {self._metadata.action_shape}"
             )
+        if not np.isfinite(action).all() or (action < 0).any() or (action > 1).any():
+            raise ValueError("PPO action violates the pump action space")
         return action
 
     def metadata(self) -> dict[str, Any]:
