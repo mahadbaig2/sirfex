@@ -112,6 +112,7 @@ sirfex train evaluate <training-run-id>
 sirfex train compare <training-run-id>
 sirfex train verify <training-run-id>
 python scripts/ppo_smoke_test.py --steps 256
+python scripts/run_training_benchmark.py --profile smoke --seed 3
 python scripts/run_search_benchmark.py --trials 20 --seed 11
 pip install -e ".[studio]"
 streamlit run studio/app.py

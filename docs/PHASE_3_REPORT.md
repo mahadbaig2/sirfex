@@ -28,6 +28,7 @@ Phase 2 discoveries → eligibility/selection → deterministic curriculum
 - Pump transition-equivalence, spaces, action validation, curriculum determinism, hash validation, and regression classification are covered by automated tests.
 - 46 tests passed in the Phase 3 implementation environment, with the existing three LunarLander SWIG warnings.
 - CPU smoke baseline and matched continuation completed locally.
+- The bounded `run_training_benchmark.py --profile smoke --seed 3` workflow is available for repeatable CPU wall-time and checkpoint-size measurements; standard and extended profiles remain opt-in.
 - Stable-Baselines3 and Torch are optional benchmark dependencies; core imports remain isolated.
 
 ## Limitations
