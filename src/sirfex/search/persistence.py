@@ -142,3 +142,17 @@ class SearchStore:
         path = verification_dir / f"{discovery_id}.json"
         self._atomic_write(path, json.dumps(verification, indent=2, allow_nan=False))
         return path
+
+    def load_verification(self, search_id: str, discovery_id: str) -> dict[str, Any] | None:
+        directory = self._directory(search_id)
+        if not directory.is_dir() or (directory / ".incomplete").exists():
+            raise SearchStorageError(f"Search not available: {search_id}")
+        if not _DISCOVERY_ID.fullmatch(discovery_id):
+            raise SearchStorageError("Invalid discovery ID")
+        path = directory / "verification" / f"{discovery_id}.json"
+        if not path.is_file():
+            return None
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError, ValueError) as exc:
+            raise SearchStorageError(f"Malformed verification artifact: {discovery_id}") from exc

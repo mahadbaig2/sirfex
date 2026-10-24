@@ -43,6 +43,17 @@ See the [Phase 1 report](docs/PHASE_1_REPORT.md) for the verified status and lim
 
 See the [Phase 2 report](docs/PHASE_2_REPORT.md) and [search benchmark methodology](docs/SEARCH_BENCHMARKS.md). Search results are evidence within documented simulations, not real-world safety certification.
 
+## Implemented in Phase 2.5
+
+- Optional local Streamlit Evidence Explorer installed through the `studio` extra.
+- Read-only experiment and search browsers over the existing artifact stores.
+- Recorded pump trajectory charts and deterministic manual playback.
+- Observation-based LunarLander trajectory inspection.
+- Failure evidence, discovery references, search convergence, and compatible-run comparisons.
+- Existing replay verification exposed as the Explorer's only simulation-related action.
+
+See [Evidence Explorer usage](docs/EVIDENCE_EXPLORER.md) and the [Phase 2.5 report](docs/PHASE_2_5_REPORT.md).
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -51,7 +62,7 @@ See the [Phase 2 report](docs/PHASE_2_REPORT.md) and [search benchmark methodolo
 - CPU benchmarking and optional PPO workflows.
 - A Python package and CLI using the `sirfex` namespace and command.
 
-Planned capabilities are not presented as implemented features. Automated failure discovery, Optuna search, retraining curricula, persistence, API, and Studio remain future work. See the PRD for the complete requirements, constraints, architecture, and roadmap.
+Planned capabilities are not presented as implemented features. Retraining curricula, a remote API, and cloud execution remain outside the current implementation. See the PRD for the complete requirements, constraints, architecture, and roadmap.
 
 ## Development
 
@@ -83,7 +94,11 @@ sirfex experiments replay <experiment-id>
 sirfex experiments compare <experiment-a> <experiment-b>
 python scripts/ppo_smoke_test.py --steps 256
 python scripts/run_search_benchmark.py --trials 20 --seed 11
+pip install -e ".[studio]"
+streamlit run studio/app.py
 ```
+
+The Explorer reads `artifacts/experiments` and `artifacts/searches` by default. For alternate local stores, pass Streamlit arguments such as `streamlit run studio/app.py -- --experiment-store path/to/experiments --search-store path/to/searches`.
 
 The benchmark suite records machine-specific measurements; it does not promise universal throughput. Phase 1 experiment artifacts are local and ignored by Git by default.
 

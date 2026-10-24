@@ -11,6 +11,9 @@ SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keep
 - `sirfex.cli`: the small `sirfex` command-line entry point.
 - `sirfex.experiments`: versioned manifests, atomic file storage, controller reconstruction, replay, and descriptive comparison.
 - `sirfex.search`: bounded candidate spaces, risk objectives, strategies, trial orchestration, discovery ranking, search persistence, and fair comparison.
+- `sirfex.visualization`: UI-independent, read-only evidence readers and chart/playback transformations. It has no Streamlit or Plotly dependency.
+
+The optional `studio/app.py` Streamlit application consumes `sirfex.visualization` and persisted artifacts. It is not part of the engine execution path and cannot create experiments, searches, or scenarios.
 
 ## Execution flow
 
@@ -31,6 +34,15 @@ Configure → Validate → Execute → Classify → Persist → Reload → Repla
 ```
 
 The file store records a manifest, scenario, result summary, and JSONL trajectory. Replay uses explicit environment/controller factories and reports exact match, tolerance match, mismatch, or unavailable. Comparison is descriptive and only marks experiments comparable when their environment identifiers and versions match.
+
+Phase 2.5 adds a local evidence-reading path:
+
+```text
+ExperimentStore/SearchStore → EvidenceReader → recorded transformations → optional Studio charts
+                                             └→ existing replay verification
+```
+
+The Explorer never calls an environment's `step()` while browsing a stored trajectory and never changes authoritative ranking or failure classification.
 
 ## Search workflow
 
@@ -69,3 +81,4 @@ Scenarios carry an explicit seed and version. LunarLander resets and seeds its a
 - The pump is a transparent numerical model, not a validated industrial plant.
 - Controllers are trusted Python code and are not sandboxed.
 - Benchmark output is local evidence for the current machine, not a universal performance guarantee.
+- LunarLander Studio views use recorded observations and do not reconstruct terrain or claim confirmed landing/crash semantics without adapter evidence.
