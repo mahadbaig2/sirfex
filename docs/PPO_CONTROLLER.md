@@ -1,5 +1,11 @@
 # Phase 3 PPO Controller
 
+For scientifically gated studies use [Phase 3.1's protocol](EXPERIMENT_PROTOCOL.md)
+and [learning-curve results](PPO_LEARNING_CURVES.md). The original Phase 3 commands
+below remain historical pipeline demonstrations; they do not enforce all Phase
+3.1 study gates. New studies use two CPU threads and explicit minimal/calibrated
+schemas, while old checkpoints retain their original three-input contract.
+
 Phase 3 uses Stable-Baselines3 PPO as an optional CPU-only training dependency. SIRFEX owns scenario construction, evaluation, evidence, and provenance; SB3 owns rollout collection, policy updates, optimizer state, and PPO loss calculations.
 
 The trainable pump adapter exposes a three-value observation `[level, target, demand]` and a one-value continuous command in `[0, 1]`. It delegates every physical transition to `PumpEnvironment`, so training and evaluation use the same tank dynamics. The training reward is the existing pump reward minus `10 * violation_magnitude` for a transparent constraint penalty. A reward value is never used to redefine a physical failure.

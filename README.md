@@ -8,7 +8,7 @@ SIRFEX is an open-source, local-first Physical AI testing engine for autonomous 
 
 ## Project status
 
-SIRFEX Phase 0 is implemented and verified on the development machine. The technical requirements and architecture are defined in [the technical PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md), and measured results are recorded in [the Phase 0 report](docs/PHASE_0_REPORT.md).
+SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.1. The latest validation pilot established neither PPO competence nor robustness improvement. The technical requirements remain defined in [the technical PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md); measured findings and limits are in the [Phase 3.1 report](docs/PHASE_3_1_REPORT.md).
 
 The project is intentionally CPU-first and local-first. It will not require paid APIs, hosted simulation, cloud training, or a dedicated GPU.
 
@@ -64,6 +64,17 @@ See [Evidence Explorer usage](docs/EVIDENCE_EXPLORER.md) and the [Phase 2.5 repo
 
 See the [Phase 3 report](docs/PHASE_3_REPORT.md) and [training commands](docs/PPO_CONTROLLER.md). Phase 3 smoke results do not claim PPO robustness improvement.
 
+## Implemented in Phase 3.1
+
+- Pump physical feasibility analysis, with target, finite-horizon, infeasible and undetermined outcomes.
+- Versioned three-value and six-value observations over unchanged pump physics.
+- Reward diagnostics, bounded PPO learning curves and a predeclared competence gate.
+- Reproducible physical scenario partitions, leakage checks and checkpoint selection independent of final holdouts.
+- Gated, budget-verified continuation and uncertainty across independent training seeds.
+- Recoverable partial artifacts, policy replay evidence and reviewable public results.
+
+The bounded pilot found all 16 existing discoveries physically infeasible and both PPO observation variants noncompetent at 25,600 steps. Continuation was skipped, and robustness remains **inconclusive**. See [learning curves](docs/PPO_LEARNING_CURVES.md), [feasibility](docs/PUMP_FEASIBILITY.md), and the [experiment protocol](docs/EXPERIMENT_PROTOCOL.md). These are simulation findings, not industrial safety claims.
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -72,7 +83,7 @@ See the [Phase 3 report](docs/PHASE_3_REPORT.md) and [training commands](docs/PP
 - CPU benchmarking and optional PPO workflows.
 - A Python package and CLI using the `sirfex` namespace and command.
 
-Planned capabilities are not presented as implemented features. Retraining curricula, a remote API, and cloud execution remain outside the current implementation. See the PRD for the complete requirements, constraints, architecture, and roadmap.
+Bounded retraining infrastructure is implemented; demonstrated robustness gains, a remote API, and cloud execution remain outside the current results. See the PRD for the complete requirements, constraints, architecture, and roadmap.
 
 ## Development
 
@@ -111,6 +122,11 @@ sirfex train show <training-run-id>
 sirfex train evaluate <training-run-id>
 sirfex train compare <training-run-id>
 sirfex train verify <training-run-id>
+sirfex train feasibility
+sirfex train diagnose
+sirfex train learning-curve --config configs/training/pump_learning_curve.json
+sirfex train validate --config configs/training/pump_validation.json
+sirfex train report <training-run-id>
 python scripts/ppo_smoke_test.py --steps 256
 python scripts/run_training_benchmark.py --profile smoke --seed 3
 python scripts/run_search_benchmark.py --trials 20 --seed 11

@@ -55,6 +55,28 @@ Phase 2 search artifacts → eligible discoveries → ScenarioCurriculum
                        → regression report and local training artifacts
 ```
 
+## Phase 3.1 validation
+
+Phase 3.1 adds scientific validation around the optional training workflow:
+
+```text
+Original discoveries → supporting experiment replay → feasibility interpretation
+Frozen physical partitions → leakage check → matched observation learning curves
+                          → validation-only competence/selection
+                          → eligible feasible curriculum + competent checkpoint
+                          → matched continuations → final held-out evaluation
+                          → paired training-seed uncertainty and nominal guardrails
+```
+
+Absent competence or eligible discoveries stops continuation with an explicit
+inconclusive result. `PumpObservationEnvironment` inherits unchanged pump dynamics;
+the calibrated schema adds plant parameters without changing old checkpoints.
+The shared `EvaluationRunner` supplies all physical metrics. Diagnostic policy
+traces use the existing `ExperimentStore` and replay service and are viewable in
+Studio. Training aggregates and hashes remain in `artifacts/training`.
+Studio remains an evidence reader. See [protocol](EXPERIMENT_PROTOCOL.md) and
+[validation interpretation](ROBUSTNESS_VALIDATION.md).
+
 ## Search workflow
 
 Phase 2 composes the experiment layer rather than duplicating it:
@@ -80,7 +102,7 @@ The model terminates when the level crosses the configured low or high operating
 
 ## Dependency decisions
 
-Python 3.12 is the supported Phase 0 development target because it has broad compatibility with Gymnasium, Box2D, and the optional Stable-Baselines3/PyTorch stack. NumPy and Gymnasium are runtime dependencies. Box2D and pygame are installed through the `simulation` extra. Ruff and pytest are development dependencies. PPO dependencies are optional and isolated in the `benchmark` extra.
+Python 3.12 is the development target. NumPy and Gymnasium are runtime dependencies. Box2D and pygame use the `simulation` extra. Ruff and pytest use `dev`. Stable-Baselines3 and Torch remain optional in `training` (also included by `benchmark`); core evaluation, search, replay and Studio do not require them for non-PPO artifacts.
 
 ## Reproducibility
 
