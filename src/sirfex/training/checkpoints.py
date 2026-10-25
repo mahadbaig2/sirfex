@@ -26,6 +26,8 @@ class CheckpointMetadata:
     dependencies: dict[str, str]
     observation_schema: str = "pump-minimal:1"
     reward_schema: str = "pump-violation-magnitude:1"
+    policy_action_schema: str = "pump-direct:1"
+    termination_schema: str = "pump-terminate-on-violation:1"
 
     def to_dict(self) -> dict[str, Any]:
         return {

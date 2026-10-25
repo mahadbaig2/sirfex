@@ -9,6 +9,7 @@ from typing import Any
 from sirfex.core import EvaluationRunner
 from sirfex.environments.pump_observations import MINIMAL, PumpObservationEnvironment
 from sirfex.training.diagnostics import reward_components
+from sirfex.training.rewards import LEGACY, components, reward_spec
 
 
 @dataclass(frozen=True)
@@ -29,6 +30,9 @@ class EvaluationSummary:
     full_horizon_frequency: float | None = None
     mean_duration_seconds: float | None = None
     episode_results: list[dict] = field(default_factory=list)
+    action_statistics: dict = field(default_factory=dict)
+    inference_mode: str = "deterministic"
+    reward_schema: str = LEGACY
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self) | {"experiment_ids": list(self.experiment_ids)}
@@ -41,7 +45,10 @@ def evaluate_controller(
     *,
     max_steps: int,
     observation_schema: str = MINIMAL,
+    reward_schema: str = LEGACY,
+    deterministic: bool = True,
 ) -> EvaluationSummary:
+    reward_spec(reward_schema)
     if not scenarios:
         raise ValueError(f"Evaluation set {set_name!r} is empty")
     violations = []
@@ -61,7 +68,7 @@ def evaluate_controller(
             controller = controller_factory()
             controller_id = controller.id
             result = EvaluationRunner(max_steps=max_steps).run_episode(
-                environment, controller, scenario, record_trace=True
+                environment, controller, scenario, record_trace=True, deterministic=deterministic
             )
             infos = [item.get("info", {}) for item in result.trace]
             violations.append(any(item.get("constraint_violation", False) for item in infos))
@@ -91,6 +98,18 @@ def evaluate_controller(
                 )
                 for x in result.trace
             ]
+            if reward_schema != LEGACY:
+                parts = [
+                    components(
+                        reward_schema,
+                        x["info"]["level"],
+                        target,
+                        x["action"][0],
+                        x["info"].get("violation_magnitude", 0),
+                        x["terminated"],
+                    )
+                    for x in result.trace
+                ]
             row.update(
                 status="completed",
                 constraint_violation=violations[-1],
@@ -102,14 +121,9 @@ def evaluate_controller(
                 episode_length=result.episode_length,
                 duration_seconds=durations[-1],
                 full_horizon=full_horizons[-1],
+                applied_actions=[x["action"][0] for x in result.trace],
                 reward_components={
-                    key: sum(x[key] for x in parts)
-                    for key in (
-                        "tracking_penalty",
-                        "actuator_penalty",
-                        "constraint_penalty",
-                        "total",
-                    )
+                    key: sum(x[key] for x in parts) for key in parts[0] if key != "reward_schema"
                 },
             )
         except Exception as exc:
@@ -126,6 +140,9 @@ def evaluate_controller(
     lengths = [r["episode_length"] for r in successful]
     full_horizons = [r["full_horizon"] for r in successful]
     durations = [r["duration_seconds"] for r in successful]
+    import numpy as np
+
+    actions = np.array([a for r in successful for a in r["applied_actions"]])
     denominator = max(completed, 1)
     return EvaluationSummary(
         set_name,
@@ -146,4 +163,16 @@ def evaluate_controller(
         full_horizon_frequency=sum(full_horizons) / denominator if completed else None,
         mean_duration_seconds=sum(durations) / denominator if completed else None,
         episode_results=episode_results,
+        action_statistics={
+            "count": len(actions),
+            "lower_bound_fraction": float(np.mean(actions == 0)),
+            "upper_bound_fraction": float(np.mean(actions == 1)),
+            "interior_fraction": float(np.mean((actions > 0) & (actions < 1))),
+            "mean": float(actions.mean()),
+            "std": float(actions.std()),
+        }
+        if len(actions)
+        else {},
+        inference_mode="deterministic" if deterministic else "stochastic",
+        reward_schema=reward_schema,
     )

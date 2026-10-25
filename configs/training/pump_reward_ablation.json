@@ -1,0 +1,12 @@
+{
+  "profile": "pilot",
+  "budgets": [10240, 25600],
+  "seeds": [3],
+  "wall_seconds": 600,
+  "dataset_seed": 3101,
+  "dataset_count": 12,
+  "schemas": ["pump-calibrated:1"],
+  "policy_action_schema": "pump-normalized:1",
+  "reward_schema": "pump-survival-tracking:2",
+  "comparator": "pump_action_ablation.json; only the versioned reward formulation changes"
+}

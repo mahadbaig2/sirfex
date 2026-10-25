@@ -63,6 +63,11 @@ def run_and_save_experiment(
     controller_config: dict[str, object] | None = None,
 ) -> ExperimentManifest:
     effective_config = dict(controller_config or {})
+    if controller_id == "pump-analytical":
+        dt = float(scenario.parameters.get("dt", 0.1))
+        if "dt" in effective_config and effective_config["dt"] != dt:
+            raise ValueError("Analytical controller dt must match the scenario")
+        effective_config["dt"] = dt
     if controller_id == "random":
         effective_config.setdefault("seed", scenario.seed)
     experiment_id = f"{datetime.now(UTC):%Y%m%dT%H%M%S}_{uuid4().hex[:10]}"

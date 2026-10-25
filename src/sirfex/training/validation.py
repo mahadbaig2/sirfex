@@ -148,7 +148,9 @@ def _checkpoint(model, directory, run_id, name, config, seed, schema):
         model.num_timesteps,
         dependency_versions(),
         schema,
-        REWARD_SCHEMA,
+        config.get("reward_schema", REWARD_SCHEMA),
+        policy_action_schema=config.get("policy_action_schema", "pump-direct:1"),
+        termination_schema=config.get("termination_schema", "pump-terminate-on-violation:1"),
     )
     write_json(path.with_suffix(".metadata.json"), meta.to_dict())
     return meta

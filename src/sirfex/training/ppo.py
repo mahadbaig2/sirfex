@@ -66,6 +66,11 @@ def train_ppo(
     if checkpoint and model is not None:
         raise ValueError("Supply an in-memory model or a checkpoint, not both")
     fresh = checkpoint is None and model is None
+    contract = {
+        "policy_action_schema": getattr(env, "policy_action_schema", "pump-direct:1"),
+        "reward_schema": getattr(env, "reward_schema", "pump-violation-magnitude:1"),
+        "termination_schema": getattr(env, "termination_schema", "pump-terminate-on-violation:1"),
+    }
     if checkpoint:
         if expected_sha256 is not None:
             from sirfex.training.checkpoints import verify_checkpoint
@@ -89,6 +94,15 @@ def train_ppo(
             raise ValueError("Continuation PPO configuration mismatch: net_arch")
     elif model is None:
         model = PPO("MlpPolicy", env, **kwargs)
+    if not fresh:
+        legacy = {
+            "policy_action_schema": "pump-direct:1",
+            "reward_schema": "pump-violation-magnitude:1",
+            "termination_schema": "pump-terminate-on-violation:1",
+        }
+        if getattr(model, "sirfex_training_contract", legacy) != contract:
+            raise ValueError("Continuation reward/action/termination contract mismatch")
+    model.sirfex_training_contract = contract
     if wall_seconds is not None and wall_seconds <= 0:
         raise ValueError("Wall-clock allowance must be positive")
     started = time.perf_counter()

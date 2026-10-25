@@ -22,6 +22,15 @@ def make_controller(
     controller_id: str, environment: Any, config: dict[str, Any] | None = None
 ) -> Any:
     config = config or {}
+    if controller_id in {"pump-analytical", "pump-fixed"} and environment.id == "pump":
+        from sirfex.controllers.analytical_pump import AnalyticalPumpController, FixedPumpController
+
+        if controller_id == "pump-fixed":
+            return FixedPumpController(float(config.get("command", 0)))
+        environment.set_observation_schema("pump-calibrated:1")
+        return AnalyticalPumpController(
+            float(config.get("dt", 0.1)), float(config.get("response", 0.25))
+        )
     if controller_id == "random":
         return RandomController(environment.action_space, seed=config.get("seed", 0))
     if controller_id == "pump-rule" and environment.id == "pump":
@@ -45,5 +54,7 @@ def make_controller(
             environment.set_observation_schema(metadata.observation_schema)
         elif tuple(environment.observation_space.shape) != metadata.observation_shape:
             raise ValueError("Environment and checkpoint observation schemas differ")
-        return PPOController.load(metadata.path, metadata)
+        controller = PPOController.load(metadata.path, metadata)
+        controller.inference_seed = int(config.get("inference_seed", 0))
+        return controller
     raise ValueError(f"Controller {controller_id!r} cannot be reconstructed for {environment.id!r}")

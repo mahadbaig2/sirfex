@@ -1,0 +1,6 @@
+{
+  "profile": "smoke",
+  "dataset_count": 2,
+  "policy_action_schema": "pump-normalized:1",
+  "reward_schema": "pump-survival-tracking:2"
+}

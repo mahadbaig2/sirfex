@@ -71,6 +71,7 @@ class TrainingStore:
             "continuation_results.json",
             "uncertainty.json",
             "policy_diagnostics.json",
+            "diagnostics.json",
         ):
             path = directory / name
             if path.resolve().parent != directory:

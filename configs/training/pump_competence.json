@@ -1,0 +1,12 @@
+{
+  "profile": "standard",
+  "budgets": [10240, 25600, 51200],
+  "seeds": [3, 17, 41],
+  "wall_seconds": 900,
+  "dataset_seed": 3101,
+  "dataset_count": 12,
+  "schemas": ["pump-calibrated:1"],
+  "policy_action_schema": "pump-normalized:1",
+  "reward_schema": "pump-survival-tracking:2",
+  "comparator": "Run only after the pilot demonstrates promising physical competence"
+}

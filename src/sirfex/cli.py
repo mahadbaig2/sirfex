@@ -107,6 +107,13 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--search-store", default="artifacts/searches")
     train.add_argument("--experiment-store", default="artifacts/experiments")
     train_sub = train.add_subparsers(dest="train_command", required=True)
+    for command in ("diagnose-policy", "diagnose-reward", "competence"):
+        study = train_sub.add_parser(command)
+        study.add_argument("--config", required=True)
+        if command == "diagnose-policy":
+            study.add_argument("--checkpoint")
+        if command == "competence":
+            study.add_argument("--allow-extended", action="store_true")
     for command in ("diagnose", "feasibility"):
         train_sub.add_parser(command).add_argument("--search", action="append")
     for command in ("learning-curve", "validate"):
@@ -360,6 +367,24 @@ def main(argv: list[str] | None = None) -> int:
 
         training_store = TrainingStore(args.store)
         try:
+            if args.train_command in {"diagnose-policy", "diagnose-reward", "competence"}:
+                from sirfex.training.competence import run_competence
+                from sirfex.training.remediation_diagnostics import policy_study, reward_study
+
+                with open(args.config, encoding="utf-8") as stream:
+                    value = json.load(stream)
+                if args.train_command == "diagnose-policy":
+                    result = policy_study(value, training_store, args.checkpoint)
+                elif args.train_command == "diagnose-reward":
+                    result = reward_study(
+                        value, training_store, ExperimentStore(args.experiment_store)
+                    )
+                else:
+                    result = run_competence(
+                        value, training_store, allow_extended=args.allow_extended
+                    )
+                print(json.dumps(result, indent=2))
+                return 0 if result.get("status", "completed") == "completed" else 1
             if args.train_command in {"feasibility", "diagnose"}:
                 from sirfex.training.selection import discovery_report
 

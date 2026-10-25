@@ -1,0 +1,12 @@
+{
+  "profile": "pilot",
+  "budgets": [10240, 25600],
+  "seeds": [3],
+  "wall_seconds": 600,
+  "dataset_seed": 3101,
+  "dataset_count": 12,
+  "schemas": ["pump-calibrated:1"],
+  "policy_action_schema": "pump-normalized:1",
+  "reward_schema": "pump-violation-magnitude:1",
+  "comparator": "Phase 3.1 calibrated seed 3, same 12-scenario partitions and PPO settings"
+}
