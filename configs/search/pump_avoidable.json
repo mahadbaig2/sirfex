@@ -1,0 +1,22 @@
+{
+  "environment_id": "pump",
+  "environment_version": "sirfex-pump:1",
+  "schema_version": "1",
+  "objective": "pump.constraint_violation",
+  "controller_id": "ppo",
+  "baseline_seed": 3,
+  "strategy": "random",
+  "seed": 32,
+  "scenario_seed": 320000,
+  "trials": 24,
+  "wall_seconds": 120,
+  "description": "Feasible operating shifts, separate from competence partitions",
+  "fixed_parameters": {"dt": 0.1, "horizon": 200, "target_level": 0.5, "min_level": 0.05, "max_level": 0.95},
+  "parameters": {
+    "initial_level": {"type": "float", "low": 0.15, "high": 0.85},
+    "demand": {"type": "float", "low": 0.35, "high": 0.95},
+    "pump_capacity": {"type": "float", "low": 0.5, "high": 1.4},
+    "efficiency": {"type": "float", "low": 0.6, "high": 1.0},
+    "leak": {"type": "float", "low": 0.0, "high": 0.12}
+  }
+}

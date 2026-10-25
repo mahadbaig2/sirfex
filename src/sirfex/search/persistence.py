@@ -103,13 +103,21 @@ class SearchStore:
             raise SearchStorageError(f"Malformed search artifacts: {search_id}") from exc
         if manifest.get("search_id") != search_id:
             raise SearchStorageError("Search manifest ID does not match its directory")
-        return {
+        result = {
             "manifest": manifest,
             "space": space,
             "trials": trials,
             "discoveries": discoveries,
             "summary": summary,
         }
+        if (directory / "avoidable.json").is_file():
+            try:
+                result["avoidable"] = json.loads(
+                    (directory / "avoidable.json").read_text(encoding="utf-8")
+                )
+            except (OSError, json.JSONDecodeError) as exc:
+                raise SearchStorageError("Malformed avoidable-failure evidence") from exc
+        return result
 
     def list(self) -> list[dict[str, Any]]:
         results = []

@@ -121,6 +121,30 @@ class SearchSpace:
             raise ScenarioValidationError(
                 "Candidate parameters do not match the declared search space"
             )
+        for name, value in self.fixed_parameters.items():
+            if parameters[name] != value:
+                raise ScenarioValidationError(f"Candidate changed fixed parameter: {name}")
+        for definition in self.parameters:
+            value = parameters[definition.name]
+            if definition.type_name in {"float", "integer"}:
+                if (
+                    isinstance(value, bool)
+                    or not isinstance(value, (int, float))
+                    or not math.isfinite(value)
+                    or not definition.low <= value <= definition.high
+                    or (definition.type_name == "integer" and not isinstance(value, int))
+                ):
+                    raise ScenarioValidationError(
+                        f"Candidate outside search bounds: {definition.name}"
+                    )
+            elif definition.type_name == "categorical" and value not in definition.choices:
+                raise ScenarioValidationError(
+                    f"Candidate outside search choices: {definition.name}"
+                )
+            elif definition.type_name == "fixed" and value != definition.fixed:
+                raise ScenarioValidationError(
+                    f"Candidate changed fixed parameter: {definition.name}"
+                )
         return Scenario(
             environment_id=self.environment_id,
             environment_version=self.environment_version,

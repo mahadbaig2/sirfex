@@ -42,6 +42,8 @@ class SearchRunner:
         experiment_store: ExperimentStore | None = None,
         search_store: SearchStore | None = None,
         max_steps: int = 1_000,
+        controller_config: dict[str, Any] | None = None,
+        candidate_policy: Any = None,
     ) -> None:
         space.validate()
         self.space = space
@@ -50,6 +52,8 @@ class SearchRunner:
         self.experiment_store = experiment_store or ExperimentStore()
         self.search_store = search_store or SearchStore()
         self.max_steps = max_steps
+        self.controller_config = dict(controller_config or {})
+        self.candidate_policy = candidate_policy
 
     def _aggregate(self, scores: list[RiskScore]) -> dict[str, Any]:
         return aggregate_scores(scores)
@@ -62,9 +66,12 @@ class SearchRunner:
         strategy_seed: int = 0,
         scenario_seeds: list[int] | None = None,
         held_out_seeds: list[int] | None = None,
+        wall_seconds: float | None = None,
     ) -> dict[str, Any]:
         if trials < 1:
             raise ValueError("trials must be positive")
+        if wall_seconds is not None and (not 0 < wall_seconds < float("inf")):
+            raise ValueError("Search deadline must be finite and positive")
         seeds = scenario_seeds or [0]
         if not seeds or any(isinstance(seed, bool) or not isinstance(seed, int) for seed in seeds):
             raise ValueError("scenario_seeds must contain integers")
@@ -83,8 +90,13 @@ class SearchRunner:
         best_history: list[dict[str, Any]] = []
         best_value: float | None = None
         actual_evaluations = 0
+        simulation_attempts = 0
+        timed_out = False
         try:
             for trial_index in range(trials):
+                if wall_seconds is not None and time.perf_counter() - started >= wall_seconds:
+                    timed_out = True
+                    break
                 trial_started = time.perf_counter()
                 parameters = strategy.propose(self.space)
                 trial = TrialRecord(trial_index, "pending", parameters, list(seeds))
@@ -99,16 +111,27 @@ class SearchRunner:
                     trial_records.append(trial)
                     continue
 
+                if self.candidate_policy is not None:
+                    trial.candidate_analysis = self.candidate_policy(template)
+                    if not trial.candidate_analysis["accepted"]:
+                        trial.status = "rejected"
+                        strategy.observe(None, failed=True)
+                        trial.elapsed_seconds = time.perf_counter() - trial_started
+                        trial_records.append(trial)
+                        continue
+
                 scores: list[RiskScore] = []
                 execution_failed = False
                 for seed in seeds:
                     scenario = self.space.scenario(parameters, seed)
                     try:
+                        simulation_attempts += 1
                         manifest = run_and_save_experiment(
                             self.experiment_store,
                             scenario,
                             self.controller_id,
                             max_steps=self.max_steps,
+                            controller_config=self.controller_config,
                         )
                         trial.experiment_ids.append(manifest.experiment_id)
                         loaded = self.experiment_store.load(manifest.experiment_id)
@@ -186,6 +209,9 @@ class SearchRunner:
         ranked = rank_discoveries(discoveries, self.objective.direction)
         held_out = self._held_out(ranked[:5], held_out_seeds or [])
         for discovery in ranked:
+            if wall_seconds is not None and time.perf_counter() - started >= wall_seconds:
+                timed_out = True
+                continue
             discovery.held_out = held_out.get(discovery.discovery_id, {})
             statuses = [
                 replay_experiment(self.experiment_store, experiment_id).status
@@ -210,6 +236,9 @@ class SearchRunner:
                 trial.status == "execution_failed" for trial in trial_records
             ),
             "invalid_trials": sum(trial.status == "invalid" for trial in trial_records),
+            "rejected_candidates": sum(trial.status == "rejected" for trial in trial_records),
+            "validated_candidates": sum(trial.status != "invalid" for trial in trial_records),
+            "simulation_attempts": simulation_attempts,
             "wall_clock_seconds": elapsed,
             "best_objective": best_value,
             "best_so_far": best_history,
@@ -221,7 +250,7 @@ class SearchRunner:
             "search_id": search_id,
             "created_at_utc": datetime.now(UTC).isoformat(),
             "completed_at_utc": datetime.now(UTC).isoformat(),
-            "status": "completed",
+            "status": "interrupted" if timed_out else "completed",
             "sirfex_version": __version__,
             "environment_id": self.space.environment_id,
             "environment_version": self.space.environment_version,
@@ -233,6 +262,8 @@ class SearchRunner:
             "scenario_seeds": seeds,
             "held_out_seeds": held_out_seeds or [],
             "dependencies": _dependencies(),
+            "controller_config": self.controller_config,
+            "wall_seconds_limit": wall_seconds,
         }
         self.search_store.save(
             search_id,
@@ -277,6 +308,7 @@ class SearchRunner:
                         scenario,
                         self.controller_id,
                         max_steps=self.max_steps,
+                        controller_config=self.controller_config,
                     )
                     experiment_ids.append(manifest.experiment_id)
                     loaded = self.experiment_store.load(manifest.experiment_id)

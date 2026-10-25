@@ -80,7 +80,11 @@ def build_parser() -> argparse.ArgumentParser:
     search = subparsers.add_parser("search", help="discover risky valid scenarios")
     search.add_argument("--experiment-store", default="artifacts/experiments")
     search.add_argument("--search-store", default="artifacts/searches")
+    search.add_argument("--training-store", default="artifacts/training")
     search_sub = search.add_subparsers(dest="search_command", required=True)
+    avoidable = search_sub.add_parser("avoidable")
+    avoidable.add_argument("--config", required=True)
+    avoidable.add_argument("--baseline")
     search_spaces = search_sub.add_parser("spaces")
     search_spaces.add_argument("--env", choices=["lunarlander", "pump"], required=True)
     search_validate = search_sub.add_parser("validate")
@@ -254,6 +258,21 @@ def main(argv: list[str] | None = None) -> int:
         experiment_store = ExperimentStore(args.experiment_store)
         search_store = SearchStore(args.search_store)
         try:
+            if args.search_command == "avoidable":
+                from sirfex.search.avoidable import run_avoidable
+                from sirfex.training.persistence import TrainingStore
+
+                with open(args.config, encoding="utf-8") as stream:
+                    config = json.load(stream)
+                result = run_avoidable(
+                    config,
+                    experiment_store,
+                    search_store,
+                    TrainingStore(args.training_store),
+                    baseline=args.baseline,
+                )
+                print(json.dumps(result, indent=2))
+                return 0 if result["status"] == "completed" else 1
             if args.search_command == "spaces":
                 environment = _make_environment(args.env)
                 try:
