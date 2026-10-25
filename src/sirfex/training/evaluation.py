@@ -33,6 +33,7 @@ class EvaluationSummary:
     action_statistics: dict = field(default_factory=dict)
     inference_mode: str = "deterministic"
     reward_schema: str = LEGACY
+    mean_training_reward: float | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self) | {"experiment_ids": list(self.experiment_ids)}
@@ -175,4 +176,7 @@ def evaluate_controller(
         else {},
         inference_mode="deterministic" if deterministic else "stochastic",
         reward_schema=reward_schema,
+        mean_training_reward=sum(r["reward_components"]["total"] for r in successful) / completed
+        if completed
+        else None,
     )

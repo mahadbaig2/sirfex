@@ -13,7 +13,9 @@ def test_normalized_action_mapping(value, physical):
     assert to_physical([value], NORMALIZED)[0] == pytest.approx(physical)
 
 
-@pytest.mark.parametrize("value", [[2.0], [float("nan")], [], [0.1, 0.2]])
+@pytest.mark.parametrize(
+    "value", [[2.0], [float("nan")], [], [0.1, 0.2], [True], ["0"], [1 + 1e-8]]
+)
 def test_invalid_actions_are_not_silently_clipped(value):
     with pytest.raises(ValueError):
         to_physical(value, NORMALIZED)

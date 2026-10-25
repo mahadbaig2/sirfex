@@ -59,7 +59,9 @@ def build_parser() -> argparse.ArgumentParser:
     experiment_run = experiments_sub.add_parser("run")
     experiment_run.add_argument("--scenario", required=True)
     experiment_run.add_argument(
-        "--controller", choices=["random", "pump-rule", "ppo"], required=True
+        "--controller",
+        choices=["random", "pump-rule", "pump-analytical", "pump-fixed", "ppo"],
+        required=True,
     )
     experiment_run.add_argument(
         "--controller-config",

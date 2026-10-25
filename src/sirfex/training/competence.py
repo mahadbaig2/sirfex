@@ -84,6 +84,7 @@ def run_competence(value, store, *, allow_extended=False):
     write_json(directory / "manifest.json", manifest)
     write_json(directory / "config.json", config)
     model, env, points, selected = None, None, [], {}
+    policy_diagnostics = []
     schema, active_seed = config["schemas"][0], config["seeds"][0]
     summary = {
         "training_run_id": run_id,
@@ -194,6 +195,8 @@ def run_competence(value, store, *, allow_extended=False):
             # Read-only diagnostic loads its own model and forks the torch RNG.
             diagnostic = diagnose_policy(meta, partitions["validation"], samples=16)
             write_json(directory / f"policy_{seed}.json", diagnostic)
+            policy_diagnostics.append(diagnostic)
+            write_json(directory / "policy_diagnostics.json", {"records": policy_diagnostics})
             env.close()
             env = None
         summary["competent_seeds"] = [int(s) for s in selected]
