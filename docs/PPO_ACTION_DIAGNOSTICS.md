@@ -66,6 +66,18 @@ steps: all 169 recorded actions at each checkpoint were full pump command.
 Normalization alone moved boundary saturation; it did not establish competence.
 See the [competence study](PPO_COMPETENCE_STUDY.md) for the controlled reward result.
 
+For the three selected competent checkpoints, a separate fixed-initial-observation
+inspection found deterministic physical lower/upper saturation of 0/0, 0/0 and
+1/12/0 for seeds 3, 17 and 41. With 32 stochastic samples per observation,
+raw out-of-range fractions were .2943, .3073 and .3229; sampled saturation can
+coexist with mostly interior *deterministic trajectory* actions. These are
+different populations: the raw distribution batch samples only initial states,
+whereas validation trajectories cover 2,400 time steps per policy. The latter
+had lower-bound fractions 0, 0 and .000417. Selected raw diagnostics are in
+`selected_policy_diagnostics.json`; selected physical traces are in
+`policy_trace_diagnostics.json` under the local study and summarized in the
+[public evidence](evidence/phase_3_2_remediation.json).
+
 ```powershell
 sirfex train diagnose-policy --config configs/training/action_diagnostics.json
 sirfex train diagnose-policy --config configs/training/action_diagnostics.json --checkpoint pump-calibrated_3_25600

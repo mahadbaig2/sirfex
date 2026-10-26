@@ -1,5 +1,13 @@
 # Phase 3.1 experiment protocol
 
+Phase 3.2 keeps the nominal gate and physical scenario partitions below intact.
+Its separate [competence study](PPO_COMPETENCE_STUDY.md) freezes calibrated
+observations, training/validation dataset seed 3101, and first-passing
+checkpoint selection per seed. [Avoidable search](AVOIDABLE_FAILURE_DISCOVERY.md)
+rechecks that selected PPO on nominal validation and excludes all frozen
+partition physical keys and seeds. Neither command evaluates final holdouts
+or runs a matched robustness continuation.
+
 `sirfex train validate --config configs/training/pump_validation.json` runs a
 bounded study. `learning-curve` uses the same diagnostics but never continues
 training. The pilot configuration is `configs/training/pump_learning_curve.json`.

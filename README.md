@@ -8,7 +8,7 @@ SIRFEX is an open-source, local-first Physical AI testing engine for autonomous 
 
 ## Project status
 
-SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.1. The latest validation pilot established neither PPO competence nor robustness improvement. The technical requirements remain defined in [the technical PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md); measured findings and limits are in the [Phase 3.1 report](docs/PHASE_3_1_REPORT.md).
+SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.2. The Phase 3.2 controlled study established nominal PPO competence across three seeds; a matched robustness improvement has not been tested. The technical requirements remain defined in [the technical PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md); measured findings and limits are in the [Phase 3.2 report](docs/PHASE_3_2_REPORT.md). The original negative [Phase 3.1 report](docs/PHASE_3_1_REPORT.md) remains part of the evidence.
 
 The project is intentionally CPU-first and local-first. It will not require paid APIs, hosted simulation, cloud training, or a dedicated GPU.
 
@@ -74,6 +74,15 @@ See the [Phase 3 report](docs/PHASE_3_REPORT.md) and [training commands](docs/PP
 - Recoverable partial artifacts, policy replay evidence and reviewable public results.
 
 The bounded pilot found all 16 existing discoveries physically infeasible and both PPO observation variants noncompetent at 25,600 steps. Continuation was skipped, and robustness remains **inconclusive**. See [learning curves](docs/PPO_LEARNING_CURVES.md), [feasibility](docs/PUMP_FEASIBILITY.md), and the [experiment protocol](docs/EXPERIMENT_PROTOCOL.md). These are simulation findings, not industrial safety claims.
+
+## Implemented in Phase 3.2
+
+- Diagnosed historical PPO Gaussian output before clipping and compared deterministic and stochastic commands.
+- Added a versioned normalized policy action coordinate and a versioned survival/tracking reward, preserving the original pump physics and legacy checkpoint contract.
+- Added an analytical pump reference, per-step reward analysis and a bounded three-seed nominal competence study.
+- Added feasibility-filtered search with same-scenario reference controls, finite-horizon witnesses and replay verification.
+
+The [competence study](docs/PPO_COMPETENCE_STUDY.md) met the unchanged nominal gate for seeds 3, 17 and 41. The [Phase 3.2 report](docs/PHASE_3_2_REPORT.md) explains the controlled comparison, the three verified avoidable failures, CPU costs and limits. This result supports a future matched robustness study; it does not demonstrate robustness improvement or industrial safety.
 
 ## Planned v1 scope
 

@@ -1,5 +1,16 @@
 # SIRFEX Phase 0 Architecture
 
+Phase 3.2 adds an optional training layer above the unchanged pump adapter. The
+Gymnasium policy action coordinate may be direct `[0,1]` or normalized `[-1,1]`;
+the latter maps to the same physical `[0,1]` command before the pump transition.
+Checkpoint metadata and SB3 model contracts record action, reward and termination
+identities. The versioned reward is computed from the unchanged physical trace;
+failure classification still reads the adapter's constraint evidence. An
+analytical pump controller is a regular controller factory entry. Feasibility
+filtering and replay-backed witnesses augment the original search runner and
+artifact store. Core evaluation/search imports remain independent of SB3 and
+Streamlit. See [the remediation report](PHASE_3_2_REPORT.md).
+
 SIRFEX is a local Python package with a `src/` layout. Phase 0 deliberately keeps the execution path in one process and does not introduce a database, web service, plugin registry, or distributed worker system.
 
 ## Package boundaries

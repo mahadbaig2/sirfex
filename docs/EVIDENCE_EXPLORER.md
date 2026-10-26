@@ -24,6 +24,7 @@ streamlit run studio/app.py -- --experiment-store D:\evidence\experiments --sear
 - **Overview** counts actual saved experiments, searches, completed trials, discoveries, observed failures, inferred proxy risks, and replay-verified discoveries.
 - **Experiments** shows manifest/result metadata, failure records, recorded trajectory charts, and replay verification.
 - **Failure searches** shows strategy/objective metadata, trial and best-so-far history, trial records, and persisted discoveries.
+- Phase 3.2 searches also show read-only avoidability counts and per-reference failure, witness and replay evidence from `avoidable.json`.
 - **Comparisons** checks compatible search evidence before presenting descriptive summaries.
 
 The comparison section also exposes the existing descriptive experiment comparison when at least two saved experiments exist.

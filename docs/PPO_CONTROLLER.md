@@ -1,5 +1,21 @@
 # Phase 3 PPO Controller
 
+Phase 3.2 introduces an opt-in normalized action coordinate and revised reward.
+The historical commands below keep their legacy defaults. New checkpoints stamp
+the policy action, reward and termination schemas and refuse incompatible model
+loading or continuation. Raw Gaussian inspection lives in the isolated
+`train diagnose-policy` command; physical recorded actions remain in experiment
+traces. For the controlled measurements and selection rule see
+[the competence study](PPO_COMPETENCE_STUDY.md), [action diagnostics](PPO_ACTION_DIAGNOSTICS.md),
+and [reward study](REWARD_TERMINATION_STUDY.md).
+
+```powershell
+sirfex train diagnose-policy --config configs/training/action_diagnostics.json
+sirfex train diagnose-reward --config configs/training/reward_diagnostics.json
+sirfex train competence --config configs/training/pump_competence.json
+sirfex train report <study-id>
+```
+
 For scientifically gated studies use [Phase 3.1's protocol](EXPERIMENT_PROTOCOL.md)
 and [learning-curve results](PPO_LEARNING_CURVES.md). The original Phase 3 commands
 below remain historical pipeline demonstrations; they do not enforce all Phase

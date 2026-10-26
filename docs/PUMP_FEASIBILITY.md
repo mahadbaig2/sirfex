@@ -1,5 +1,12 @@
 # Pump feasibility
 
+Phase 3.2's [avoidable-failure protocol](AVOIDABLE_FAILURE_DISCOVERY.md)
+requires finite-horizon viability and a persisted, replayed full-horizon
+reference-control witness under the identical physical scenario. A feasible
+equilibrium by itself is never used to label a PPO failure avoidable. The
+original Phase 3.1 feasibility calculations and historical infeasible
+discoveries remain unchanged.
+
 The simulation equation and constraints are unchanged (`sirfex-pump:1`). Let
 `a = 1 - dt*leak`, `b = dt*capacity*efficiency`, and `c = -dt*demand`.
 The raw next level is `a*h + b*u + c`, with `0 <= u <= 1`. The simulator checks

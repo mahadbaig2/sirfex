@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added Phase 3.2 raw PPO action diagnostics, versioned normalized policy actions and survival/tracking reward, an analytical pump reference, bounded three-seed competence studies, and feasibility-filtered avoidable failure search. The nominal gate passed across three seeds; three same-scenario avoidable failures were replay-verified. A matched robustness improvement study has not been run.
 - Added Phase 3.1 feasibility classification, versioned calibrated observations, reward diagnostics, bounded learning curves, competence gates, disjoint physical datasets, verified continuation budgets, and training-seed uncertainty. The measured pilot found no competent PPO baseline and no eligible feasible discoveries; robustness remains inconclusive.
 - Preserved partial training evidence and added optional CPU-training CI. Corrected null metrics for failed execution, scenario weighting, actual checkpoint timestep metadata, and continuation integrity/configuration checks.
 
