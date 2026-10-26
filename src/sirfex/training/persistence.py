@@ -71,6 +71,8 @@ class TrainingStore:
             "continuation_results.json",
             "uncertainty.json",
             "policy_diagnostics.json",
+            "policy_trace_diagnostics.json",
+            "selected_policy_diagnostics.json",
             "diagnostics.json",
         ):
             path = directory / name

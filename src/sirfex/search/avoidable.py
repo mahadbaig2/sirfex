@@ -87,6 +87,7 @@ def run_avoidable(config, experiment_store, search_store, training_store, *, bas
     excluded = []
     competence_verification = None
     competence_evaluations = 0
+    replicated = False
     if controller_id == "ppo":
         from sirfex.training.controller import PPOController
         from sirfex.training.evaluation import evaluate_controller
@@ -95,6 +96,7 @@ def run_avoidable(config, experiment_store, search_store, training_store, *, bas
         if not baseline:
             raise ValueError("PPO avoidable search requires a completed competent --baseline study")
         study = training_store.load(baseline)
+        replicated = study.get("summary", {}).get("competence_replicated", False)
         seed = str(config.get("baseline_seed", 3))
         meta = metadata_from_dict(study.get("baseline_selection", {}).get("selected", {})[seed])
         if study["manifest"].get("status") != "completed":
@@ -202,10 +204,20 @@ def run_avoidable(config, experiment_store, search_store, training_store, *, bas
             write_json(path, report)
     loaded = search_store.load(search_id)
     qualifying = {r["discovery_id"] for r in records if r["avoidable"]}
+    readiness = (
+        "ready"
+        if replicated and qualifying
+        else "partially_ready"
+        if competence_verification
+        else "blocked"
+    )
     report.update(
         status="completed" if time.perf_counter() < deadline else "interrupted",
         summary={
             **found["summary"],
+            "readiness": readiness,
+            "competence_replicated": replicated,
+            "robustness_continuation_performed": False,
             "feasible_candidates": sum(
                 t.get("candidate_analysis", {}).get("feasibility", {}).get("finite_horizon_viable")
                 is True
@@ -230,5 +242,15 @@ def run_avoidable(config, experiment_store, search_store, training_store, *, bas
             "note": "Search evaluations, reference evaluations and replay executions are separate",
         },
     )
+    try:
+        import psutil
+
+        memory = psutil.Process().memory_info()
+        report["summary"]["memory"] = {
+            "rss_bytes": memory.rss,
+            "peak_working_set_bytes": getattr(memory, "peak_wset", None),
+        }
+    except ImportError:
+        report["summary"]["memory"] = None
     write_json(path, report)
     return {"search_id": search_id, "status": report["status"], "summary": report["summary"]}

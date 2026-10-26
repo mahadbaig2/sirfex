@@ -229,6 +229,34 @@ def _search_view(st, reader: EvidenceReader) -> None:
     figure.update_layout(xaxis_title="Trial index", yaxis_title="Objective")
     st.plotly_chart(figure, use_container_width=True)
     st.subheader("Discoveries")
+    avoidable = loaded.get("avoidable")
+    if avoidable:
+        st.subheader("Avoidable failure evidence")
+        st.json(avoidable.get("summary", {}))
+        records = avoidable.get("records", [])
+        st.dataframe(
+            [
+                {
+                    "discovery_id": row.get("discovery_id"),
+                    "reference": row.get("reference_id"),
+                    "avoidable": row.get("avoidable"),
+                    "failure_experiment_id": row.get("failure_experiment_id"),
+                    "reference_experiment_id": row.get("reference_experiment_id"),
+                    "replay": ", ".join(r.get("status", "") for r in row.get("replay", [])),
+                }
+                for row in records
+            ],
+            use_container_width=True,
+        )
+        if records:
+            selected_witness = st.selectbox(
+                "Reference witness",
+                range(len(records)),
+                format_func=lambda i: (
+                    f"{records[i].get('discovery_id')} / {records[i].get('reference_id')}"
+                ),
+            )
+            st.json(records[selected_witness])
     st.dataframe(loaded["discoveries"], use_container_width=True)
     discoveries = loaded["discoveries"]
     if discoveries:

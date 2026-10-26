@@ -15,14 +15,19 @@ from sirfex.training.checkpoints import write_json
 from sirfex.training.persistence import TrainingStore
 
 
-def inspect(run_id, store, experiments):
+def inspect(run_id, store, experiments, *, selected_only=False):
     saved = store.load(run_id)
     scenarios = [
         Scenario.from_dict(row["scenario"])
         for row in saved["dataset_partitions"]["groups"]["validation"]
     ]
     rows = []
+    selected = {
+        meta["sha256"] for meta in saved.get("baseline_selection", {}).get("selected", {}).values()
+    }
     for point in saved["learning_curve"]["points"]:
+        if selected_only and point["checkpoint"]["sha256"] not in selected:
+            continue
         actions, ids = [], []
         for scenario in scenarios:
             manifest = run_and_save_experiment(
@@ -52,9 +57,16 @@ def inspect(run_id, store, experiments):
         "training_run_id": run_id,
         "partition": "validation",
         "checkpoints": rows,
-        "note": "Post-pilot diagnostics; no checkpoint selection or holdout evaluation",
+        "note": "Validation traces inspected; selection and holdouts unchanged",
     }
-    write_json(store.directory(run_id) / "policy_diagnostics.json", result)
+    if not rows:
+        raise ValueError("No eligible validation checkpoints")
+    filename = (
+        "policy_trace_diagnostics.json"
+        if saved["manifest"].get("phase") == "3.2"
+        else "policy_diagnostics.json"
+    )
+    write_json(store.directory(run_id) / filename, result)
     return result
 
 
@@ -63,11 +75,15 @@ if __name__ == "__main__":
     parser.add_argument("run_id")
     parser.add_argument("--store", default="artifacts/training")
     parser.add_argument("--experiment-store", default="artifacts/experiments")
+    parser.add_argument("--selected-only", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
             inspect(
-                args.run_id, TrainingStore(Path(args.store)), ExperimentStore(args.experiment_store)
+                args.run_id,
+                TrainingStore(Path(args.store)),
+                ExperimentStore(args.experiment_store),
+                selected_only=args.selected_only,
             ),
             indent=2,
         )
