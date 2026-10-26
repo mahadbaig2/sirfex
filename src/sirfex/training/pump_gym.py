@@ -11,6 +11,7 @@ from sirfex.core.interfaces import Scenario
 from sirfex.environments.pump_observations import MINIMAL, PumpObservationEnvironment
 from sirfex.training.actions import DIRECT, policy_action_space, to_physical
 from sirfex.training.diagnostics import reward_components
+from sirfex.training.protocol import scenario_record
 from sirfex.training.rewards import LEGACY, TERMINATION, components, reward_spec
 
 
@@ -56,6 +57,7 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
             raise ValueError("Positive stress ratio requires stress scenarios and ratio <= 1")
         self.stress_ratio = stress_ratio
         self.sample_counts = {"normal": 0, "stress": 0}
+        self.sample_counts_by_scenario_id: dict[str, int] = {}
         for scenario in self.scenarios + self.stress_scenarios:
             self._adapter.validate_scenario(scenario)
         reward_components(0, 0, 0, 0, self.violation_weight)
@@ -78,6 +80,10 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
             pool = self.stress_scenarios if stress else self.scenarios
             self._scenario = pool[int(self._rng.integers(len(pool)))]
             self.sample_counts["stress" if stress else "normal"] += 1
+            key = scenario_record(self._scenario)["scenario_id"]
+            self.sample_counts_by_scenario_id[key] = (
+                self.sample_counts_by_scenario_id.get(key, 0) + 1
+            )
         observation, info = self._adapter.reset(self._scenario)
         return observation, {**info, "scenario": self._scenario.to_dict()}
 

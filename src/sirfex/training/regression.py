@@ -58,3 +58,82 @@ def classify_regression(
     else:
         classification = "regressed"
     return {"classification": classification, "checks": checks, "tolerances": tolerances}
+
+
+def classify_matched_robustness(
+    normal: dict[str, dict[str, Any]],
+    robust: dict[str, dict[str, Any]],
+    tolerances: dict[str, float],
+) -> dict[str, Any]:
+    """Phase 3.3 policy over the existing physical metrics, fixed before final outcomes."""
+    required = ("nominal_holdout", "known_stress", "held_out_stress")
+    if any(name not in normal or name not in robust for name in required):
+        return {
+            "classification": "inconclusive",
+            "guardrails_pass": False,
+            "reason": "Missing evaluation set",
+        }
+    for name in required:
+        for result in (normal[name], robust[name]):
+            if (
+                result.get("episodes", 0) == 0
+                or result.get("execution_failures", 0)
+                or any(
+                    result.get(key) is None
+                    for key in (
+                        "constraint_violation_frequency",
+                        "maximum_violation_magnitude",
+                        "mean_tracking_error",
+                    )
+                )
+            ):
+                return {
+                    "classification": "inconclusive",
+                    "guardrails_pass": False,
+                    "reason": "Incomplete or failed controller evaluation",
+                }
+        if normal[name]["episodes"] != robust[name]["episodes"]:
+            return {
+                "classification": "inconclusive",
+                "guardrails_pass": False,
+                "reason": "Matched arms used different evaluation counts",
+            }
+    n_nom, r_nom = normal["nominal_holdout"], robust["nominal_holdout"]
+    n_stress, r_stress = normal["held_out_stress"], robust["held_out_stress"]
+    checks = {
+        "nominal_tracking": _relative_change(
+            n_nom["mean_tracking_error"], r_nom["mean_tracking_error"]
+        )
+        <= tolerances["nominal_tracking_error_degradation"],
+        "nominal_violation_frequency": r_nom["constraint_violation_frequency"]
+        <= n_nom["constraint_violation_frequency"]
+        + tolerances["nominal_violation_frequency_degradation"],
+        "held_out_frequency": r_stress["constraint_violation_frequency"]
+        <= n_stress["constraint_violation_frequency"]
+        + tolerances["held_out_violation_frequency_degradation"],
+        "held_out_max_magnitude": r_stress["maximum_violation_magnitude"]
+        <= n_stress["maximum_violation_magnitude"]
+        + tolerances["held_out_violation_magnitude_degradation"],
+        "execution_failures": all(
+            robust[name]["execution_failures"]
+            <= normal[name]["execution_failures"] + tolerances["execution_failure_increase"]
+            for name in required
+        ),
+    }
+    passed = all(checks.values())
+    if not passed:
+        classification = "regressed"
+    elif (
+        r_stress["constraint_violation_frequency"] < n_stress["constraint_violation_frequency"]
+        or r_stress["maximum_violation_magnitude"] < n_stress["maximum_violation_magnitude"]
+    ):
+        classification = "improved"
+    else:
+        classification = "inconclusive"
+    return {
+        "classification": classification,
+        "guardrails_pass": passed,
+        "checks": checks,
+        "tolerances": tolerances,
+        "note": "Per-seed descriptive policy; overall inference uses training-seed pairs",
+    }

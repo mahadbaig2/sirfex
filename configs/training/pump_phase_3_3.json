@@ -1,0 +1,10 @@
+{
+  "baseline_run": "20261025T205339_64b622c146",
+  "search_id": "20261026T090912_05c97a1dec",
+  "continuation_steps": 25600,
+  "wall_seconds": 2400,
+  "stress_ratio": 0.3,
+  "held_out_seed": 33103,
+  "new_held_out_count": 48,
+  "holdout_attempt_cap": 5000
+}

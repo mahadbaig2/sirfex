@@ -120,6 +120,11 @@ def build_parser() -> argparse.ArgumentParser:
             study.add_argument("--checkpoint")
         if command == "competence":
             study.add_argument("--allow-extended", action="store_true")
+    matched = train_sub.add_parser("robustness-study")
+    matched_source = matched.add_mutually_exclusive_group(required=True)
+    matched_source.add_argument("--config")
+    matched_source.add_argument("--study")
+    matched.add_argument("--prepare-only", action="store_true")
     for command in ("diagnose", "feasibility"):
         train_sub.add_parser(command).add_argument("--search", action="append")
     for command in ("learning-curve", "validate"):
@@ -388,6 +393,31 @@ def main(argv: list[str] | None = None) -> int:
 
         training_store = TrainingStore(args.store)
         try:
+            if args.train_command == "robustness-study":
+                from sirfex.training.matched_study import prepare_study, run_prepared_study
+
+                if args.study and args.prepare_only:
+                    raise ValueError("--prepare-only applies to a new configuration")
+                if args.config:
+                    with open(args.config, encoding="utf-8") as stream:
+                        value = json.load(stream)
+                    prepared = prepare_study(
+                        value,
+                        training_store,
+                        SearchStore(args.search_store),
+                        ExperimentStore(args.experiment_store),
+                    )
+                    if args.prepare_only:
+                        print(json.dumps(prepared, indent=2))
+                        return 0
+                    run_id = prepared["training_run_id"]
+                else:
+                    run_id = args.study
+                result = run_prepared_study(
+                    run_id, training_store, ExperimentStore(args.experiment_store)
+                )
+                print(json.dumps(result, indent=2))
+                return 0 if result["status"] == "completed" else 1
             if args.train_command in {"diagnose-policy", "diagnose-reward", "competence"}:
                 from sirfex.training.competence import run_competence
                 from sirfex.training.remediation_diagnostics import policy_study, reward_study

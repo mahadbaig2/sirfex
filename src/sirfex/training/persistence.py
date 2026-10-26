@@ -73,6 +73,12 @@ class TrainingStore:
             "policy_diagnostics.json",
             "policy_trace_diagnostics.json",
             "selected_policy_diagnostics.json",
+            "partitions.json",
+            "baseline_verification.json",
+            "known_stress_precheck.json",
+            "continuation_runs.json",
+            "paired_comparison.json",
+            "replay_verification.json",
             "diagnostics.json",
         ):
             path = directory / name
