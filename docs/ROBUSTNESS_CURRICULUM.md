@@ -7,6 +7,16 @@ competence. Its stress ratio is sampled on every episode reset and actual counts
 are recorded. See [the protocol](EXPERIMENT_PROTOCOL.md). All 16 existing
 discoveries were infeasible in the measured audit; no continuation was run.
 
+Phase 3.3 uses the three new Phase 3.2 feasible, replay-verified avoidable
+discoveries as a frozen known-stress pool. Each robust episode reset samples a
+30% stress branch, then samples uniformly among these discoveries; the other
+70% draws from the frozen 12-scenario nominal training pool. The normal arm
+draws only from the same nominal pool. Each arm gets 25,600 additional steps
+from an independent load of the identical baseline policy and optimizer state.
+Actual scenario episode counts and checkpoint hashes are saved. The 60 held-out
+physical configurations are excluded from the curriculum. See the
+[matched protocol](MATCHED_ROBUSTNESS_STUDY.md).
+
 The description below documents the original Phase 3 pipeline. Its finite
 prefabricated mixture can differ from the requested probability, and its
 historical artifacts are not retroactively relabeled.

@@ -99,3 +99,15 @@ sirfex train robustness-study --study <prepared-study-id>
 sirfex train report <study-id>
 sirfex train verify <study-id>
 ```
+
+## Completed study
+
+The preregistered study completed all six continuations and final evaluations.
+Its overall classification is **`regressed`**: the primary held-out physical
+violation frequency was 0/60 in both continuation arms for all three seeds,
+while robust-arm nominal tracking exceeded the frozen 10% degradation
+guardrail in all three pairs. All 33 representative experiments replayed
+exactly. The [Phase 3.3 report](PHASE_3_3_REPORT.md) gives the measured
+comparison and limitations; [completed public evidence](evidence/phase_3_3_results.json)
+contains the per-scenario outcomes and checkpoint provenance. This addendum
+records outcomes; it does not change the protocol above.

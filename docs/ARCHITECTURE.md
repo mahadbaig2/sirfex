@@ -88,6 +88,18 @@ Studio. Training aggregates and hashes remain in `artifacts/training`.
 Studio remains an evidence reader. See [protocol](EXPERIMENT_PROTOCOL.md) and
 [validation interpretation](ROBUSTNESS_VALIDATION.md).
 
+## Phase 3.3 matched study
+
+`training.matched_study` freezes input IDs, hashes, partitions, continuation
+hyperparameters and evaluation rules before training. It reloads each selected
+policy and optimizer state independently for the normal and robust arms, verifies
+the same starting fingerprint, and tracks actual curriculum episode exposures.
+All six final checkpoints must complete and pass integrity verification before
+the sealed nominal and feasible-stress final sets are evaluated. The existing
+`EvaluationRunner` and experiment replay path supply physical metrics and
+representative reproducibility evidence; the optional training module does not
+change the core adapter or Studio. See the [protocol](MATCHED_ROBUSTNESS_STUDY.md).
+
 ## Search workflow
 
 Phase 2 composes the experiment layer rather than duplicating it:

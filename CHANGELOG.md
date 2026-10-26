@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Added Phase 3.2 raw PPO action diagnostics, versioned normalized policy actions and survival/tracking reward, an analytical pump reference, bounded three-seed competence studies, and feasibility-filtered avoidable failure search. The nominal gate passed across three seeds; three same-scenario avoidable failures were replay-verified. A matched robustness improvement study has not been run.
+- Added Phase 3.3 frozen, three-seed matched PPO continuation, strict baseline and partition verification, actual curriculum exposure records, gated 60-configuration held-out evaluation, paired regression analysis and representative replay evidence. The protocol was published before final outcomes. Both continuation arms had 0/60 held-out physical violations in each seed; the failure-informed arm breached the preregistered nominal tracking guardrail in all three seeds, so the study classified `regressed`.
+- Added Phase 3.2 raw PPO action diagnostics, versioned normalized policy actions and survival/tracking reward, an analytical pump reference, bounded three-seed competence studies, and feasibility-filtered avoidable failure search. The nominal gate passed across three seeds; three same-scenario avoidable failures were replay-verified. A matched robustness improvement study had not yet been run at that milestone.
 - Added Phase 3.1 feasibility classification, versioned calibrated observations, reward diagnostics, bounded learning curves, competence gates, disjoint physical datasets, verified continuation budgets, and training-seed uncertainty. The measured pilot found no competent PPO baseline and no eligible feasible discoveries; robustness remains inconclusive.
 - Preserved partial training evidence and added optional CPU-training CI. Corrected null metrics for failed execution, scenario weighting, actual checkpoint timestep metadata, and continuation integrity/configuration checks.
 
