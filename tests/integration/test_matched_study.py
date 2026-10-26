@@ -54,6 +54,42 @@ def test_frozen_study_settings_reject_posthoc_changes():
         study_config({"held_out_seed": 1})
 
 
+def test_frozen_stress_generator_is_feasible_distinct_and_repeatable():
+    from sirfex.training.feasibility import analyze_feasibility
+    from sirfex.training.matched_study import _new_held_out
+    from sirfex.training.protocol import leakage_check
+
+    prior = [Scenario("pump", {"horizon": 200}, seed=123)]
+    spec = {"held_out_seed": 33103, "new_held_out_count": 4, "holdout_attempt_cap": 100}
+    first, attempts = _new_held_out(spec, prior)
+    second, repeated_attempts = _new_held_out(spec, prior)
+    assert attempts == repeated_attempts
+    assert [s.to_dict() for s in first] == [s.to_dict() for s in second]
+    assert leakage_check({"prior": prior, "held_out": first})["passed"]
+    assert all(analyze_feasibility(s)["finite_horizon_viable"] for s in first)
+
+
+def test_partition_reloads_detect_changed_physical_inputs():
+    from sirfex.training.matched_study import _load_groups
+    from sirfex.training.protocol import content_hash, scenario_record
+
+    training = Scenario("pump", {"horizon": 200}, seed=1)
+    held_out = Scenario("pump", {"horizon": 200, "demand": 0.7}, seed=2)
+    groups = {
+        "training": [scenario_record(training)],
+        "held_out_stress": [scenario_record(held_out)],
+    }
+    frozen = {
+        "groups": groups,
+        "hashes": {k: content_hash(v) for k, v in groups.items()},
+        "leakage_check": {"passed": True},
+    }
+    assert set(_load_groups(frozen)) == {"training", "held_out_stress"}
+    groups["held_out_stress"][0]["scenario"]["parameters"]["demand"] = 0.8
+    with pytest.raises(ValueError, match="hash"):
+        _load_groups(frozen)
+
+
 def test_short_paired_continuation_restores_optimizer_and_persists(tmp_path):
     pytest.importorskip("stable_baselines3")
     from scripts.smoke_matched_continuation import smoke
