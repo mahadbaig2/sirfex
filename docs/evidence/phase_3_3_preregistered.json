@@ -1,0 +1,3738 @@
+{
+  "schema_version": "phase-3.3-public-evidence:1",
+  "export_kind": "preregistered",
+  "note": "Checkpoint paths reduced to filenames; per-step action arrays omitted. Original complete evidence remains in local stores.",
+  "training_run_id": "20261026T222151_846c8296a2",
+  "manifest": {
+    "schema_version": "2",
+    "phase": "3.3",
+    "kind": "matched-robustness",
+    "training_run_id": "20261026T222151_846c8296a2",
+    "status": "prepared",
+    "created_at_utc": "2026-10-26T22:21:51.942093+00:00",
+    "git_commit": "1a0fd2bb209d6ce3cfb961ac7991123a07458e21",
+    "sirfex_version": "0.1.0",
+    "environment_version": "sirfex-pump:1",
+    "dependencies": {
+      "sirfex": "0.1.0",
+      "numpy": "2.5.4",
+      "gymnasium": "1.4.0",
+      "stable-baselines3": "2.9.0",
+      "torch": "2.14.1"
+    },
+    "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.22621-SP0",
+    "checkpoints": {},
+    "resource_limits": {
+      "wall_seconds": 2400,
+      "maximum_additional_steps": 153600,
+      "parallel_workers": 1,
+      "torch_threads": 2,
+      "device": "cpu"
+    },
+    "protocol_sha256": "159fd934853a4b40f2f54362f00fa4961f8daa4bf82b717a1cae18c21ed670ff"
+  },
+  "config": {
+    "baseline_run": "20261025T205339_64b622c146",
+    "search_id": "20261026T090912_05c97a1dec",
+    "continuation_steps": 25600,
+    "wall_seconds": 2400,
+    "stress_ratio": 0.3,
+    "held_out_seed": 33103,
+    "new_held_out_count": 48,
+    "holdout_attempt_cap": 5000
+  },
+  "protocol": {
+    "schema_version": "matched-robustness:1",
+    "hypothesis": "30% known stress lowers held-out feasible-stress violation frequency",
+    "primary_outcome": "held_out_stress.constraint_violation_frequency",
+    "paired_unit": "independent baseline training seed",
+    "seeds": [
+      3,
+      17,
+      41
+    ],
+    "continuation_seed_policy": "baseline seed + 5000, identical for both arms",
+    "continuation_steps_per_arm": 25600,
+    "curriculum": {
+      "normal_stress_ratio": 0.0,
+      "robust_stress_ratio": 0.3,
+      "stress_sampling": "uniform across 3 frozen discoveries"
+    },
+    "held_out_generator": {
+      "seed": 33103,
+      "new_scenarios": 48,
+      "accepted_proposals": 71,
+      "bounds": {
+        "initial_level": [
+          0.15,
+          0.85
+        ],
+        "demand": [
+          0.35,
+          0.95
+        ],
+        "pump_capacity": [
+          0.5,
+          1.4
+        ],
+        "efficiency": [
+          0.6,
+          1.0
+        ],
+        "leak": [
+          0,
+          0.12
+        ]
+      },
+      "filter": "finite_horizon_viable and no physical/seed overlap"
+    },
+    "partition_hashes": {
+      "training": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "validation": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "nominal_holdout": "6237fc5c56eb712af8346fa2cbe7b9e84ec9ca66f927578d1936d5235a16028f",
+      "held_out_stress": "7ad4b202d5410ab0c5dab145982884649bcfc5c1bdbf4092768d1716d97776dc",
+      "known_stress": "9169455f3f0e60bc48f5d0e7394d4b5796c8693e0032b33d981d1b5b911058ba"
+    },
+    "source_partition_hashes": {
+      "training": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "validation": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "nominal_holdout": "6237fc5c56eb712af8346fa2cbe7b9e84ec9ca66f927578d1936d5235a16028f",
+      "held_out_stress": "77dab9f362fd391737dbbd4a829520c39f98e68e5f9bba6acd6548aad141b907"
+    },
+    "known_discovery_ids": [
+      "disc_05c97a1dec_0000",
+      "disc_05c97a1dec_0001",
+      "disc_05c97a1dec_0002"
+    ],
+    "baseline_hashes": {
+      "3": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+      "17": "05b5fe45c1f46b7eb28699bd4a1dc693e9c11d56fba3376211c5985168a9d333",
+      "41": "48fe432e373aef9f64e55e0092f9b09ba95ef407bcc6d81f76a1f61432fd83f0"
+    },
+    "contracts": {
+      "observation": "pump-calibrated:1",
+      "action": "pump-normalized:1",
+      "reward": "pump-survival-tracking:2",
+      "termination": "pump-terminate-on-violation:1"
+    },
+    "regression_guardrails": {
+      "nominal_tracking_error_degradation": 0.1,
+      "nominal_violation_frequency_degradation": 0.0,
+      "held_out_violation_frequency_degradation": 0.0,
+      "held_out_violation_magnitude_degradation": 0.0,
+      "execution_failure_increase": 0
+    },
+    "inference_mode": "deterministic",
+    "final_holdout_access": "after six verified matched continuation checkpoints only",
+    "uncertainty": "paired training-seed bootstrap, exploratory with n=3"
+  },
+  "partitions": {
+    "schema_version": "matched-partitions:1",
+    "groups": {
+      "training": [
+        {
+          "scenario_id": "64b246b5b41f77ff7968c55d5e104756abd6f10cb9514dc49f00669cd2d748ae",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.4249949136540829,
+              "target_level": 0.5895280924102841,
+              "pump_capacity": 0.9105547174308637,
+              "efficiency": 0.8531737131406935,
+              "demand": 0.3468968870665448,
+              "leak": 0.008933940743183622
+            },
+            "seed": 100000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "3d32ce7895ac7697a14d406d2836b2bc08054d5a6254ba875f072e2fca624db7",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.45154537738115424,
+              "target_level": 0.5463853691851489,
+              "pump_capacity": 0.793921106452462,
+              "efficiency": 0.9834715895780735,
+              "demand": 0.4614438537904633,
+              "leak": 0.028058009366578273
+            },
+            "seed": 100001,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "ae40cd2616c8522aa11d54f47deca7f1ce7fb2130b76508be5b29cb56dd9a382",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.4184292050951263,
+              "target_level": 0.5252994733660726,
+              "pump_capacity": 0.7530831711026611,
+              "efficiency": 0.8963867074805286,
+              "demand": 0.3729686295511879,
+              "leak": 0.006844161237551056
+            },
+            "seed": 100002,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "5565eafcc659a4273e55ccf2f0f072ad015c0c896ee6651061e77a9ff0ca3db2",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5461813399879994,
+              "target_level": 0.4103475791013187,
+              "pump_capacity": 0.9839283666458887,
+              "efficiency": 0.8340359033136143,
+              "demand": 0.3980794765660753,
+              "leak": 0.011860485734663816
+            },
+            "seed": 100003,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "b1d28ef28fefc932fa51be63fb66025307990633bd2cc290d4d0e1289ae98b58",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.634123788355048,
+              "target_level": 0.43812298548521106,
+              "pump_capacity": 0.9647904461572162,
+              "efficiency": 0.8616672030641402,
+              "demand": 0.3904415091744211,
+              "leak": 0.01517843289270758
+            },
+            "seed": 100004,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "738a61739fe94600a13adff4b74be2429da622c969f8a241b46269437334b52e",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.37585845068053453,
+              "target_level": 0.4947794851952017,
+              "pump_capacity": 0.8718733501505582,
+              "efficiency": 0.9255106162436236,
+              "demand": 0.45814500627361054,
+              "leak": 0.0034400677329055316
+            },
+            "seed": 100005,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "9551f15682c268113894add2cbe9aea3060df25bf7d69280c04914e4fe1b3aba",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.603242248778149,
+              "target_level": 0.5021178729750141,
+              "pump_capacity": 0.8178289939313259,
+              "efficiency": 0.9549243908268347,
+              "demand": 0.42667389884490703,
+              "leak": 0.0007141269557938557
+            },
+            "seed": 100006,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "9a2c0044eb85fefba2f10c6f5304059ad61e83f8706e0e20fcd6a713106f2eca",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.4377129435932441,
+              "target_level": 0.41229140045681856,
+              "pump_capacity": 0.9873240700874842,
+              "efficiency": 0.920604879513676,
+              "demand": 0.5537257413367535,
+              "leak": 0.028807691119960885
+            },
+            "seed": 100007,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "fdb9e8e75ee96fa3d0a4af7cbfb3a10dfb9b1fc724b22c92e3de2694c854ba50",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.368592239643731,
+              "target_level": 0.5619679524347057,
+              "pump_capacity": 0.7569616134945072,
+              "efficiency": 0.9293740816049051,
+              "demand": 0.3557536992613594,
+              "leak": 0.029153909650344565
+            },
+            "seed": 100008,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "368699c380acbf6b21ac09cc0d5a6b572e6594c06d522c019f4148b05ef9f029",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.572762533558745,
+              "target_level": 0.5431336130468812,
+              "pump_capacity": 0.9176183741777908,
+              "efficiency": 0.9823342849383374,
+              "demand": 0.462212813117033,
+              "leak": 0.016470004599916866
+            },
+            "seed": 100009,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "85d22d0ac2bee99c61967d3751058918b161f8c864490252055694b592107b7a",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6082311257212298,
+              "target_level": 0.5634163935621895,
+              "pump_capacity": 0.9445530442045607,
+              "efficiency": 0.9073903125052816,
+              "demand": 0.45210403779083175,
+              "leak": 0.029538246185793655
+            },
+            "seed": 100010,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "73294813297e54db292b4eaac7f6226c13b60cfe4c3b685d3be183aaa851a11e",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5823918935658671,
+              "target_level": 0.5828468695327116,
+              "pump_capacity": 0.780638808135132,
+              "efficiency": 0.8710378797238539,
+              "demand": 0.3646252394872966,
+              "leak": 0.0013278064949248302
+            },
+            "seed": 100011,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "training",
+              "generator": "pump-partitions:1"
+            }
+          }
+        }
+      ],
+      "validation": [
+        {
+          "scenario_id": "404fcc33772bae6a38fae4105e307b8d5a4f2eb243d2a135c64575a1ae891a65",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6960119460069775,
+              "target_level": 0.41704219676816134,
+              "pump_capacity": 0.8968956706850935,
+              "efficiency": 0.8885996264855295,
+              "demand": 0.4326660603673268,
+              "leak": 0.02341858876865357
+            },
+            "seed": 110000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "87d08289991093ea36827745cc4942595db4c34fcdfa4e87cb84d6ad5497900d",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5992460913345969,
+              "target_level": 0.5314262286161351,
+              "pump_capacity": 0.9745460431235834,
+              "efficiency": 0.9036116440534753,
+              "demand": 0.4094373382731446,
+              "leak": 0.012148565738942647
+            },
+            "seed": 110001,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "b6bb2372718e5f2e8a04f1639853d971c1abc596c93ed0de7a2e4d38a2569d74",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5634918352863494,
+              "target_level": 0.45865506622327684,
+              "pump_capacity": 0.8333570962715953,
+              "efficiency": 0.8652237795329033,
+              "demand": 0.3979771601182938,
+              "leak": 0.016197813355385383
+            },
+            "seed": 110002,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "4581fece3b247dd0ce99e0616ee0e7138d6be1099e8a5878e074a69447de863c",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.44743215496152683,
+              "target_level": 0.46708476364091106,
+              "pump_capacity": 0.7932064231978933,
+              "efficiency": 0.8575383587330541,
+              "demand": 0.4283950510622822,
+              "leak": 0.006817734076709484
+            },
+            "seed": 110003,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "8e1a43764c04c3c1eeeaca6edf170301f7a9ebf2fee72bd5066d8340f66d0f6a",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5232026341447763,
+              "target_level": 0.5608558287176763,
+              "pump_capacity": 0.8770599701663697,
+              "efficiency": 0.9163667175789117,
+              "demand": 0.4227591965627694,
+              "leak": 0.02375146796454101
+            },
+            "seed": 110004,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "a1d95a2a6fb1566153e74e64aeac055ea504c22707fb0bf6b3bc3edf9d1956ff",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.31131449656311094,
+              "target_level": 0.4177389132914171,
+              "pump_capacity": 0.7904585563035814,
+              "efficiency": 0.9540178090036207,
+              "demand": 0.4227721842121989,
+              "leak": 0.005956860045107921
+            },
+            "seed": 110005,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "3359a0f7800d6979f256c20a38c00f01cbb3f6992077ac35d60c90ba8bf152cf",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5806679920022308,
+              "target_level": 0.47675450371160577,
+              "pump_capacity": 0.8493215814550594,
+              "efficiency": 0.9380730061091973,
+              "demand": 0.36932929655006586,
+              "leak": 0.021740223661469785
+            },
+            "seed": 110006,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "65f8936fe626806433170d5b3e1821f80b2d21e6b04f4dcfc67973ad1a173d07",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5988060254219987,
+              "target_level": 0.4132523072591628,
+              "pump_capacity": 0.7573577105319003,
+              "efficiency": 0.8895666069291224,
+              "demand": 0.4236668956743285,
+              "leak": 0.012830792892803209
+            },
+            "seed": 110007,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "848284d0c3fc4a7f86da2ab0390fbb0f1ad22560bdf75094cb0e426c1c3048a4",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.40158261847638665,
+              "target_level": 0.5600460320697389,
+              "pump_capacity": 0.8792596422863387,
+              "efficiency": 0.9307637325938474,
+              "demand": 0.3667803108951743,
+              "leak": 0.024428383921298192
+            },
+            "seed": 110008,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7171cc20b602e0a298038fb6f19dc95d1427a3fae4e21894eabfb74131abb631",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5751098841218265,
+              "target_level": 0.41694427401504147,
+              "pump_capacity": 0.8867499257999709,
+              "efficiency": 0.803373275226215,
+              "demand": 0.40744274940309144,
+              "leak": 0.015650478537418872
+            },
+            "seed": 110009,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "8827e1f028b883200c8c78f7e8c0fa6a8945785c9c4978ee4fe450854507da47",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.42273833872733907,
+              "target_level": 0.42360806223864883,
+              "pump_capacity": 0.9625770709318354,
+              "efficiency": 0.8113825069276575,
+              "demand": 0.4545196464785323,
+              "leak": 0.01947138357516517
+            },
+            "seed": 110010,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "388f6b9f7972fcd66d8c1c4442b74f225ef5aa6ccc5a021a516f5be186872d09",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.3291021200082659,
+              "target_level": 0.5303190603999433,
+              "pump_capacity": 0.7571733099252825,
+              "efficiency": 0.8091872633658083,
+              "demand": 0.2846619284436714,
+              "leak": 0.016301410428779424
+            },
+            "seed": 110011,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "validation",
+              "generator": "pump-partitions:1"
+            }
+          }
+        }
+      ],
+      "nominal_holdout": [
+        {
+          "scenario_id": "4f321601cff781b49b02583a2721d0382a9629237d1ef522e07cbf5a37080ebe",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6810566965659415,
+              "target_level": 0.40206736510312663,
+              "pump_capacity": 0.9602203870556313,
+              "efficiency": 0.8718701659122786,
+              "demand": 0.45288558139335056,
+              "leak": 0.026653488192646034
+            },
+            "seed": 120000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "742e1539fb707589e3d8e8b8c8ed55cf08c6066aef086927149740c213feb193",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6405905319360521,
+              "target_level": 0.5909695778940751,
+              "pump_capacity": 0.8980086924846528,
+              "efficiency": 0.8136991301080292,
+              "demand": 0.4531986576088776,
+              "leak": 0.029415804511116122
+            },
+            "seed": 120001,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "8d632d465a41f2aae7e34a30116e50965a95323e142270b43ff821c15401088e",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.36369288496974533,
+              "target_level": 0.4955783435991956,
+              "pump_capacity": 0.9217746171352164,
+              "efficiency": 0.8887416679211823,
+              "demand": 0.47783845860674007,
+              "leak": 0.0059126462489074725
+            },
+            "seed": 120002,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "bd44bd45e13ee878336c381e53e81b0d971ee88c68a6f3a0f42794dcd8626e35",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.43748520884110786,
+              "target_level": 0.5626173893338298,
+              "pump_capacity": 0.8476672455231747,
+              "efficiency": 0.859405898433664,
+              "demand": 0.3240000647463137,
+              "leak": 0.027818070205043482
+            },
+            "seed": 120003,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "efbe07167031e2c091c7742e7f37457dc6004f751e76f2e485414ad80788d7d8",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6044272117003615,
+              "target_level": 0.49370314631247686,
+              "pump_capacity": 0.9168524846216151,
+              "efficiency": 0.8755747395429027,
+              "demand": 0.4746695049923123,
+              "leak": 0.0273825570981501
+            },
+            "seed": 120004,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "0d05fdf207a8ee377c2719704eb17a931c928803d07fc9bc78ac98ad53556bea",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6608418643823064,
+              "target_level": 0.5744907942067281,
+              "pump_capacity": 0.7712631933403096,
+              "efficiency": 0.9638812547485395,
+              "demand": 0.3857794339366949,
+              "leak": 0.023549563906363695
+            },
+            "seed": 120005,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "5d77c4e6e88e593f913d8f24a9c63f86402f01b062bdf8a520721806722be082",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.4872041607819796,
+              "target_level": 0.4944004094699767,
+              "pump_capacity": 0.830859898287876,
+              "efficiency": 0.9870369399136435,
+              "demand": 0.4997698440568586,
+              "leak": 0.02835167354031098
+            },
+            "seed": 120006,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "55d9ffd95a73158c7c149bafb8974f2d175be0cd5a7b33d3831894ad6a3d8ec2",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.4735763407504907,
+              "target_level": 0.5661209376105115,
+              "pump_capacity": 0.7800048395108292,
+              "efficiency": 0.9077391904537891,
+              "demand": 0.3118550022944954,
+              "leak": 0.023142183676319726
+            },
+            "seed": 120007,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "afdf9d1f7ea4b078430131be14714a61181982845fab2ec804adccbf3ee115d4",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5975742902185912,
+              "target_level": 0.5681408189409722,
+              "pump_capacity": 0.8459943080564275,
+              "efficiency": 0.9110036898766655,
+              "demand": 0.3493341773289447,
+              "leak": 0.015175149749025138
+            },
+            "seed": 120008,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "3577e40caf55b601e723f9aa51d9520ca9cfecc78c966b7a09438a3e7883d971",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6304342687996461,
+              "target_level": 0.5121271299246106,
+              "pump_capacity": 0.902209388456985,
+              "efficiency": 0.850923441429746,
+              "demand": 0.43503335370143587,
+              "leak": 0.018973791415928146
+            },
+            "seed": 120009,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7f5a4ee0e8bc73f3487eb999a011f9ba8904ae75885fe6cb086ecebfb1d294ca",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6185283993110785,
+              "target_level": 0.5208317900385852,
+              "pump_capacity": 0.9887101504841893,
+              "efficiency": 0.9406517791542033,
+              "demand": 0.5782314500841643,
+              "leak": 0.02231998533700096
+            },
+            "seed": 120010,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e018537545d0c0e97994755544afc63114b542027d7f035026b0ad203d9401ad",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6264136965230009,
+              "target_level": 0.4132746025935777,
+              "pump_capacity": 0.8725467552250921,
+              "efficiency": 0.9877934779039639,
+              "demand": 0.5256026920208022,
+              "leak": 0.021440012740682565
+            },
+            "seed": 120011,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "nominal_holdout",
+              "generator": "pump-partitions:1"
+            }
+          }
+        }
+      ],
+      "held_out_stress": [
+        {
+          "scenario_id": "b4dad21cb5ccaaa631f572f907cb9bcad8f848d1b3963d80792dbd1774803ed3",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5040823478097973,
+              "target_level": 0.42295582540705073,
+              "pump_capacity": 0.918979561987987,
+              "efficiency": 0.8819715765519438,
+              "demand": 0.6295214538001662,
+              "leak": 0.06091329523379611
+            },
+            "seed": 130000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e3e1b77d99c19eed19ec3f60aeb927324489a6095376de7b7719b12bd7785ccc",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.49377556549943147,
+              "target_level": 0.4137160902037748,
+              "pump_capacity": 0.9314428510832907,
+              "efficiency": 0.8986541429224706,
+              "demand": 0.6720728720840551,
+              "leak": 0.03783830084407624
+            },
+            "seed": 130001,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "ec89360941e27fe4e06e38b99001f3dfacac67e20400e184add0a8d80887c917",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6739047592497179,
+              "target_level": 0.5203997811882447,
+              "pump_capacity": 0.8491648823201253,
+              "efficiency": 0.8993078763365085,
+              "demand": 0.633281125320434,
+              "leak": 0.021844895823172346
+            },
+            "seed": 130002,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "d8f15c914062e3bf6bf82ad0efa3a610809ac385b93f9995128479e45c7a6adb",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.456757393847968,
+              "target_level": 0.5561243968648157,
+              "pump_capacity": 0.8143084699931397,
+              "efficiency": 0.8158053968439126,
+              "demand": 0.561997856514787,
+              "leak": 0.05130956182429523
+            },
+            "seed": 130003,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "9ad261bcdedf4c34bfb526537276369a5238b7bd8995a80667b2ec744f66f2ed",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5197904229054912,
+              "target_level": 0.4331655400720984,
+              "pump_capacity": 0.9321908177633808,
+              "efficiency": 0.9734024172768843,
+              "demand": 0.7714768876434507,
+              "leak": 0.07529883067360155
+            },
+            "seed": 130004,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7c47873cf10e7fd35f874325ff400ceb831ee876f9df163fd839400f2454d9b7",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5410158028276845,
+              "target_level": 0.47857960618097994,
+              "pump_capacity": 0.8477328292022654,
+              "efficiency": 0.8742228962960997,
+              "demand": 0.6650357552859656,
+              "leak": 0.0010138804781465894
+            },
+            "seed": 130005,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "12e426ad13df397d4ec66342c78c9093eb2bd79b67fb63296732ebe233467de5",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.3475473211720763,
+              "target_level": 0.5775740780510705,
+              "pump_capacity": 0.9607329759574315,
+              "efficiency": 0.9362848735282144,
+              "demand": 0.7426996185279281,
+              "leak": 0.047470931400502105
+            },
+            "seed": 130006,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "0e5a9a5f97148c65fbf4ca9473d1d1383fbcd8d7a00c3e0461f6f72d341728af",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.3825187153191375,
+              "target_level": 0.5467516705420461,
+              "pump_capacity": 0.8001627781266176,
+              "efficiency": 0.8916108795167593,
+              "demand": 0.6259509281060959,
+              "leak": 0.013380247056588824
+            },
+            "seed": 130007,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "f4277561fbb95156040ca40091fa7cb89741146b3d69b9bcc87af4ce6bb15408",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.6308801732625446,
+              "target_level": 0.5514650929641962,
+              "pump_capacity": 0.9771406638398303,
+              "efficiency": 0.8689919601720861,
+              "demand": 0.6572121557991638,
+              "leak": 0.07240752411374789
+            },
+            "seed": 130008,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "9e83bb9d02546cf35f9e6e86e67dbdad604ea854736cd678eb707211a5349a18",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.442575765089559,
+              "target_level": 0.5510818120832343,
+              "pump_capacity": 0.8728904538039685,
+              "efficiency": 0.9758941252347189,
+              "demand": 0.6941249452493317,
+              "leak": 0.07576507644788133
+            },
+            "seed": 130009,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "986159d1a079ade02f225bb3ff60b2c8994b55af78444e3d4d4a8d0becb1f8dc",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5567181652121818,
+              "target_level": 0.4228001363480463,
+              "pump_capacity": 0.7670217455944021,
+              "efficiency": 0.9663241297762465,
+              "demand": 0.627886559749605,
+              "leak": 0.005903045196703296
+            },
+            "seed": 130010,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "d76f2535cec147659433b92b83c2f632ca30a7ad91cb4ba37fb02611fb20a85c",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.5729059739491322,
+              "target_level": 0.5323598775681001,
+              "pump_capacity": 0.9074886926679651,
+              "efficiency": 0.981326519155426,
+              "demand": 0.749887171895626,
+              "leak": 0.06520608424354417
+            },
+            "seed": 130011,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "held_out_stress",
+              "generator": "pump-partitions:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7cd50eeb9fd244eae501bdd5a00dae42470a0a06d1b2523bd5e41cd9147fbf59",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.2612955404125569,
+              "demand": 0.4560074034695326,
+              "pump_capacity": 0.8998213875655587,
+              "efficiency": 0.8526002760647923,
+              "leak": 0.1057177179980384
+            },
+            "seed": 210000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "b230669aff1a37c786d3329125e8508cc3c1f7e125cf3039eb9f22321e618f2e",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.627758055461078,
+              "demand": 0.6840312737458099,
+              "pump_capacity": 1.2382297618795,
+              "efficiency": 0.7390618928683589,
+              "leak": 0.07455921491389447
+            },
+            "seed": 210001,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "376ba137a019d6e265f3a7a3cda5a9ed7c7b90e36f041e7d54e2b4e7a0c8a481",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6142976571077212,
+              "demand": 0.5306108822090206,
+              "pump_capacity": 1.0760804465881058,
+              "efficiency": 0.8785233307836133,
+              "leak": 0.02565759415010364
+            },
+            "seed": 210002,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "a73706277bd157c7dca1680873341877c03bf1b1a1fccfb93422e5f8f3ef1555",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.4706105435554281,
+              "demand": 0.54104068767194,
+              "pump_capacity": 0.8573282598939391,
+              "efficiency": 0.9939481869337106,
+              "leak": 0.0029031011898207823
+            },
+            "seed": 210003,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "495e5d3a8536c162978a28080eba387ac089004ac4e52d4eb551be3c07bd8155",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6914411261847506,
+              "demand": 0.6507610843565365,
+              "pump_capacity": 0.9678409538401604,
+              "efficiency": 0.9533951391536092,
+              "leak": 0.06578719258283776
+            },
+            "seed": 210004,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "097d8a63c5024981f537870a4abd78efa4c3e554aaaf73ecb88a8519fee439d6",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.42473835820443673,
+              "demand": 0.5300761853403914,
+              "pump_capacity": 0.7837002798205553,
+              "efficiency": 0.687811770751148,
+              "leak": 0.1114174311658698
+            },
+            "seed": 210005,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "cfdce931caeeaa74651012cb543d9ac71972e9f66892a56bf660a94f31ab4bd3",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.8459277754521647,
+              "demand": 0.42559034274888247,
+              "pump_capacity": 1.2040721286813323,
+              "efficiency": 0.9498603198537547,
+              "leak": 0.010399717375710868
+            },
+            "seed": 210006,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "bd883ef8d553b071381094cf9bdcaa944eb04bf674e3728fd154592e964aa81e",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6545424342589673,
+              "demand": 0.6982495326226368,
+              "pump_capacity": 1.2028059293262845,
+              "efficiency": 0.6244699590381757,
+              "leak": 0.047400238884239325
+            },
+            "seed": 210007,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "5d45d09cbdc6143ef167b90ccfffc1b9d8b00e722f1c80c02127d63c6b8a9479",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.8131978972511856,
+              "demand": 0.38019221535507136,
+              "pump_capacity": 0.9316523330195445,
+              "efficiency": 0.820211234329751,
+              "leak": 0.07397946104138949
+            },
+            "seed": 210008,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "aa4feb65712665d0f254a3d1352775149a88fcc483c56af3680bc846d77b5c38",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.8259816041771798,
+              "demand": 0.4282206915335553,
+              "pump_capacity": 0.5533256999201178,
+              "efficiency": 0.9847945572996323,
+              "leak": 0.09300178154288921
+            },
+            "seed": 210009,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "3e22596fcdeaa3d9093f06bd4effb77d00072e63c841ba2e952adc26451ff14e",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6725792064033527,
+              "demand": 0.5754070324202338,
+              "pump_capacity": 0.8315290635692312,
+              "efficiency": 0.735258118553221,
+              "leak": 0.020404703707753286
+            },
+            "seed": 210010,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "9fa250819017e2675d2f362c34e08dad1dd6061b5b966706944af93e7c34a7a2",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.2731589526553635,
+              "demand": 0.7863817564638155,
+              "pump_capacity": 0.9318884616645763,
+              "efficiency": 0.9835162750824941,
+              "leak": 0.06300071563390021
+            },
+            "seed": 210011,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "049e9fbd335fbb528a2203dccfd7b913c2eae00d141f7c74888c1d80c0d29fcb",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.3814833172749964,
+              "demand": 0.4140807602852175,
+              "pump_capacity": 0.5377833783501631,
+              "efficiency": 0.9865979222067388,
+              "leak": 0.04560199465920787
+            },
+            "seed": 210012,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "b5de8a08da0479f7ef483aed6d0c974705e12a15f49dcd68b613eb08779f3542",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5160858273554071,
+              "demand": 0.37114871344809,
+              "pump_capacity": 0.5603884508430388,
+              "efficiency": 0.8469957672416295,
+              "leak": 0.0024113067618538463
+            },
+            "seed": 210013,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "54f4ee58d8fd29d81c33ce92a94a4dcddfcc097b7e1c9669fac1072552241c0d",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.49384549582375137,
+              "demand": 0.39977690441507063,
+              "pump_capacity": 1.0613950904679874,
+              "efficiency": 0.6632318420102893,
+              "leak": 0.027473367804661173
+            },
+            "seed": 210014,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "ce57ead984b05df0c76d1bd7267b05fe728b53ab16223c1698270aa4f65c1bf4",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6252473794048291,
+              "demand": 0.5618679882399333,
+              "pump_capacity": 1.1204865063662173,
+              "efficiency": 0.7649687620655689,
+              "leak": 0.09435507275649921
+            },
+            "seed": 210015,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "8482783c0d87ddf33b722fc3e61fd708aa1c15b0aaec4f98ed00740793edbfee",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.7941797050325621,
+              "demand": 0.6346354561004683,
+              "pump_capacity": 1.280515648648728,
+              "efficiency": 0.6191009289714602,
+              "leak": 0.08913978963714808
+            },
+            "seed": 210016,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "fa29d6118e59a1e26ca7b5904990100b8864c6c6779761531270e6342d015cdd",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.15368626507197694,
+              "demand": 0.4535306932573567,
+              "pump_capacity": 0.5364065597959657,
+              "efficiency": 0.9702220694846023,
+              "leak": 0.11770674293138128
+            },
+            "seed": 210017,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "88c643631d8d40a06cd03fc4914833382e0d41659520201ebe62b77a26108599",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.845066238679346,
+              "demand": 0.5362056297436558,
+              "pump_capacity": 0.8902829966860266,
+              "efficiency": 0.7490918291484079,
+              "leak": 0.032570717070066944
+            },
+            "seed": 210018,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "a1e3781c69f00df8c0b2474e7a6c98dec48649c8012804971a71d7bd13463663",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.4782998568674528,
+              "demand": 0.5018769299864957,
+              "pump_capacity": 1.0493601918958002,
+              "efficiency": 0.9586120589218258,
+              "leak": 0.11157402626256474
+            },
+            "seed": 210019,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "764672a260be253caa06f0b3f123accfd1a52cc36c906100510c6e927902df92",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6082053092329687,
+              "demand": 0.38966015033603135,
+              "pump_capacity": 1.0431156351399173,
+              "efficiency": 0.8563739009807887,
+              "leak": 0.0599769647033085
+            },
+            "seed": 210020,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7f04d1e9150227172b34c49ff9319c90154dd005b592fe3afa6e4ad7ae0d0e4b",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6996789580987569,
+              "demand": 0.7733650177892444,
+              "pump_capacity": 1.3529535337165883,
+              "efficiency": 0.9995222401902342,
+              "leak": 0.025312290264642184
+            },
+            "seed": 210021,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "c31bd256c675871707744779f7019b3ca131a319db39a04a46908029781de5dc",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.48160764058513816,
+              "demand": 0.493336810993675,
+              "pump_capacity": 1.0960057732245883,
+              "efficiency": 0.6444609832309692,
+              "leak": 0.06812680431221882
+            },
+            "seed": 210022,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "dbd41cf2310847bf9442c5d4a3dabf2764dc6406dcccac61a5d433eadbd0a97f",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6896451235089004,
+              "demand": 0.39880918968364354,
+              "pump_capacity": 0.5688965698044117,
+              "efficiency": 0.7209492098155561,
+              "leak": 0.08879205001390332
+            },
+            "seed": 210023,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "bd5723ff805e8057a470680118f7b462ffe50b6fcd73bd87a9d41eafa66513f2",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.2819177775685886,
+              "demand": 0.5813150071965068,
+              "pump_capacity": 1.1013900993509884,
+              "efficiency": 0.7211886378770151,
+              "leak": 0.01506254816646516
+            },
+            "seed": 210024,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "03734d385e00fe77fde05be59860e708cd635a7aa975702193d6119e5701132b",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.8417465534800266,
+              "demand": 0.7824519479182526,
+              "pump_capacity": 0.8205532041689286,
+              "efficiency": 0.9849371894787782,
+              "leak": 0.03292552563704782
+            },
+            "seed": 210025,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "9d8e0edf25ae8b4047a4b9234a8de4e1c416d506128d8674bb7df25846cc8c96",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.7197901897584262,
+              "demand": 0.7182336908763167,
+              "pump_capacity": 1.1296205160332016,
+              "efficiency": 0.9181565939116421,
+              "leak": 0.007581427684390393
+            },
+            "seed": 210026,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "2f9b076397d8c0134ba3ae730c2398f51c23ffdf3c5b4f75800530b1edb0dceb",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.7592023317538688,
+              "demand": 0.4249330245108121,
+              "pump_capacity": 1.298772534968192,
+              "efficiency": 0.8467154593182096,
+              "leak": 0.09058834328345218
+            },
+            "seed": 210027,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "40de14e89112b02f2dec8dddc82d1e02149e9f0988693ed16ceab0b8a865f1ec",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.7881292991403537,
+              "demand": 0.6147446307915594,
+              "pump_capacity": 1.105112137749208,
+              "efficiency": 0.8886208046264463,
+              "leak": 0.017362218243227364
+            },
+            "seed": 210028,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "38c11f56c2bd8f10ed95557a1dedb5e455797850aa0edcb17e17bff2833bd109",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5072502824576209,
+              "demand": 0.514558262641553,
+              "pump_capacity": 0.9315262624081062,
+              "efficiency": 0.8023651274673431,
+              "leak": 0.08313265577046296
+            },
+            "seed": 210029,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "2f6072b2f4f100339456d28f4a7e5207ba5b490dfb56ff604b28db6bab800393",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.1866721615654014,
+              "demand": 0.6477427053227687,
+              "pump_capacity": 1.0718595958982609,
+              "efficiency": 0.6793565571269459,
+              "leak": 0.018989301549859727
+            },
+            "seed": 210030,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e95e438b0d53f837aee97f61bc7e8865c3f60d62f6bb8c3ddbc8d777818f8a84",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.44878511512104324,
+              "demand": 0.861474411647149,
+              "pump_capacity": 0.9409079869833723,
+              "efficiency": 0.9595236799591254,
+              "leak": 0.11638894787903001
+            },
+            "seed": 210031,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e9e14262443ab0842a84fa1a5c5dfd2f0b163e899db2c2512fc83ccee5c9d43c",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5047438824292447,
+              "demand": 0.5073391465993417,
+              "pump_capacity": 1.3556430859382385,
+              "efficiency": 0.7080542038599086,
+              "leak": 0.03159477229519084
+            },
+            "seed": 210032,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "dd550f13fc942a8518fd0b33e2e41712915117e0d7217bbad45f41ffdf9169d6",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.8306178095880273,
+              "demand": 0.6002368589953436,
+              "pump_capacity": 1.2471059029044125,
+              "efficiency": 0.7853546959468884,
+              "leak": 0.06553727923537832
+            },
+            "seed": 210033,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e1ef918fa317d86eb2512cbbee2075ace9c895ecec6eb4fc1355fae57cc1c198",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5476835310512375,
+              "demand": 0.565340453251973,
+              "pump_capacity": 1.1543990283147596,
+              "efficiency": 0.6933370918839186,
+              "leak": 0.04584936334722599
+            },
+            "seed": 210034,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e29052802ed206cc7193ed7396476eb04381bb5d39c16d9ccd68d88ef96152f5",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6037373201927441,
+              "demand": 0.4234288040444634,
+              "pump_capacity": 1.3285255531765445,
+              "efficiency": 0.856515574211572,
+              "leak": 0.10122535842678053
+            },
+            "seed": 210035,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "a9566869077ae2c510b621397d0a145dd878dc29652fcc4e0217995a503c2456",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5142346446667304,
+              "demand": 0.46358935136450347,
+              "pump_capacity": 0.7260258819088005,
+              "efficiency": 0.9118706606656735,
+              "leak": 0.10797916498683162
+            },
+            "seed": 210036,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "d1a31532ea981bfdadbbe88d6037954bce5ce76ae803a568013b82a6ab6912f1",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.7024788667752003,
+              "demand": 0.35452108352801615,
+              "pump_capacity": 0.8710131551426953,
+              "efficiency": 0.7239598912999914,
+              "leak": 0.016213273856397165
+            },
+            "seed": 210037,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7af55085f0f5c833c4c9dcce10bb55466e49c9a1042126237258d9cc65295ebe",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.6211032922867619,
+              "demand": 0.3661577149527757,
+              "pump_capacity": 0.9647187402667957,
+              "efficiency": 0.6282081331695265,
+              "leak": 0.04222758452518438
+            },
+            "seed": 210038,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "15ed303f038d897efadd2c5623f95bb8035ebd89195b53dad93c22d4de4734e5",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.2453471727834839,
+              "demand": 0.6576826958089803,
+              "pump_capacity": 1.122224882893721,
+              "efficiency": 0.6263425165191758,
+              "leak": 0.0804058218923661
+            },
+            "seed": 210039,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "7ce36597c4365ea78542bcd6f68d8d1733c9ecb140fc32635a4f2d80082ddb9d",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.7263325316460538,
+              "demand": 0.680156020151865,
+              "pump_capacity": 1.0909643479926479,
+              "efficiency": 0.8539359312664347,
+              "leak": 0.06826447013147828
+            },
+            "seed": 210040,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "733dbb3850b5d57e6f87cf098155b7ba28488bf5fdad0dcc10c38030dfe2e17a",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5779813964482876,
+              "demand": 0.6060005780975107,
+              "pump_capacity": 0.9589356708620627,
+              "efficiency": 0.6642520695977,
+              "leak": 0.022373439381749457
+            },
+            "seed": 210041,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "d048e2dd115d9c431cdd5cc062021e18d3cad5dfe5bbb744139180f712259279",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.5897779154863572,
+              "demand": 0.6843239668156702,
+              "pump_capacity": 0.9847318408768237,
+              "efficiency": 0.9345910948123402,
+              "leak": 0.03985417105370696
+            },
+            "seed": 210042,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "082dba9af6c785c5d7166d10c17da1e28d9bd05dd048390cdc84af4ef967b80f",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.2931117291934463,
+              "demand": 0.6312040507249328,
+              "pump_capacity": 0.8494982805334834,
+              "efficiency": 0.8426694161895086,
+              "leak": 0.09708382302597383
+            },
+            "seed": 210043,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "c46eebe0c337acabef78a73c05a5ccc958d779ebd543c2f157fa33f84615944a",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.3278799150346694,
+              "demand": 0.37946722794733234,
+              "pump_capacity": 0.9439171218548846,
+              "efficiency": 0.7495041871688989,
+              "leak": 0.07041770543422787
+            },
+            "seed": 210044,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "3ea7059ce47d7cb484bdfa6f4b54d135b0064291bad362f0ffa1d3b5c68b9185",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.8411720611339645,
+              "demand": 0.6350608300475755,
+              "pump_capacity": 1.2601049301202505,
+              "efficiency": 0.8850040023708572,
+              "leak": 0.08939627827816439
+            },
+            "seed": 210045,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "e13424c60a53a6f328ac4384094c1479e80fd4188ebbc589b492d60729c8c1de",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.2255783315576354,
+              "demand": 0.6317977898944234,
+              "pump_capacity": 1.2215709597208217,
+              "efficiency": 0.9975781144245693,
+              "leak": 0.05929256151184127
+            },
+            "seed": 210046,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        },
+        {
+          "scenario_id": "595d80791e465b5ebcd927213acb2acf0f8eb8292affbea6c8570329be1f5a39",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "target_level": 0.5,
+              "initial_level": 0.22978630667076738,
+              "demand": 0.4502904434839349,
+              "pump_capacity": 1.3724665704274797,
+              "efficiency": 0.6253463060705151,
+              "leak": 0.11586829997545528
+            },
+            "seed": 210047,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": null,
+            "tags": [],
+            "provenance": {
+              "partition": "phase3.3_held_out",
+              "generator": "pump-feasible-stress:1"
+            }
+          }
+        }
+      ],
+      "known_stress": [
+        {
+          "scenario_id": "9981a7669b7649c2d6681efb5ba50951878418f1f00955918bf64b04d4f2e640",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.7161623150834033,
+              "demand": 0.7802454089749794,
+              "pump_capacity": 1.27872126936033,
+              "efficiency": 0.6476661927133296,
+              "leak": 0.11170798721969283
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          }
+        },
+        {
+          "scenario_id": "eaeeebf846882bf065351226322b46fb7b45feb40679343998acd53997d3ffe2",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.1780790225044992,
+              "demand": 0.4311047452789358,
+              "pump_capacity": 0.5215812193419074,
+              "efficiency": 0.9550288752467151,
+              "leak": 0.02817815002074901
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          }
+        },
+        {
+          "scenario_id": "b9567fd09fa8eceb9f506e02358890074702dde05f0815f0d870efc8b4980f61",
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.30177446121325535,
+              "demand": 0.3910396169030367,
+              "pump_capacity": 0.6488788002253432,
+              "efficiency": 0.6330142737787615,
+              "leak": 0.03624126511337196
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          }
+        }
+      ]
+    },
+    "hashes": {
+      "training": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "validation": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "nominal_holdout": "6237fc5c56eb712af8346fa2cbe7b9e84ec9ca66f927578d1936d5235a16028f",
+      "held_out_stress": "7ad4b202d5410ab0c5dab145982884649bcfc5c1bdbf4092768d1716d97776dc",
+      "known_stress": "9169455f3f0e60bc48f5d0e7394d4b5796c8693e0032b33d981d1b5b911058ba"
+    },
+    "source_hashes": {
+      "training": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "validation": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "nominal_holdout": "6237fc5c56eb712af8346fa2cbe7b9e84ec9ca66f927578d1936d5235a16028f",
+      "held_out_stress": "77dab9f362fd391737dbbd4a829520c39f98e68e5f9bba6acd6548aad141b907"
+    },
+    "leakage_check": {
+      "passed": true,
+      "issues": [],
+      "rule": "all physical parameters except horizon within absolute 1e-4; seeds disjoint"
+    },
+    "new_held_out_attempts": 71
+  },
+  "curriculum": {
+    "schema_version": "known-avoidable-curriculum:1",
+    "known": {
+      "disc_05c97a1dec_0000": {
+        "scenario_id": "9981a7669b7649c2d6681efb5ba50951878418f1f00955918bf64b04d4f2e640",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.7161623150834033,
+            "demand": 0.7802454089749794,
+            "pump_capacity": 1.27872126936033,
+            "efficiency": 0.6476661927133296,
+            "leak": 0.11170798721969283
+          },
+          "seed": 320000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Feasible operating shifts, separate from competence partitions",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "witnesses": [
+          {
+            "controller": "pump-analytical",
+            "failure_experiment_id": "20261026T090914_c9f6db9905",
+            "reference_experiment_id": "20261026T090919_602f719f42",
+            "replay": [
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090914_c9f6db9905",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              },
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090919_602f719f42",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              }
+            ],
+            "horizon": 200
+          },
+          {
+            "controller": "pump-rule",
+            "failure_experiment_id": "20261026T090914_c9f6db9905",
+            "reference_experiment_id": "20261026T090920_f85ab165f6",
+            "replay": [
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090914_c9f6db9905",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              },
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090920_f85ab165f6",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              }
+            ],
+            "horizon": 200
+          }
+        ]
+      },
+      "disc_05c97a1dec_0001": {
+        "scenario_id": "eaeeebf846882bf065351226322b46fb7b45feb40679343998acd53997d3ffe2",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.1780790225044992,
+            "demand": 0.4311047452789358,
+            "pump_capacity": 0.5215812193419074,
+            "efficiency": 0.9550288752467151,
+            "leak": 0.02817815002074901
+          },
+          "seed": 320000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Feasible operating shifts, separate from competence partitions",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "witnesses": [
+          {
+            "controller": "pump-analytical",
+            "failure_experiment_id": "20261026T090915_f97b1ad154",
+            "reference_experiment_id": "20261026T090921_33750728ca",
+            "replay": [
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090915_f97b1ad154",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              },
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090921_33750728ca",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              }
+            ],
+            "horizon": 200
+          },
+          {
+            "controller": "pump-rule",
+            "failure_experiment_id": "20261026T090915_f97b1ad154",
+            "reference_experiment_id": "20261026T090922_c94b4205e5",
+            "replay": [
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090915_f97b1ad154",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              },
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090922_c94b4205e5",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              }
+            ],
+            "horizon": 200
+          }
+        ]
+      },
+      "disc_05c97a1dec_0002": {
+        "scenario_id": "b9567fd09fa8eceb9f506e02358890074702dde05f0815f0d870efc8b4980f61",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.30177446121325535,
+            "demand": 0.3910396169030367,
+            "pump_capacity": 0.6488788002253432,
+            "efficiency": 0.6330142737787615,
+            "leak": 0.03624126511337196
+          },
+          "seed": 320000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Feasible operating shifts, separate from competence partitions",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "witnesses": [
+          {
+            "controller": "pump-analytical",
+            "failure_experiment_id": "20261026T090918_27de18f827",
+            "reference_experiment_id": "20261026T090921_3d516369c3",
+            "replay": [
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090918_27de18f827",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              },
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090921_3d516369c3",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              }
+            ],
+            "horizon": 200
+          },
+          {
+            "controller": "pump-rule",
+            "failure_experiment_id": "20261026T090918_27de18f827",
+            "reference_experiment_id": "20261026T090921_82b518c011",
+            "replay": [
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090918_27de18f827",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              },
+              {
+                "status": "exact_match",
+                "experiment_id": "20261026T090921_82b518c011",
+                "explanation": "All recorded fields matched exactly.",
+                "mismatches": []
+              }
+            ],
+            "horizon": 200
+          }
+        ]
+      }
+    },
+    "normal_ratio": 0.0,
+    "robust_ratio": 0.3,
+    "selection": "three fixed seed-3 discoveries, uniformly sampled",
+    "known_scenarios_are_not_unseen_stress": true
+  },
+  "baseline_verification": {
+    "3": {
+      "checkpoint": {
+        "checkpoint_id": "ppo_3_10240",
+        "training_run_id": "20261025T205339_64b622c146",
+        "path": "ppo_3_10240.zip",
+        "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+        "environment_id": "pump",
+        "observation_shape": [
+          6
+        ],
+        "action_shape": [
+          1
+        ],
+        "ppo_config": {
+          "learning_rate": 0.0003,
+          "n_steps": 128,
+          "batch_size": 32,
+          "n_epochs": 4,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "net_arch": [
+            64,
+            64
+          ],
+          "device": "cpu",
+          "torch_threads": 2
+        },
+        "training_seed": 3,
+        "training_timesteps": 10240,
+        "dependencies": {
+          "sirfex": "0.1.0",
+          "numpy": "2.5.4",
+          "gymnasium": "1.4.0",
+          "stable-baselines3": "2.9.0",
+          "torch": "2.14.1"
+        },
+        "observation_schema": "pump-calibrated:1",
+        "reward_schema": "pump-survival-tracking:2",
+        "policy_action_schema": "pump-normalized:1",
+        "termination_schema": "pump-terminate-on-violation:1"
+      },
+      "fingerprint": {
+        "sha256": "da340551d8c1e718fec0c5c93a8ea5f3b7f04dadb091816b9f7ecca72a68863b",
+        "num_timesteps": 10240,
+        "optimizer_state_entries": 13,
+        "current_progress_remaining": 0.0
+      },
+      "optimizer_restored": true,
+      "deterministic_inference": true
+    },
+    "17": {
+      "checkpoint": {
+        "checkpoint_id": "ppo_17_10240",
+        "training_run_id": "20261025T205339_64b622c146",
+        "path": "ppo_17_10240.zip",
+        "sha256": "05b5fe45c1f46b7eb28699bd4a1dc693e9c11d56fba3376211c5985168a9d333",
+        "environment_id": "pump",
+        "observation_shape": [
+          6
+        ],
+        "action_shape": [
+          1
+        ],
+        "ppo_config": {
+          "learning_rate": 0.0003,
+          "n_steps": 128,
+          "batch_size": 32,
+          "n_epochs": 4,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "net_arch": [
+            64,
+            64
+          ],
+          "device": "cpu",
+          "torch_threads": 2
+        },
+        "training_seed": 17,
+        "training_timesteps": 10240,
+        "dependencies": {
+          "sirfex": "0.1.0",
+          "numpy": "2.5.4",
+          "gymnasium": "1.4.0",
+          "stable-baselines3": "2.9.0",
+          "torch": "2.14.1"
+        },
+        "observation_schema": "pump-calibrated:1",
+        "reward_schema": "pump-survival-tracking:2",
+        "policy_action_schema": "pump-normalized:1",
+        "termination_schema": "pump-terminate-on-violation:1"
+      },
+      "fingerprint": {
+        "sha256": "adf3d06c827ec349df34106d86840b8fa9a95ddba700b535c9ab33c420dab583",
+        "num_timesteps": 10240,
+        "optimizer_state_entries": 13,
+        "current_progress_remaining": 0.0
+      },
+      "optimizer_restored": true,
+      "deterministic_inference": true
+    },
+    "41": {
+      "checkpoint": {
+        "checkpoint_id": "ppo_41_25600",
+        "training_run_id": "20261025T205339_64b622c146",
+        "path": "ppo_41_25600.zip",
+        "sha256": "48fe432e373aef9f64e55e0092f9b09ba95ef407bcc6d81f76a1f61432fd83f0",
+        "environment_id": "pump",
+        "observation_shape": [
+          6
+        ],
+        "action_shape": [
+          1
+        ],
+        "ppo_config": {
+          "learning_rate": 0.0003,
+          "n_steps": 128,
+          "batch_size": 32,
+          "n_epochs": 4,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "net_arch": [
+            64,
+            64
+          ],
+          "device": "cpu",
+          "torch_threads": 2
+        },
+        "training_seed": 41,
+        "training_timesteps": 25600,
+        "dependencies": {
+          "sirfex": "0.1.0",
+          "numpy": "2.5.4",
+          "gymnasium": "1.4.0",
+          "stable-baselines3": "2.9.0",
+          "torch": "2.14.1"
+        },
+        "observation_schema": "pump-calibrated:1",
+        "reward_schema": "pump-survival-tracking:2",
+        "policy_action_schema": "pump-normalized:1",
+        "termination_schema": "pump-terminate-on-violation:1"
+      },
+      "fingerprint": {
+        "sha256": "19d8da141feaf20831da5dcbd981a76bbc2f2bf13a945261d4600de698eb418e",
+        "num_timesteps": 25600,
+        "optimizer_state_entries": 13,
+        "current_progress_remaining": 0.0
+      },
+      "optimizer_restored": true,
+      "deterministic_inference": true
+    }
+  },
+  "known_stress_precheck": {
+    "3": {
+      "set_name": "known_stress_precheck",
+      "controller_id": "ppo",
+      "scenarios": 3,
+      "episodes": 3,
+      "constraint_violation_frequency": 1.0,
+      "maximum_violation_magnitude": 0.004208982657702323,
+      "mean_violation_magnitude": 0.002026470567602636,
+      "mean_tracking_error": 0.33989691855426707,
+      "worst_tracking_error": 0.4542089826577023,
+      "mean_reward": -3.7683617031444547,
+      "mean_episode_length": 28.666666666666668,
+      "execution_failures": 0,
+      "experiment_ids": [],
+      "full_horizon_frequency": 0.0,
+      "mean_duration_seconds": 2.866666666666667,
+      "episode_results": [
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.7161623150834033,
+              "demand": 0.7802454089749794,
+              "pump_capacity": 1.27872126936033,
+              "efficiency": 0.6476661927133296,
+              "leak": 0.11170798721969283
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": true,
+          "maximum_violation_magnitude": 0.004208982657702323,
+          "mean_tracking_error": 0.2726567260939446,
+          "maximum_tracking_error": 0.4542089826577023,
+          "time_to_first_violation_seconds": 3.3000000000000003,
+          "episode_reward": -3.279480282462317,
+          "episode_length": 33,
+          "duration_seconds": 3.3000000000000003,
+          "full_horizon": false,
+          "reward_components": {
+            "tracking_penalty": -12.384276281211102,
+            "actuator_penalty": -0.18341121215954095,
+            "constraint_penalty": -0.04208982657702323,
+            "alive_bonus": 33.0,
+            "terminal_penalty": -1.0,
+            "total": 19.390222680052336
+          }
+        },
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.1780790225044992,
+              "demand": 0.4311047452789358,
+              "pump_capacity": 0.5215812193419074,
+              "efficiency": 0.9550288752467151,
+              "leak": 0.02817815002074901
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": true,
+          "maximum_violation_magnitude": 0.00038406606440864743,
+          "mean_tracking_error": 0.40020741478173044,
+          "maximum_tracking_error": 0.4503840660644086,
+          "time_to_first_violation_seconds": 3.0,
+          "episode_reward": -5.028981905876491,
+          "episode_length": 30,
+          "duration_seconds": 3.0,
+          "full_horizon": false,
+          "reward_components": {
+            "tracking_penalty": -19.374944592517917,
+            "actuator_penalty": -0.18524575774701177,
+            "constraint_penalty": -0.0038406606440864743,
+            "alive_bonus": 30.0,
+            "terminal_penalty": -1.0,
+            "total": 9.435968989090984
+          }
+        },
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.30177446121325535,
+              "demand": 0.3910396169030367,
+              "pump_capacity": 0.6488788002253432,
+              "efficiency": 0.6330142737787615,
+              "leak": 0.03624126511337196
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": true,
+          "maximum_violation_magnitude": 0.0014863629806969383,
+          "mean_tracking_error": 0.3468266147871261,
+          "maximum_tracking_error": 0.45148636298069694,
+          "time_to_first_violation_seconds": 2.3000000000000003,
+          "episode_reward": -2.996622921094555,
+          "episode_length": 23,
+          "duration_seconds": 2.3000000000000003,
+          "full_horizon": false,
+          "reward_components": {
+            "tracking_penalty": -11.535011456748547,
+            "actuator_penalty": -0.11287005690741843,
+            "constraint_penalty": -0.014863629806969383,
+            "alive_bonus": 23.0,
+            "terminal_penalty": -1.0,
+            "total": 10.337254856537065
+          }
+        }
+      ],
+      "action_statistics": {
+        "count": 86,
+        "lower_bound_fraction": 0.0,
+        "upper_bound_fraction": 0.0,
+        "interior_fraction": 1.0,
+        "mean": 0.7421690700359123,
+        "std": 0.09539506769291126
+      },
+      "inference_mode": "deterministic",
+      "reward_schema": "pump-survival-tracking:2",
+      "mean_training_reward": 13.054482175226795,
+      "constraint_violation_count": 3,
+      "full_horizon_count": 0,
+      "time_to_first_violation_seconds": [
+        3.3000000000000003,
+        3.0,
+        2.3000000000000003
+      ],
+      "checkpoint_sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9"
+    },
+    "17": {
+      "set_name": "known_stress_precheck",
+      "controller_id": "ppo",
+      "scenarios": 3,
+      "episodes": 3,
+      "constraint_violation_frequency": 1.0,
+      "maximum_violation_magnitude": 0.013768275105889821,
+      "mean_violation_magnitude": 0.009483204002179689,
+      "mean_tracking_error": 0.3254901407004959,
+      "worst_tracking_error": 0.4637682751058898,
+      "mean_reward": -2.269000534943596,
+      "mean_episode_length": 19.0,
+      "execution_failures": 0,
+      "experiment_ids": [],
+      "full_horizon_frequency": 0.0,
+      "mean_duration_seconds": 1.9000000000000001,
+      "episode_results": [
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.7161623150834033,
+              "demand": 0.7802454089749794,
+              "pump_capacity": 1.27872126936033,
+              "efficiency": 0.6476661927133296,
+              "leak": 0.11170798721969283
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": true,
+          "maximum_violation_magnitude": 0.013768275105889821,
+          "mean_tracking_error": 0.2343133725621289,
+          "maximum_tracking_error": 0.4637682751058898,
+          "time_to_first_violation_seconds": 2.2,
+          "episode_reward": -1.7387450977138457,
+          "episode_length": 22,
+          "duration_seconds": 2.2,
+          "full_horizon": false,
+          "reward_components": {
+            "tracking_penalty": -6.616834937582955,
+            "actuator_penalty": -0.08453636331810695,
+            "constraint_penalty": -0.1376827510588982,
+            "alive_bonus": 22.0,
+            "terminal_penalty": -1.0,
+            "total": 14.160945948040041
+          }
+        },
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.1780790225044992,
+              "demand": 0.4311047452789358,
+              "pump_capacity": 0.5215812193419074,
+              "efficiency": 0.9550288752467151,
+              "leak": 0.02817815002074901
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": true,
+          "maximum_violation_magnitude": 0.0059577107193296355,
+          "mean_tracking_error": 0.3975530704917651,
+          "maximum_tracking_error": 0.4559577107193296,
+          "time_to_first_violation_seconds": 1.6,
+          "episode_reward": -2.631216369455717,
+          "episode_length": 16,
+          "duration_seconds": 1.6,
+          "full_horizon": false,
+          "reward_components": {
+            "tracking_penalty": -10.207892023594553,
+            "actuator_penalty": -0.07924336355707809,
+            "constraint_penalty": -0.059577107193296355,
+            "alive_bonus": 16.0,
+            "terminal_penalty": -1.0,
+            "total": 4.653287505655072
+          }
+        },
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.30177446121325535,
+              "demand": 0.3910396169030367,
+              "pump_capacity": 0.6488788002253432,
+              "efficiency": 0.6330142737787615,
+              "leak": 0.03624126511337196
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": true,
+          "maximum_violation_magnitude": 0.00872362618131961,
+          "mean_tracking_error": 0.3446039790475939,
+          "maximum_tracking_error": 0.4587236261813196,
+          "time_to_first_violation_seconds": 1.9000000000000001,
+          "episode_reward": -2.437040137661226,
+          "episode_length": 19,
+          "duration_seconds": 1.9000000000000001,
+          "full_horizon": false,
+          "reward_components": {
+            "tracking_penalty": -9.442587149841971,
+            "actuator_penalty": -0.07639335020073372,
+            "constraint_penalty": -0.0872362618131961,
+            "alive_bonus": 19.0,
+            "terminal_penalty": -1.0,
+            "total": 8.393783238144099
+          }
+        }
+      ],
+      "action_statistics": {
+        "count": 57,
+        "lower_bound_fraction": 0.0,
+        "upper_bound_fraction": 0.0,
+        "interior_fraction": 1.0,
+        "mean": 0.6454438316194635,
+        "std": 0.06898214113937713
+      },
+      "inference_mode": "deterministic",
+      "reward_schema": "pump-survival-tracking:2",
+      "mean_training_reward": 9.069338897279737,
+      "constraint_violation_count": 3,
+      "full_horizon_count": 0,
+      "time_to_first_violation_seconds": [
+        2.2,
+        1.6,
+        1.9000000000000001
+      ],
+      "checkpoint_sha256": "05b5fe45c1f46b7eb28699bd4a1dc693e9c11d56fba3376211c5985168a9d333"
+    },
+    "41": {
+      "set_name": "known_stress_precheck",
+      "controller_id": "ppo",
+      "scenarios": 3,
+      "episodes": 3,
+      "constraint_violation_frequency": 0.0,
+      "maximum_violation_magnitude": 0.0,
+      "mean_violation_magnitude": 0.0,
+      "mean_tracking_error": 0.34290716301969804,
+      "worst_tracking_error": 0.4067835658525268,
+      "mean_reward": -26.273483424333985,
+      "mean_episode_length": 200.0,
+      "execution_failures": 0,
+      "experiment_ids": [],
+      "full_horizon_frequency": 1.0,
+      "mean_duration_seconds": 20.0,
+      "episode_results": [
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.7161623150834033,
+              "demand": 0.7802454089749794,
+              "pump_capacity": 1.27872126936033,
+              "efficiency": 0.6476661927133296,
+              "leak": 0.11170798721969283
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": false,
+          "maximum_violation_magnitude": 0.0,
+          "mean_tracking_error": 0.3907110636210971,
+          "maximum_tracking_error": 0.4067835658525268,
+          "time_to_first_violation_seconds": null,
+          "episode_reward": -32.94669160270189,
+          "episode_length": 200,
+          "duration_seconds": 20.0,
+          "full_horizon": true,
+          "reward_components": {
+            "tracking_penalty": -124.87194177588214,
+            "actuator_penalty": -1.7287061587313426,
+            "constraint_penalty": 0.0,
+            "alive_bonus": 200.0,
+            "terminal_penalty": 0.0,
+            "total": 73.39935206538652
+          }
+        },
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.1780790225044992,
+              "demand": 0.4311047452789358,
+              "pump_capacity": 0.5215812193419074,
+              "efficiency": 0.9550288752467151,
+              "leak": 0.02817815002074901
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": false,
+          "maximum_violation_magnitude": 0.0,
+          "mean_tracking_error": 0.25561143217251064,
+          "maximum_tracking_error": 0.3158350122471071,
+          "time_to_first_violation_seconds": null,
+          "episode_reward": -14.660891309025564,
+          "episode_length": 200,
+          "duration_seconds": 20.0,
+          "full_horizon": true,
+          "reward_components": {
+            "tracking_penalty": -52.3566087780593,
+            "actuator_penalty": -1.5717391145107353,
+            "constraint_penalty": 0.0,
+            "alive_bonus": 200.0,
+            "terminal_penalty": 0.0,
+            "total": 146.07165210742997
+          }
+        },
+        {
+          "scenario": {
+            "environment_id": "pump",
+            "parameters": {
+              "dt": 0.1,
+              "horizon": 200,
+              "target_level": 0.5,
+              "min_level": 0.05,
+              "max_level": 0.95,
+              "initial_level": 0.30177446121325535,
+              "demand": 0.3910396169030367,
+              "pump_capacity": 0.6488788002253432,
+              "efficiency": 0.6330142737787615,
+              "leak": 0.03624126511337196
+            },
+            "seed": 320000,
+            "environment_version": "sirfex-pump:1",
+            "schema_version": "1",
+            "description": "Feasible operating shifts, separate from competence partitions",
+            "tags": [
+              "search"
+            ],
+            "provenance": {
+              "search_space_schema": "1"
+            }
+          },
+          "status": "completed",
+          "constraint_violation": false,
+          "maximum_violation_magnitude": 0.0,
+          "mean_tracking_error": 0.3823989932654864,
+          "maximum_tracking_error": 0.3945590946479153,
+          "time_to_first_violation_seconds": null,
+          "episode_reward": -31.2128673612745,
+          "episode_length": 200,
+          "duration_seconds": 20.0,
+          "full_horizon": true,
+          "reward_components": {
+            "tracking_penalty": -117.77582161288755,
+            "actuator_penalty": -1.7689119580526185,
+            "constraint_penalty": 0.0,
+            "alive_bonus": 200.0,
+            "terminal_penalty": 0.0,
+            "total": 80.45526642905983
+          }
+        }
+      ],
+      "action_statistics": {
+        "count": 600,
+        "lower_bound_fraction": 0.0016666666666666668,
+        "upper_bound_fraction": 0.0,
+        "interior_fraction": 0.9983333333333333,
+        "mean": 0.9149225719769796,
+        "std": 0.08837171023284555
+      },
+      "inference_mode": "deterministic",
+      "reward_schema": "pump-survival-tracking:2",
+      "mean_training_reward": 99.97542353395879,
+      "constraint_violation_count": 0,
+      "full_horizon_count": 3,
+      "time_to_first_violation_seconds": [
+        null,
+        null,
+        null
+      ],
+      "checkpoint_sha256": "48fe432e373aef9f64e55e0092f9b09ba95ef407bcc6d81f76a1f61432fd83f0"
+    }
+  }
+}
