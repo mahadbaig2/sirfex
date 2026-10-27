@@ -1,0 +1,4 @@
+{
+  "seeds": [3, 17],
+  "observation_stride": 5
+}

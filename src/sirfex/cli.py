@@ -161,6 +161,14 @@ def build_parser() -> argparse.ArgumentParser:
     train_compare.add_argument("training_run_id")
     train_verify = train_sub.add_parser("verify")
     train_verify.add_argument("training_run_id")
+    research = subparsers.add_parser("research", help="development-only policy research")
+    research.add_argument("--store", default="artifacts/research")
+    research.add_argument("--training-store", default="artifacts/training")
+    research_sub = research.add_subparsers(dest="research_command", required=True)
+    research_sub.add_parser("diagnose").add_argument("--config", required=True)
+    research_sub.add_parser("list")
+    research_sub.add_parser("show").add_argument("research_run_id")
+    research_sub.add_parser("verify").add_argument("research_run_id")
     return parser
 
 
@@ -396,6 +404,37 @@ def main(argv: list[str] | None = None) -> int:
                 return 0
         except (SearchStorageError, StorageError, ValueError, OSError, json.JSONDecodeError) as exc:
             parser.error(str(exc))
+    if args.command == "research":
+        from sirfex.research.store import ResearchStore
+        from sirfex.training.persistence import TrainingStore
+        from sirfex.training.protocol import content_hash
+
+        store = ResearchStore(args.store)
+        if args.research_command == "diagnose":
+            from sirfex.research.diagnostics import diagnose
+
+            with open(args.config, encoding="utf-8") as stream:
+                value = json.load(stream)
+            result = diagnose(value, TrainingStore(args.training_store), store)
+        elif args.research_command == "list":
+            result = store.list()
+        elif args.research_command == "show":
+            result = {
+                "manifest": store.read(args.research_run_id, "manifest.json"),
+                "summary": store.read(args.research_run_id, "summary.json"),
+            }
+        elif args.research_command == "verify":
+            manifest = store.read(args.research_run_id, "manifest.json")
+            protocol = store.read(args.research_run_id, "protocol.json")
+            if content_hash(protocol) != manifest["protocol_sha256"]:
+                raise ValueError("Research protocol hash mismatch")
+            result = {
+                "run_id": args.research_run_id,
+                "protocol_verified": True,
+                "status": manifest["status"],
+            }
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
     if args.command == "train":
         from sirfex.training.checkpoints import verify_checkpoint
         from sirfex.training.config import training_profile
@@ -599,8 +638,11 @@ def main(argv: list[str] | None = None) -> int:
                         )
                     print(
                         json.dumps(
-                            {"training_run_id": args.training_run_id,
-                             "protocol_verified": protocol_status, "checkpoints": verified},
+                            {
+                                "training_run_id": args.training_run_id,
+                                "protocol_verified": protocol_status,
+                                "checkpoints": verified,
+                            },
                             indent=2,
                             sort_keys=True,
                         )
