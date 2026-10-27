@@ -6,7 +6,7 @@ import pytest
 
 from sirfex.research.comparison import compare
 from sirfex.research.proposals import Proposal, validate_proposal
-from sirfex.research.providers import MockProvider
+from sirfex.research.providers import MockProvider, _groq_key
 from sirfex.research.store import ResearchStore
 from sirfex.research.workflow import _graph, validate_config
 
@@ -33,6 +33,15 @@ def config():
         "max_completion_tokens": 512,
         "wall_seconds": 120,
     }
+
+
+def test_local_env_key_fallback_and_process_precedence(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    (tmp_path / ".env").write_text("GROQ_API_KEY=local-test-value\n", encoding="utf-8")
+    assert _groq_key() == "local-test-value"
+    monkeypatch.setenv("GROQ_API_KEY", "process-test-value")
+    assert _groq_key() == "process-test-value"
 
 
 def test_registry_rejects_unknown_fields_holdout_and_budget():

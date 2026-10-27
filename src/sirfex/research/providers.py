@@ -6,9 +6,28 @@ import json
 import os
 import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from sirfex.training.protocol import content_hash
+
+
+def _groq_key() -> str | None:
+    """Prefer a process secret, then a small local .env file in the current directory."""
+    value = os.environ.get("GROQ_API_KEY")
+    if value:
+        return value
+    path = Path.cwd() / ".env"
+    try:
+        if path.stat().st_size > 8192:
+            return None
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
+    except OSError:
+        return None
+    for line in lines:
+        if line.startswith("GROQ_API_KEY="):
+            return line.partition("=")[2].strip().strip("\"'") or None
+    return None
 
 
 @dataclass(frozen=True)
@@ -139,7 +158,7 @@ class GroqProvider:
         self.timeout_seconds = timeout_seconds
 
     def propose(self, context: dict, *, max_completion_tokens: int) -> ModelResult:
-        key = os.environ.get("GROQ_API_KEY")
+        key = _groq_key()
         if not key:
             raise RuntimeError("GROQ_API_KEY is missing; use the offline mock or configure Groq")
         if not 128 <= max_completion_tokens <= 1536:

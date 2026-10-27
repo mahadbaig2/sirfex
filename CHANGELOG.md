@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added a local ignored `.env` fallback for the optional Groq key; process environment values take precedence.
+
 - Exercised Groq GPT-OSS 120B proposal generation, rejected unsupported evidence claims, added exact claim validation and bounded attempt history, and published a development-only proposal awaiting explicit training approval.
 
 - Added Phase 3.6 numerical policy diagnostics, strict optional agent proposals, bounded approval-gated research execution, local evidence memory, and an offline mock versus deterministic-selector software smoke. A live GPT-OSS improvement comparison remains unrun.
