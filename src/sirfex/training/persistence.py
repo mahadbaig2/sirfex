@@ -80,6 +80,14 @@ class TrainingStore:
             "paired_comparison.json",
             "replay_verification.json",
             "diagnostics.json",
+            "stress_benchmark.json",
+            "difficulty_strata.json",
+            "candidate_curricula.json",
+            "development_results.json",
+            "selected_curriculum.json",
+            "final_protocol.json",
+            "final_evaluation.json",
+            "paired_analysis.json",
         ):
             path = directory / name
             if path.resolve().parent != directory:

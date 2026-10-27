@@ -69,7 +69,9 @@ def validate_avoidable_evidence(experiments, failing_id, reference_id):
         }
 
 
-def run_avoidable(config, experiment_store, search_store, training_store, *, baseline=None):
+def run_avoidable(
+    config, experiment_store, search_store, training_store, *, baseline=None, excluded_scenarios=()
+):
     started = time.perf_counter()
     trials, wall = config.get("trials", 24), config.get("wall_seconds", 120)
     if type(trials) is not int or not 1 <= trials <= 100 or not 0 < wall <= 300:
@@ -84,7 +86,7 @@ def run_avoidable(config, experiment_store, search_store, training_store, *, bas
         raise ValueError("Avoidable search must declare a fixed horizon in 1..1000")
     controller_id = config.get("controller_id", "ppo")
     controller_config = config.get("controller_config", {})
-    excluded = []
+    excluded = list(excluded_scenarios)
     competence_verification = None
     competence_evaluations = 0
     replicated = False
@@ -116,7 +118,7 @@ def run_avoidable(config, experiment_store, search_store, training_store, *, bas
         competence_evaluations = len(validation)
         if not competence_verification["passed"]:
             raise ValueError("Selected PPO does not currently pass the frozen competence gate")
-        excluded = [
+        excluded += [
             Scenario.from_dict(row["scenario"]) for group in groups.values() for row in group
         ]
         controller_config = {"checkpoint": meta.to_dict()}

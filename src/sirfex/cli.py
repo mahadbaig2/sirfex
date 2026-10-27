@@ -125,6 +125,12 @@ def build_parser() -> argparse.ArgumentParser:
     matched_source.add_argument("--config")
     matched_source.add_argument("--study")
     matched.add_argument("--prepare-only", action="store_true")
+    phase34 = train_sub.add_parser("phase-3-4")
+    phase34_source = phase34.add_mutually_exclusive_group(required=True)
+    phase34_source.add_argument("--config")
+    phase34_source.add_argument("--study")
+    phase34.add_argument("--stage", choices=("prepare", "screen", "confirm"), required=True)
+    phase34.add_argument("--allow-extended", action="store_true")
     for command in ("diagnose", "feasibility"):
         train_sub.add_parser(command).add_argument("--search", action="append")
     for command in ("learning-curve", "validate"):
@@ -393,6 +399,38 @@ def main(argv: list[str] | None = None) -> int:
 
         training_store = TrainingStore(args.store)
         try:
+            if args.train_command == "phase-3-4":
+                from sirfex.training.phase34 import confirm, prepare, screen
+
+                if args.stage == "prepare":
+                    if not args.config:
+                        raise ValueError("Preparation requires --config")
+                    with open(args.config, encoding="utf-8") as stream:
+                        value = json.load(stream)
+                    result = prepare(
+                        value,
+                        training_store,
+                        SearchStore(args.search_store),
+                        ExperimentStore(args.experiment_store),
+                        allow_extended=args.allow_extended,
+                    )
+                else:
+                    if not args.study:
+                        raise ValueError("Screening and confirmation require --study")
+                    result = (
+                        screen(args.study, training_store)
+                        if args.stage == "screen"
+                        else confirm(
+                            args.study, training_store, ExperimentStore(args.experiment_store)
+                        )
+                    )
+                print(json.dumps(result, indent=2))
+                return (
+                    0
+                    if result["status"]
+                    in {"prepared", "selected", "no_eligible_curriculum", "completed"}
+                    else 1
+                )
             if args.train_command == "robustness-study":
                 from sirfex.training.matched_study import prepare_study, run_prepared_study
 
