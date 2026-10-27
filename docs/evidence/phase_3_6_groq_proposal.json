@@ -63,6 +63,61 @@
     "final_holdouts_allowed": false,
     "configuration_hash": "0ae73dffce763d21e3c402de3d6898b50a90f6049d26193365d47643d4178cbb"
   },
+  "matched_non_llm_plan": {
+    "run_id": "20261027T204429_5bd98f576d",
+    "status": "awaiting_approval",
+    "proposal": {
+      "schema_version": "sirfex-agent-proposal:1",
+      "hypothesis": "A fixed warmup followed by modest stress may preserve ordinary control.",
+      "supporting_evidence": [
+        {
+          "type": "diagnostic",
+          "artifact_id": "20261027T191840_736f65993d",
+          "claim": "Shared development observations showed higher physical pump commands for stress-trained policies than normal-only continuation."
+        }
+      ],
+      "starting_seed": 3,
+      "training_timesteps": 51200,
+      "intervention": {
+        "type": "scheduled_curriculum",
+        "stress_pool": "expanded_7",
+        "schedule": [
+          {
+            "until_step": 25600,
+            "stress_fraction": 0.05
+          },
+          {
+            "until_step": 51200,
+            "stress_fraction": 0.05
+          }
+        ]
+      },
+      "evaluation_policy": "development_only",
+      "expected_effect": "A fixed 5% stress target may improve development stress tracking.",
+      "possible_failure_mode": "The fixed stress target may worsen nominal tracking."
+    },
+    "validation": {
+      "status": "valid",
+      "reasons": [],
+      "schema_version": "sirfex-agent-proposal:1",
+      "configuration_hash": "d102ad7179867501ae86cd29a4925b3a34d46f8e1fd8774b03d7f35e97b3e00b"
+    },
+    "plan": {
+      "schema_version": "sirfex-research-plan:1",
+      "starting_checkpoint_sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+      "development_hashes": {
+        "nominal": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+        "stress": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5"
+      },
+      "training_timesteps": 51200,
+      "continuation_seed": 5003,
+      "estimated_ppo_seconds_at_480_sps": 106.66666666666667,
+      "human_approval_required": true,
+      "final_holdouts_allowed": false,
+      "configuration_hash": "d102ad7179867501ae86cd29a4925b3a34d46f8e1fd8774b03d7f35e97b3e00b"
+    },
+    "review_note": "The selector's original hypothesis says warmup, but its actual schedule is fixed 5% stress throughout. The code wording is corrected for future proposals; this frozen artifact is unchanged."
+  },
   "model_usage": {
     "provider_calls": 2,
     "llm_calls": 2,

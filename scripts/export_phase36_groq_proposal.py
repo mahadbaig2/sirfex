@@ -8,6 +8,7 @@ from sirfex.training.checkpoints import write_json
 
 RUN_ID = "20261027T204121_e995acd6e5"
 REJECTED_RUN_ID = "20261027T204002_b08085ec00"
+BASELINE_RUN_ID = "20261027T204429_5bd98f576d"
 
 
 def main() -> None:
@@ -17,6 +18,14 @@ def main() -> None:
         raise ValueError("Expected a pending proposal")
     usage = store.read(RUN_ID, "model_usage.json")
     plan = store.read(RUN_ID, "plan.json")
+    baseline_plan = store.read(BASELINE_RUN_ID, "plan.json")
+    if (
+        plan["starting_checkpoint_sha256"] != baseline_plan["starting_checkpoint_sha256"]
+        or plan["development_hashes"] != baseline_plan["development_hashes"]
+        or plan["continuation_seed"] != baseline_plan["continuation_seed"]
+        or plan["training_timesteps"] != baseline_plan["training_timesteps"]
+    ):
+        raise ValueError("Pilot plans do not match on the required contract")
     payload = {
         "schema_version": "sirfex-groq-proposal-public:1",
         "run_id": RUN_ID,
@@ -25,6 +34,18 @@ def main() -> None:
         "proposal": store.read(RUN_ID, "proposals.json"),
         "validation": store.read(RUN_ID, "validation.json"),
         "plan": plan,
+        "matched_non_llm_plan": {
+            "run_id": BASELINE_RUN_ID,
+            "status": store.read(BASELINE_RUN_ID, "manifest.json")["status"],
+            "proposal": store.read(BASELINE_RUN_ID, "proposals.json"),
+            "validation": store.read(BASELINE_RUN_ID, "validation.json"),
+            "plan": baseline_plan,
+            "review_note": (
+                "The selector's original hypothesis says warmup, but its actual "
+                "schedule is fixed 5% stress throughout. The code wording is corrected "
+                "for future proposals; this frozen artifact is unchanged."
+            ),
+        },
         "model_usage": {
             "provider_calls": usage["provider_calls"],
             "llm_calls": usage["llm_calls"],

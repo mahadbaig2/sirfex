@@ -93,9 +93,7 @@ class DeterministicBaselineProvider:
         midpoint = steps // 2 // 128 * 128
         proposal = {
             "schema_version": "sirfex-agent-proposal:1",
-            "hypothesis": (
-                "A fixed warmup followed by modest stress may preserve ordinary control."
-            ),
+            "hypothesis": "A fixed 5% stress target may preserve ordinary control.",
             "supporting_evidence": [
                 {
                     "type": "diagnostic",

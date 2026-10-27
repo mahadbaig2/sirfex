@@ -17,4 +17,4 @@ sirfex research verify <research-run-id>
 sirfex research compare <agent-run-id> <non-llm-run-id>
 ```
 
-Inspect `sirfex research show` and the local `plan.json` before approving. `configs/research/agent_pilot.json` selects Groq. The [frozen public proposal](evidence/phase_3_6_groq_proposal.json) records the exact intervention awaiting separate approval for meaningful PPO continuation.
+Inspect `sirfex research show` and the local `plan.json` before approving. `configs/research/agent_pilot.json` selects Groq; `configs/research/non_llm_pilot.json` selects its fixed 5% comparator. The [frozen public plans](evidence/phase_3_6_groq_proposal.json) record both exact interventions awaiting separate approval for meaningful PPO continuation.
