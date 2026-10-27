@@ -1,0 +1,10 @@
+{
+  "source_status": "no_eligible_curriculum",
+  "source_final_files_absent": true,
+  "final_hashes": {
+    "final_stress": "c992525e1f9e382432dfe3fceebef0a0e9339a16432a4767fb12455687816226",
+    "final_nominal": "da86e081c624fe65009d89505c48c7760d0a2692070b6c7e7d463dfa886f1f94"
+  },
+  "source_screen_sampled_final_count": 0,
+  "leakage_check_passed": true
+}

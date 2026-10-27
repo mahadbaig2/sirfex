@@ -131,6 +131,11 @@ def build_parser() -> argparse.ArgumentParser:
     phase34_source.add_argument("--study")
     phase34.add_argument("--stage", choices=("prepare", "screen", "confirm"), required=True)
     phase34.add_argument("--allow-extended", action="store_true")
+    phase35 = train_sub.add_parser("phase-3-5")
+    phase35_source = phase35.add_mutually_exclusive_group(required=True)
+    phase35_source.add_argument("--config")
+    phase35_source.add_argument("--study")
+    phase35.add_argument("--stage", choices=("prepare", "screen", "confirm"), required=True)
     for command in ("diagnose", "feasibility"):
         train_sub.add_parser(command).add_argument("--search", action="append")
     for command in ("learning-curve", "validate"):
@@ -399,6 +404,38 @@ def main(argv: list[str] | None = None) -> int:
 
         training_store = TrainingStore(args.store)
         try:
+            if args.train_command == "phase-3-5":
+                from sirfex.training.phase35 import confirm, prepare, screen
+
+                if args.stage == "prepare":
+                    if not args.config:
+                        raise ValueError("Preparation requires --config")
+                    with open(args.config, encoding="utf-8") as stream:
+                        value = json.load(stream)
+                    result = prepare(value, training_store)
+                else:
+                    if not args.study:
+                        raise ValueError("Screening and confirmation require --study")
+                    result = (
+                        screen(args.study, training_store)
+                        if args.stage == "screen"
+                        else confirm(
+                            args.study, training_store, ExperimentStore(args.experiment_store)
+                        )
+                    )
+                print(json.dumps(result, indent=2))
+                return (
+                    0
+                    if result["status"]
+                    in {
+                        "prepared",
+                        "selected_curriculum",
+                        "no_eligible_curriculum",
+                        "insufficient_exposure",
+                        "completed",
+                    }
+                    else 1
+                )
             if args.train_command == "phase-3-4":
                 from sirfex.training.phase34 import confirm, prepare, screen
 

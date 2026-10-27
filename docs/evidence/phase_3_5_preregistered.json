@@ -1,0 +1,98 @@
+{
+  "schema_version": "phase-3.5-protocol:1",
+  "source_phase_3_4": "20261027T135821_f307f4551c",
+  "source_phase_3_2": "20261025T205339_64b622c146",
+  "selection_uses_final_outcomes": false,
+  "sampler": "interaction-debt:1",
+  "sampler_reason": "Phase 3.4 probability arms saw one stress episode each at 5120 steps; episode-boundary interaction targets reduce exposure variance.",
+  "candidates": [
+    {
+      "id": "normal",
+      "target_stress_interaction_fraction": 0.0
+    },
+    {
+      "id": "expanded_5",
+      "target_stress_interaction_fraction": 0.05
+    },
+    {
+      "id": "expanded_10",
+      "target_stress_interaction_fraction": 0.1
+    }
+  ],
+  "screen_seeds": [
+    "3",
+    "17"
+  ],
+  "confirm_seeds": [
+    "3",
+    "17",
+    "41"
+  ],
+  "continuation_seed_offset": 5000,
+  "screen_steps_per_arm": 51200,
+  "confirm_steps_per_arm": 51200,
+  "total_step_cap": 614400,
+  "wall_seconds": 5400,
+  "exposure_gate": {
+    "stress_completed_episodes": 10,
+    "stress_interactions": 1000,
+    "distinct_discoveries": 3
+  },
+  "selection_policy": {
+    "nominal_relative_mae_max": 0.1,
+    "nominal_violation_increase_max": 0,
+    "stress_violation_increase_max": 0,
+    "execution_failure_increase_max": 0,
+    "development_stress_mae_gain_min": 0.005
+  },
+  "selection_rule": "Each candidate must pass exposure and all development guards on both screen seeds; choose lowest mean stress violation, then lowest mean stress MAE, then stable ID.",
+  "baseline_sha256": {
+    "3": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+    "17": "05b5fe45c1f46b7eb28699bd4a1dc693e9c11d56fba3376211c5985168a9d333",
+    "41": "48fe432e373aef9f64e55e0092f9b09ba95ef407bcc6d81f76a1f61432fd83f0"
+  },
+  "baseline_fingerprint": {
+    "3": "da340551d8c1e718fec0c5c93a8ea5f3b7f04dadb091816b9f7ecca72a68863b",
+    "17": "adf3d06c827ec349df34106d86840b8fa9a95ddba700b535c9ab33c420dab583",
+    "41": "19d8da141feaf20831da5dcbd981a76bbc2f2bf13a945261d4600de698eb418e"
+  },
+  "training_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+  "development_nominal_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+  "development_stress_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+  "final_hashes": {
+    "final_stress": "c992525e1f9e382432dfe3fceebef0a0e9339a16432a4767fb12455687816226",
+    "final_nominal": "da86e081c624fe65009d89505c48c7760d0a2692070b6c7e7d463dfa886f1f94"
+  },
+  "discovery_pool_hash": "73478ecd1cc599009389cc7cdba29f5d40acb9f2a94b4ec8082337a4c0d90261",
+  "discovery_ids": {
+    "9981a7669b7649c2d6681efb5ba50951878418f1f00955918bf64b04d4f2e640": "disc_05c97a1dec_0000",
+    "eaeeebf846882bf065351226322b46fb7b45feb40679343998acd53997d3ffe2": "disc_05c97a1dec_0001",
+    "b9567fd09fa8eceb9f506e02358890074702dde05f0815f0d870efc8b4980f61": "disc_05c97a1dec_0002",
+    "a888b04e8e58b41e22562dad9e5931ee28ea1330cd4e43c54a46bebfdf4f04af": "disc_2ba26db7df_0001",
+    "35304df80a456b68401de296205fe64c1fa0aaa33472054a7af0f27f444f70c8": "disc_2ba26db7df_0000",
+    "373e15e7c873591c7f8f443898ac634e26fd7513a738107acdfb6aea50f1331d": "disc_2ba26db7df_0003",
+    "09f7b0a16684a3e04550b42608f0afc0b6085a9023ea58777191b7fde6aaeabf": "disc_2ba26db7df_0002"
+  },
+  "contracts": {
+    "observation": "pump-calibrated:1",
+    "action": "pump-normalized:1",
+    "reward": "pump-survival-tracking:2",
+    "termination": "pump-terminate-on-violation:1"
+  },
+  "final_analysis": {
+    "primary": "held-out feasible-stress violation frequency",
+    "co_primary": "held-out feasible-stress mean absolute tracking error",
+    "frequency_floor_fallback": "use co-primary tracking if both arms have zero violation frequency",
+    "nominal_tracking_relative_max": 0.1,
+    "nominal_violation_increase_max": 0,
+    "execution_failure_increase_max": 0,
+    "independent_unit": "baseline policy training seed",
+    "paired_bootstrap": "5000 draws, seed 3101; exploratory at n=3",
+    "improved": "all seeds pass nominal guards and improve at least one held-out co-primary with none worse",
+    "regressed": "any completed nominal/safety guardrail fails",
+    "otherwise": "inconclusive"
+  },
+  "final_primary": "final feasible-stress violation frequency",
+  "final_co_primary": "final feasible-stress mean absolute tracking error",
+  "final_independent_unit": "baseline policy training seed"
+}
