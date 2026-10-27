@@ -40,7 +40,13 @@ def verified_discoveries(training) -> dict[str, dict]:
 
 
 def evidence_context(
-    training, research, *, diagnostic_run_id: str, starting_seed: int, training_timesteps: int
+    training,
+    research,
+    *,
+    diagnostic_run_id: str,
+    starting_seed: int,
+    training_timesteps: int,
+    include_claims: bool = False,
 ) -> tuple[dict, dict]:
     diagnostic = research.read(diagnostic_run_id, "manifest.json")
     protocol = research.read(diagnostic_run_id, "protocol.json")
@@ -90,6 +96,30 @@ def evidence_context(
         ],
         "evaluation_policy": "development_only",
     }
+    if include_claims:
+        catalog = {
+            diagnostic_run_id: {
+                "type": "diagnostic",
+                "claim": (
+                    "Shared development observations showed higher physical pump commands "
+                    "for stress-trained policies than normal-only continuation."
+                ),
+            },
+            source35["manifest"]["training_run_id"]: {
+                "type": "historical",
+                "claim": (
+                    "Phase 3.5 stress curricula improved development stress tracking on both "
+                    "seeds, but neither preserved nominal performance across both seeds."
+                ),
+            },
+        }
+        for discovery_id in discoveries:
+            catalog[discovery_id] = {
+                "type": "discovery",
+                "claim": "This scenario is a replay-verified, physically viable avoidable failure.",
+            }
+        context["schema_version"] = "sirfex-research-context:2"
+        context["evidence_claim_catalog"] = catalog
     local = {
         "evidence_ids": {diagnostic_run_id, source35["manifest"]["training_run_id"]},
         "discoveries": discoveries,
@@ -99,6 +129,8 @@ def evidence_context(
             "stress": source35["protocol"]["development_stress_hash"],
         },
     }
+    if include_claims:
+        local["claim_catalog"] = catalog
     if len(str(context)) > 8000:
         raise ValueError("Evidence context is not minimized")
     return context, local

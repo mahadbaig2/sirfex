@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Exercised Groq GPT-OSS 120B proposal generation, rejected unsupported evidence claims, added exact claim validation and bounded attempt history, and published a development-only proposal awaiting explicit training approval.
+
 - Added Phase 3.6 numerical policy diagnostics, strict optional agent proposals, bounded approval-gated research execution, local evidence memory, and an offline mock versus deterministic-selector software smoke. A live GPT-OSS improvement comparison remains unrun.
 
 - Added Phase 3.5 exact curriculum transition accounting, a frozen exposure adequacy gate, episode-boundary interaction targets, a two-seed development screen and gated matched confirmation workflow. Published the protocol and neutral calibration before candidate outcome evaluation.

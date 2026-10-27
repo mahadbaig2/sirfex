@@ -114,6 +114,30 @@ def test_graph_terminates_at_approval_and_deduplicates():
     assert duplicate["provider_calls"] == 1
 
 
+def test_catalog_rejects_fabricated_claim_for_real_discovery():
+    value = MockProvider().propose(context(), max_completion_tokens=512).data
+    value["supporting_evidence"] = [
+        {
+            "type": "discovery",
+            "artifact_id": "discovery_123",
+            "claim": "This discovery proves a curriculum preserves nominal performance.",
+        }
+    ]
+    result = validate_proposal(
+        Proposal.model_validate(value),
+        evidence_ids={"diagnostic_123"},
+        discovery_ids={"discovery_123"},
+        max_steps=256,
+        claim_catalog={
+            "discovery_123": {
+                "type": "discovery",
+                "claim": "This scenario is a replay-verified, physically viable avoidable failure.",
+            }
+        },
+    )
+    assert result["reasons"] == ["unsupported_evidence_claim:discovery_123"]
+
+
 def test_provider_failure_is_recorded_without_training():
     class Failing:
         def propose(self, *args, **kwargs):
@@ -155,6 +179,7 @@ def test_invalid_output_retries_at_most_twice():
     assert state["status"] == "rejected"
     assert state["provider_calls"] == 2
     assert state["validation"]["reasons"] == ["invalid_structured_proposal"]
+    assert len(state["attempts"]) == 2
 
 
 def test_compare_rejects_incomplete_run(tmp_path):

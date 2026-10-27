@@ -92,6 +92,7 @@ def validate_proposal(
     discovery_ids: set[str],
     max_steps: int,
     allowed_seeds: set[int] = frozenset({3, 17}),
+    claim_catalog: dict[str, dict] | None = None,
 ) -> dict:
     """Independent allowlist validation; an LLM cannot approve its own output."""
     failures = []
@@ -103,6 +104,14 @@ def validate_proposal(
         allowed = discovery_ids if ref.type == "discovery" else evidence_ids
         if ref.artifact_id not in allowed:
             failures.append(f"unknown_{ref.type}_evidence:{ref.artifact_id}")
+        if claim_catalog is not None:
+            canonical = claim_catalog.get(ref.artifact_id)
+            if (
+                canonical is None
+                or ref.type != canonical["type"]
+                or ref.claim != canonical["claim"]
+            ):
+                failures.append(f"unsupported_evidence_claim:{ref.artifact_id}")
     intervention = proposal.intervention
     if isinstance(intervention, ScheduledCurriculum):
         endpoints = [segment.until_step for segment in intervention.schedule]

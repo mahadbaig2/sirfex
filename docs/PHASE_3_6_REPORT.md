@@ -2,7 +2,7 @@
 
 ## Outcome
 
-Phase 3.6A numerical diagnostics are complete and published in [the diagnostic report](POLICY_REGRESSION_DIAGNOSTICS.md). Phase 3.6B implements a bounded optional research workflow and has passed a matched offline software smoke. **The agent-versus-non-LLM scientific question remains unanswered.** No live Groq request or meaningful 51,200-step agent pilot was performed; no API key was configured and a concrete pilot proposal has not been approved for training.
+Phase 3.6A numerical diagnostics are complete and published in [the diagnostic report](POLICY_REGRESSION_DIAGNOSTICS.md). Phase 3.6B implements a bounded optional research workflow and has passed a matched offline software smoke. **The agent-versus-non-LLM scientific question remains unanswered.** A live Groq 120B proposal has now been validated and frozen for review. No meaningful 51,200-step agent pilot has been approved or performed.
 
 ## Measured diagnostic evidence
 
@@ -14,8 +14,10 @@ Strict Pydantic proposals, semantic evidence validation, deduplication, bounded 
 
 ## Software smoke and limitation
 
-The offline mock and non-LLM selector each completed a 256-interaction continuation from the same seed-3 checkpoint. Each recorded 15 stress interactions, nominal development MAE 0.054527, and stress development MAE 0.270660. Both decisions were `smoke_inconclusive`, and their numerical differences were zero for this tiny run. The [comparison report](AGENT_VS_BASELINE_EVALUATION.md) explains why these are pipeline checks only. The Groq-path no-key probe ended `provider_failed` before proposal validation or training. Final holdouts were not accessed.
+The offline mock and non-LLM selector each completed a 256-interaction continuation from the same seed-3 checkpoint. Each recorded 15 stress interactions, nominal development MAE 0.054527, and stress development MAE 0.270660. Both decisions were `smoke_inconclusive`, and their numerical differences were zero for this tiny run. The [comparison report](AGENT_VS_BASELINE_EVALUATION.md) explains why these are pipeline checks only. The earlier Groq-path no-key probe ended `provider_failed` before proposal validation or training. Final holdouts were not accessed.
 
 ## Scientific status and next gate
 
-The numerical evidence suggests testable hypotheses about stress-induced command shifts but does not prove a cause or robustness gain. Meaningful comparison needs a live, validated GPT-OSS proposal, explicit approval for its specified 51,200-step continuation, a matched non-LLM arm, and development-only evaluation. Any confirmatory final evaluation would need a separately frozen protocol. Automatic PPO resume and a live model-based results critic are not yet validated; existing deterministic records remain authoritative.
+The numerical evidence suggests testable hypotheses about stress-induced command shifts but does not prove a cause or robustness gain. Meaningful comparison needs explicit approval for the [validated GPT-OSS proposal](evidence/phase_3_6_groq_proposal.json), its specified 51,200-step continuation, a matched non-LLM arm, and development-only evaluation. An earlier model proposal was rejected because its citations claimed curriculum results absent from the cited discoveries; exact-claim validation now prevents that error. The accepted run made two model calls; the first rejected call's details were not preserved by the earlier attempt-history implementation. Future calls persist each attempt. Any confirmatory final evaluation would need a separately frozen protocol. Automatic PPO resume and a live model-based results critic are not yet validated; existing deterministic records remain authoritative.
+
+The accepted proposal's prose refers to a “0.1 MAE guardrail,” which is inaccurate. The frozen seed-3 gate is a 10% *relative* increase over the equal-budget normal-only MAE of 0.01772558784423355, yielding a limit of 0.019498146628656905. The deterministic gate uses that rule regardless of the model's wording. The schedule ends at 10% stress exposure, a level that previously breached seed 3's nominal guardrail under a different fixed curriculum; the new schedule remains a hypothesis, not a predicted success.

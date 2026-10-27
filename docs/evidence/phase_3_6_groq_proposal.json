@@ -1,0 +1,87 @@
+{
+  "schema_version": "sirfex-groq-proposal-public:1",
+  "run_id": "20261027T204121_e995acd6e5",
+  "status": "awaiting_approval",
+  "provider_model": "openai/gpt-oss-120b",
+  "proposal": {
+    "schema_version": "sirfex-agent-proposal:1",
+    "hypothesis": "Introducing a short, low\u2011stress curriculum segment early in training will reduce the physical pump command shift observed in stress\u2011trained policies while preserving the low tracking error of nominal training across both seeds.",
+    "supporting_evidence": [
+      {
+        "type": "historical",
+        "artifact_id": "20261027T143749_d88d2dd37f",
+        "claim": "Phase 3.5 stress curricula improved development stress tracking on both seeds, but neither preserved nominal performance across both seeds."
+      },
+      {
+        "type": "diagnostic",
+        "artifact_id": "20261027T191840_736f65993d",
+        "claim": "Shared development observations showed higher physical pump commands for stress-trained policies than normal-only continuation."
+      },
+      {
+        "type": "discovery",
+        "artifact_id": "disc_05c97a1dec_0000",
+        "claim": "This scenario is a replay-verified, physically viable avoidable failure."
+      }
+    ],
+    "starting_seed": 3,
+    "training_timesteps": 51200,
+    "intervention": {
+      "type": "scheduled_curriculum",
+      "stress_pool": "expanded_7",
+      "schedule": [
+        {
+          "until_step": 10240,
+          "stress_fraction": 0.05
+        },
+        {
+          "until_step": 51200,
+          "stress_fraction": 0.1
+        }
+      ]
+    },
+    "evaluation_policy": "development_only",
+    "expected_effect": "A modest reduction in mean tracking error under stress (target <0.055) and a smaller increase in physical pump command magnitude (target <0.10 absolute shift) compared with the full\u2011stress curriculum, while keeping nominal performance within the 0.1 MAE guardrail.",
+    "possible_failure_mode": "If the low\u2011stress segment is too brief, the policy may not acquire sufficient robustness, leading to higher constraint violation frequency under stress or a regression to nominal performance levels."
+  },
+  "validation": {
+    "status": "valid",
+    "reasons": [],
+    "schema_version": "sirfex-agent-proposal:1",
+    "configuration_hash": "0ae73dffce763d21e3c402de3d6898b50a90f6049d26193365d47643d4178cbb"
+  },
+  "plan": {
+    "schema_version": "sirfex-research-plan:1",
+    "starting_checkpoint_sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+    "development_hashes": {
+      "nominal": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "stress": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5"
+    },
+    "training_timesteps": 51200,
+    "continuation_seed": 5003,
+    "estimated_ppo_seconds_at_480_sps": 106.66666666666667,
+    "human_approval_required": true,
+    "final_holdouts_allowed": false,
+    "configuration_hash": "0ae73dffce763d21e3c402de3d6898b50a90f6049d26193365d47643d4178cbb"
+  },
+  "model_usage": {
+    "provider_calls": 2,
+    "llm_calls": 2,
+    "input_tokens": 3812,
+    "output_tokens": 1050,
+    "estimated_usd": 0.0012017999999999998,
+    "request_latencies_seconds": [
+      2.192537999999331,
+      1.6405211000001145
+    ]
+  },
+  "earlier_rejected_proposal": {
+    "run_id": "20261027T204002_b08085ec00",
+    "status": "rejected",
+    "reason": "unsupported_evidence_claim",
+    "training_executed": false
+  },
+  "attempt_accounting_limit": "The accepted run used two model calls. The first rejected call was not preserved in the original attempt-history format; later runs retain it.",
+  "training_executed": false,
+  "final_holdouts_accessed": false,
+  "review_note": "The model's '0.1 MAE guardrail' wording is inaccurate. The frozen rule allows at most 10% relative nominal MAE increase over the equal-budget normal control: seed-3 limit 0.019498146628656905. The model cannot alter it."
+}

@@ -22,6 +22,8 @@ def validate_saved(run_id, training, research) -> dict:
         diagnostic_run_id=config["diagnostic_run_id"],
         starting_seed=config["starting_seed"],
         training_timesteps=config["training_timesteps"],
+        include_claims=protocol.get("evidence_context_schema_version")
+        == "sirfex-research-context:2",
     )
     if content_hash(context) != protocol["evidence_context_sha256"]:
         raise ValueError("Research evidence context changed")
@@ -32,6 +34,7 @@ def validate_saved(run_id, training, research) -> dict:
         discovery_ids=set(local["discoveries"]),
         max_steps=config["training_timesteps"],
         allowed_seeds={config["starting_seed"]},
+        claim_catalog=local.get("claim_catalog"),
     )
     expected = proposal_hash(
         proposal,

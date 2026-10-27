@@ -37,6 +37,7 @@ class ProposalState(TypedDict, total=False):
     error_type: str
     proposal_hash: str
     plan: dict
+    attempts: list[dict]
 
 
 def validate_config(value: dict) -> dict:
@@ -138,8 +139,11 @@ def _graph(provider, config, local, previous):
         if remaining < 128:
             return {"status": "token_budget_exhausted"}
         try:
+            prompt_context = dict(state["context"])
+            if state.get("validation", {}).get("status") == "rejected":
+                prompt_context["previous_rejection"] = state["validation"]["reasons"]
             response = provider.propose(
-                state["context"],
+                prompt_context,
                 max_completion_tokens=min(config["max_completion_tokens"], remaining),
             )
         except Exception as exc:
@@ -149,6 +153,14 @@ def _graph(provider, config, local, previous):
                 "provider_calls": calls,
                 "llm_calls": state.get("llm_calls", 0)
                 + (1 if config["method"] == "groq_agent" else 0),
+                "attempts": state.get("attempts", [])
+                + [
+                    {
+                        "call_index": calls,
+                        "status": "provider_failed",
+                        "error_type": type(exc).__name__,
+                    }
+                ],
             }
         in_total = state.get("input_tokens", 0) + response.input_tokens
         out_total = state.get("output_tokens", 0) + response.output_tokens
@@ -180,6 +192,7 @@ def _graph(provider, config, local, previous):
                 discovery_ids=set(local["discoveries"]),
                 max_steps=config["training_timesteps"],
                 allowed_seeds={config["starting_seed"]},
+                claim_catalog=local.get("claim_catalog"),
             )
             if result["status"] == "valid":
                 digest = proposal_hash(
@@ -196,6 +209,15 @@ def _graph(provider, config, local, previous):
                 "proposal_data": proposal.model_dump(mode="json"),
                 "validation": result,
                 "status": "validated" if result["status"] == "valid" else "rejected",
+                "attempts": state.get("attempts", [])
+                + [
+                    {
+                        "call_index": state["provider_calls"],
+                        "status": result["status"],
+                        "reasons": result["reasons"],
+                        "proposal_sha256": content_hash(proposal.model_dump(mode="json")),
+                    }
+                ],
             }
         except Exception as exc:
             return {
@@ -205,6 +227,15 @@ def _graph(provider, config, local, previous):
                     "error_type": type(exc).__name__,
                 },
                 "status": "rejected",
+                "attempts": state.get("attempts", [])
+                + [
+                    {
+                        "call_index": state["provider_calls"],
+                        "status": "rejected",
+                        "reasons": ["invalid_structured_proposal"],
+                        "error_type": type(exc).__name__,
+                    }
+                ],
             }
 
     def planner(state: ProposalState) -> dict:
@@ -263,6 +294,7 @@ def propose(config_value: dict, training, research: ResearchStore) -> dict:
         diagnostic_run_id=config["diagnostic_run_id"],
         starting_seed=config["starting_seed"],
         training_timesteps=config["training_timesteps"],
+        include_claims=True,
     )
     previous = _previous_hashes(research)
     provider = _provider(config["method"])
@@ -271,6 +303,7 @@ def propose(config_value: dict, training, research: ResearchStore) -> dict:
         "config": config,
         "prompt_template_version": PROMPT_VERSION,
         "evidence_context_sha256": content_hash(context),
+        "evidence_context_schema_version": context["schema_version"],
         "development_hashes": local["development_hashes"],
         "source_checkpoint_sha256": local["baseline_metadata"]["sha256"],
         "final_holdout_access": False,
@@ -300,6 +333,7 @@ def propose(config_value: dict, training, research: ResearchStore) -> dict:
             {
                 "context": context,
                 "model_usage": [],
+                "attempts": [],
                 "provider_calls": 0,
                 "llm_calls": 0,
                 "input_tokens": 0,
@@ -330,6 +364,15 @@ def propose(config_value: dict, training, research: ResearchStore) -> dict:
             ),
         }
         research.write(run_id, "model_usage.json", usage)
+        research.write(
+            run_id,
+            "attempt_history.json",
+            {
+                "schema_version": "sirfex-proposal-attempts:1",
+                "attempts": state.get("attempts", []),
+                "provider_calls": state.get("provider_calls", 0),
+            },
+        )
         research.write(
             run_id,
             "research_memory.json",
