@@ -8,7 +8,7 @@ SIRFEX is an open-source, local-first Physical AI testing engine for autonomous 
 
 ## Project status
 
-SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.4. Phase 3.3 found **no incremental held-out violation reduction** from 30% failure-informed training and **nominal tracking regression in all three seeds**. Phase 3.4 froze a more varied feasible-stress benchmark and found four new avoidable failures, but **no low-intensity curriculum passed its development screening rule**; the new final holdouts remain sealed. The technical requirements remain in [the PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md), and the measured evidence is in the [Phase 3.3](docs/PHASE_3_3_REPORT.md) and [Phase 3.4](docs/PHASE_3_4_REPORT.md) reports.
+SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.5. Phase 3.3 found **no incremental held-out violation reduction** from 30% failure-informed training and **nominal tracking regression in all three seeds**. Phase 3.4 froze a more varied feasible-stress benchmark and found four new avoidable failures, but **no low-intensity curriculum passed its development screening rule**. Phase 3.5 measures actual curriculum interactions and runs a frozen exposure-controlled comparison. Its research result is recorded in the [Phase 3.5 report](docs/PHASE_3_5_REPORT.md). The technical requirements remain in [the PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md).
 
 The project is intentionally CPU-first and local-first. It will not require paid APIs, hosted simulation, cloud training, or a dedicated GPU.
 
@@ -102,6 +102,10 @@ The two arms each reached 0/60 held-out violations for all three seeds after con
 
 The [Phase 3.4 report](docs/PHASE_3_4_REPORT.md) records **`no_eligible_curriculum`**. Original-pool candidates had no stress gain; expanded-pool candidates breached the 10% nominal tracking limit. As preregistered, no confirmatory training or final holdout evaluation followed. The [benchmark design](docs/STRESS_BENCHMARK_DESIGN.md), [screening rule](docs/CURRICULUM_SCREENING.md), [nominal-preservation policy](docs/NOMINAL_PRESERVATION.md), [study evidence](docs/evidence/phase_3_4_results.json) and [search evidence](docs/evidence/phase_3_4_search.json) preserve the inputs and results.
 
+## Phase 3.5 exposure-controlled study
+
+Training now records actual physical interactions, completed and partial episodes, per-discovery exposure, and PPO step reconciliation. The [exposure accounting](docs/CURRICULUM_EXPOSURE_ACCOUNTING.md), [adequacy gate](docs/EXPOSURE_ADEQUACY_PROTOCOL.md), [frozen protocol](docs/PHASE_3_5_EXPERIMENT_PROTOCOL.md), and [Phase 3.5 report](docs/PHASE_3_5_REPORT.md) explain the intervention and its measured outcome. The 5% and 10% arms are episode-boundary **interaction targets**, with actual exposure reported separately.
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -161,6 +165,9 @@ sirfex train verify <matched-study-id>
 sirfex train phase-3-4 --config configs/training/pump_phase_3_4.json --stage prepare
 sirfex train phase-3-4 --study <study-id> --stage screen
 sirfex train phase-3-4 --study <selected-study-id> --stage confirm
+sirfex train phase-3-5 --config configs/training/pump_phase_3_5.json --stage prepare
+sirfex train phase-3-5 --study <study-id> --stage screen
+sirfex train phase-3-5 --study <selected-study-id> --stage confirm
 python scripts/ppo_smoke_test.py --steps 256
 python scripts/run_training_benchmark.py --profile smoke --seed 3
 python scripts/run_search_benchmark.py --trials 20 --seed 11

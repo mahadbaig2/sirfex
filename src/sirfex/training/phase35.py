@@ -632,6 +632,18 @@ def confirm(run_id, training, experiments):
         known = pool
         for seed in CONFIRM_SEEDS:
             evaluation["seeds"][seed] = {}
+            baseline_meta = metadata_from_dict(baselines[seed]["checkpoint"])
+            baseline_model = PPOController.load(baseline_meta.path, baseline_meta)._model
+            evaluation["seeds"][seed]["baseline"] = {}
+            for name, scenarios in (
+                ("final_nominal", groups["final_nominal"]),
+                ("final_stress", groups["final_stress"]),
+                ("known_stress", known),
+            ):
+                evaluation["seeds"][seed]["baseline"][name] = _evaluate(
+                    baseline_model, baseline_meta, scenarios, name
+                )
+                write_json(directory / "final_evaluation.json", evaluation)
             for arm, candidate in (("normal", CANDIDATES[0]), ("selected", selected)):
                 meta = metadata_from_dict(
                     manifest["checkpoints"][f"confirm_{seed}_{candidate['id']}"]

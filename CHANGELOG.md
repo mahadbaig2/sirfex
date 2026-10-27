@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added Phase 3.5 exact curriculum transition accounting, a frozen exposure adequacy gate, episode-boundary interaction targets, a two-seed development screen and gated matched confirmation workflow. Published the protocol and neutral calibration before candidate outcome evaluation.
+
 - Added Phase 3.4 historical policy diagnostics, a frozen four-stratum feasible-stress benchmark, leakage-aware avoidable-failure search, development-only curriculum screening and a gated matched confirmation path. Four new avoidable failures were verified. No 5%/10% candidate met both stress-gain and nominal-preservation criteria, so the study stopped with `no_eligible_curriculum` before final evaluation.
 - Added Phase 3.3 frozen, three-seed matched PPO continuation, strict baseline and partition verification, actual curriculum exposure records, gated 60-configuration held-out evaluation, paired regression analysis and representative replay evidence. The protocol was published before final outcomes. Both continuation arms had 0/60 held-out physical violations in each seed; the failure-informed arm breached the preregistered nominal tracking guardrail in all three seeds, so the study classified `regressed`.
 - Added Phase 3.2 raw PPO action diagnostics, versioned normalized policy actions and survival/tracking reward, an analytical pump reference, bounded three-seed competence studies, and feasibility-filtered avoidable failure search. The nominal gate passed across three seeds; three same-scenario avoidable failures were replay-verified. A matched robustness improvement study had not yet been run at that milestone.

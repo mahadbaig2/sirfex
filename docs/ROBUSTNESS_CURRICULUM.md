@@ -27,6 +27,16 @@ passed both development stress-gain and nominal-preservation rules; the
 workflow stopped before final matched continuation. See the
 [screening record](CURRICULUM_SCREENING.md) and [Phase 3.4 report](PHASE_3_4_REPORT.md).
 
+Phase 3.5 records actual transitions rather than inferring exposure from
+episode-reset probabilities. Its 0% control and 5%/10% expanded-pool arms use
+an episode-boundary interaction target, with measured exposure and completed
+episodes reported separately. A candidate needs adequate stress interactions,
+completed stress episodes and discovery diversity on both development seeds
+before its performance can qualify for confirmation. See the
+[accounting definition](CURRICULUM_EXPOSURE_ACCOUNTING.md),
+[gate](EXPOSURE_ADEQUACY_PROTOCOL.md) and
+[frozen protocol](PHASE_3_5_EXPERIMENT_PROTOCOL.md).
+
 The description below documents the original Phase 3 pipeline. Its finite
 prefabricated mixture can differ from the requested probability, and its
 historical artifacts are not retroactively relabeled.

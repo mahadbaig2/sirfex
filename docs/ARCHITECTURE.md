@@ -115,6 +115,18 @@ final sets only after six hashed checkpoints complete. Phase 3.4's actual
 screen stopped at the no-eligible gate. Core evaluation/search imports remain
 independent of Stable-Baselines3; Studio remains an optional evidence reader.
 
+## Phase 3.5 measured curriculum exposure
+
+The pump Gymnasium adapter assigns a scenario only at an episode reset. A
+versioned exposure ledger counts each physical transition, completed and
+partial episode, and per-discovery exposure. Phase 3.5 optionally schedules
+stress scenarios at episode boundaries using the accrued interaction deficit
+against a frozen target fraction. It leaves pump physics, PPO, action mapping,
+rewards and termination untouched. The training study checks exact
+environment/PPO step reconciliation and a frozen adequacy gate before using
+development outcomes for selection. A separate confirm command can open the
+sealed final benchmark only after an eligible curriculum is frozen.
+
 ## Search workflow
 
 Phase 2 composes the experiment layer rather than duplicating it:

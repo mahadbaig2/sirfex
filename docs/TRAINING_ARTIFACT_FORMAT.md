@@ -44,3 +44,14 @@ public exports are in `docs/evidence/phase_3_4_preregistered.json` and
 `docs/evidence/phase_3_4_results.json`; the separate
 `docs/evidence/phase_3_4_search.json` preserves candidate and replay metadata.
 Trusted binary checkpoints and full trajectory actions remain local.
+
+Phase 3.5 retains the version-2 manifest and adds a versioned
+`pump-curriculum-exposure:1` block to each run in `screening_runs.json` and,
+only after selection, `confirmation_runs.json`. `exposure_audit.json`,
+`calibration.json`, `protocol.json` and the reused hash-checked
+`stress_benchmark.json` are written at preparation. `selected_curriculum.json`
+records per-seed adequacy and nominal/stress checks. `final_protocol.json`,
+`final_evaluation.json`, `paired_analysis.json` and
+`replay_verification.json` exist only if the corresponding gated stages ran.
+The compact public preregistration and calibration are in `docs/evidence/`;
+local binary checkpoints remain outside Git.

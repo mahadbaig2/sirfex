@@ -570,6 +570,25 @@ def main(argv: list[str] | None = None) -> int:
                     print(json.dumps(loaded.get("regression", {}), indent=2, sort_keys=True))
                 else:
                     checkpoints = loaded["manifest"].get("checkpoints", {})
+                    protocol_status = None
+                    if loaded["manifest"].get("phase") == "3.5":
+                        from sirfex.training.protocol import content_hash
+
+                        protocol_status = (
+                            content_hash(loaded["protocol"])
+                            == loaded["manifest"]["protocol_sha256"]
+                        )
+                        if not protocol_status:
+                            raise ValueError("Phase 3.5 frozen protocol hash changed")
+                        if "final_protocol" in loaded and (
+                            content_hash(loaded["final_protocol"])
+                            != loaded["manifest"].get("final_protocol_sha256")
+                        ):
+                            raise ValueError("Phase 3.5 final protocol hash changed")
+                        for group in ("screening_runs", "confirmation_runs"):
+                            for row in loaded.get(group, {}).get("records", []):
+                                if not row["exposure"]["reconciliation_valid"]:
+                                    raise ValueError(f"Invalid exposure in {group}")
                     if "checkpoint" in loaded["manifest"]:
                         checkpoints["baseline"] = loaded["manifest"]["checkpoint"]
                     verified = []
@@ -580,7 +599,8 @@ def main(argv: list[str] | None = None) -> int:
                         )
                     print(
                         json.dumps(
-                            {"training_run_id": args.training_run_id, "checkpoints": verified},
+                            {"training_run_id": args.training_run_id,
+                             "protocol_verified": protocol_status, "checkpoints": verified},
                             indent=2,
                             sort_keys=True,
                         )
