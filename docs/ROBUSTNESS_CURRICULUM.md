@@ -17,6 +17,16 @@ Actual scenario episode counts and checkpoint hashes are saved. The 60 held-out
 physical configurations are excluded from the curriculum. See the
 [matched protocol](MATCHED_ROBUSTNESS_STUDY.md).
 
+Phase 3.4 froze four additional avoidable discoveries from a bounded
+feasibility-aware search and compared 5%/10% episode-reset stress probabilities
+using either the original three-case pool or the seven-case expanded pool.
+Every candidate forked the same competent checkpoint for 5,120 development
+steps. Each low-ratio arm actually sampled only one stress episode, so the
+realized 5% and 10% comparisons were identical within each pool. No candidate
+passed both development stress-gain and nominal-preservation rules; the
+workflow stopped before final matched continuation. See the
+[screening record](CURRICULUM_SCREENING.md) and [Phase 3.4 report](PHASE_3_4_REPORT.md).
+
 The description below documents the original Phase 3 pipeline. Its finite
 prefabricated mixture can differ from the requested probability, and its
 historical artifacts are not retroactively relabeled.

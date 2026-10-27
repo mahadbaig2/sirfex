@@ -1,0 +1,4736 @@
+{
+  "schema_version": "phase-3.4-search-public-evidence:1",
+  "search_id": "20261027T135757_2ba26db7df",
+  "note": "Witness command arrays omitted; original full experiments remain local.",
+  "manifest": {
+    "schema_version": "1",
+    "search_id": "20261027T135757_2ba26db7df",
+    "created_at_utc": "2026-10-27T13:58:17.186414+00:00",
+    "completed_at_utc": "2026-10-27T13:58:17.186414+00:00",
+    "status": "completed",
+    "sirfex_version": "0.1.0",
+    "environment_id": "pump",
+    "environment_version": "sirfex-pump:1",
+    "controller_id": "ppo",
+    "objective_id": "pump.constraint_violation",
+    "strategy": "random",
+    "strategy_seed": 34,
+    "trial_budget": 40,
+    "scenario_seeds": [
+      340000
+    ],
+    "held_out_seeds": [],
+    "dependencies": {
+      "sirfex": "0.1.0",
+      "numpy": "2.5.4",
+      "gymnasium": "1.4.0",
+      "optuna": "4.9.0"
+    },
+    "controller_config": {
+      "checkpoint": {
+        "checkpoint_id": "ppo_3_10240",
+        "training_run_id": "20261025T205339_64b622c146",
+        "path": "ppo_3_10240.zip",
+        "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+        "environment_id": "pump",
+        "observation_shape": [
+          6
+        ],
+        "action_shape": [
+          1
+        ],
+        "ppo_config": {
+          "learning_rate": 0.0003,
+          "n_steps": 128,
+          "batch_size": 32,
+          "n_epochs": 4,
+          "gamma": 0.99,
+          "gae_lambda": 0.95,
+          "ent_coef": 0.0,
+          "vf_coef": 0.5,
+          "net_arch": [
+            64,
+            64
+          ],
+          "device": "cpu",
+          "torch_threads": 2
+        },
+        "training_seed": 3,
+        "training_timesteps": 10240,
+        "dependencies": {
+          "sirfex": "0.1.0",
+          "numpy": "2.5.4",
+          "gymnasium": "1.4.0",
+          "stable-baselines3": "2.9.0",
+          "torch": "2.14.1"
+        },
+        "observation_schema": "pump-calibrated:1",
+        "reward_schema": "pump-survival-tracking:2",
+        "policy_action_schema": "pump-normalized:1",
+        "termination_schema": "pump-terminate-on-violation:1"
+      }
+    },
+    "wall_seconds_limit": 176.69108270000288
+  },
+  "space": {
+    "environment_id": "pump",
+    "environment_version": "sirfex-pump:1",
+    "schema_version": "1",
+    "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+    "parameters": {
+      "initial_level": {
+        "type": "float",
+        "unit": "",
+        "description": "",
+        "low": 0.1,
+        "high": 0.9
+      },
+      "demand": {
+        "type": "float",
+        "unit": "",
+        "description": "",
+        "low": 0.35,
+        "high": 1.05
+      },
+      "pump_capacity": {
+        "type": "float",
+        "unit": "",
+        "description": "",
+        "low": 0.5,
+        "high": 1.4
+      },
+      "efficiency": {
+        "type": "float",
+        "unit": "",
+        "description": "",
+        "low": 0.6,
+        "high": 1.0
+      },
+      "leak": {
+        "type": "float",
+        "unit": "",
+        "description": "",
+        "low": 0.0,
+        "high": 0.12
+      }
+    },
+    "fixed_parameters": {
+      "dt": 0.1,
+      "horizon": 200,
+      "target_level": 0.5,
+      "min_level": 0.05,
+      "max_level": 0.95
+    }
+  },
+  "trials": [
+    {
+      "trial_index": 0,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.10322259479443484,
+        "demand": 0.9605238399893796,
+        "pump_capacity": 0.7184681488439728,
+        "efficiency": 0.860424519144674,
+        "leak": 0.05809108595639575
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.11179260000062641,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 2,
+          "maximum_inflow": 0.6181876114898394,
+          "target_required_inflow": 0.9895693829675775,
+          "target_equilibrium_command": 1.600759000302034,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.10322259479443484,
+            "demand": 0.9605238399893796,
+            "pump_capacity": 0.7184681488439728,
+            "efficiency": 0.860424519144674,
+            "leak": 0.05809108595639575,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 1,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.730826795334029,
+        "demand": 0.9665057957582818,
+        "pump_capacity": 1.309749796829165,
+        "efficiency": 0.8083971574434267,
+        "leak": 0.11569987492566165
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135757_daa5f53e5c"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6163438000003225,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 1.0587980127188026,
+          "target_required_inflow": 1.0243557332211126,
+          "target_equilibrium_command": 0.9674703965402727,
+          "reachable_final_interval": [
+            0.05,
+            0.791164886047397
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.730826795334029,
+            "demand": 0.9665057957582818,
+            "pump_capacity": 1.309749796829165,
+            "efficiency": 0.8083971574434267,
+            "leak": 0.11569987492566165,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 2,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8290809540387899,
+        "demand": 0.8244360556623374,
+        "pump_capacity": 1.1848244709043105,
+        "efficiency": 0.6714835009717742,
+        "leak": 0.1042183310611776
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.1638888000015868,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 117,
+          "maximum_inflow": 0.7955900837598564,
+          "target_required_inflow": 0.8765452211929262,
+          "target_equilibrium_command": 1.101754834663708,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8290809540387899,
+            "demand": 0.8244360556623374,
+            "pump_capacity": 1.1848244709043105,
+            "efficiency": 0.6714835009717742,
+            "leak": 0.1042183310611776,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 3,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8996013913530944,
+        "demand": 0.9876583768521128,
+        "pump_capacity": 0.6048947144451325,
+        "efficiency": 0.75506148755242,
+        "leak": 0.1110274505913284
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.14204759999847738,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 15,
+          "maximum_inflow": 0.45673270290153806,
+          "target_required_inflow": 1.043172102147777,
+          "target_equilibrium_command": 2.2839881959857444,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8996013913530944,
+            "demand": 0.9876583768521128,
+            "pump_capacity": 0.6048947144451325,
+            "efficiency": 0.75506148755242,
+            "leak": 0.1110274505913284,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 4,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.17319064697664965,
+        "demand": 0.5683572301729498,
+        "pump_capacity": 1.1042894191392434,
+        "efficiency": 0.8509982508355778,
+        "leak": 0.034386988012732156
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135758_07675810d0"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6239241000002949,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9397483641037324,
+          "target_required_inflow": 0.5855507241793159,
+          "target_equilibrium_command": 0.6230931029475897,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.17319064697664965,
+            "demand": 0.5683572301729498,
+            "pump_capacity": 1.1042894191392434,
+            "efficiency": 0.8509982508355778,
+            "leak": 0.034386988012732156,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 5,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6767523896230216,
+        "demand": 0.35567243344061134,
+        "pump_capacity": 1.2699360332171776,
+        "efficiency": 0.8331501896066142,
+        "leak": 0.0022340031979731067
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135759_00c98c377f"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.628912100000889,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 1.058047446863163,
+          "target_required_inflow": 0.35678943503959787,
+          "target_equilibrium_command": 0.3372149671523581,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6767523896230216,
+            "demand": 0.35567243344061134,
+            "pump_capacity": 1.2699360332171776,
+            "efficiency": 0.8331501896066142,
+            "leak": 0.0022340031979731067,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 6,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6239413006551155,
+        "demand": 0.6280891938168578,
+        "pump_capacity": 1.0378172242856836,
+        "efficiency": 0.7892893396143198,
+        "leak": 0.03484870995665333
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135800_b8d00c6994"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.5976902000038535,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8191380715968136,
+          "target_required_inflow": 0.6455135487951844,
+          "target_equilibrium_command": 0.7880399790682803,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6239413006551155,
+            "demand": 0.6280891938168578,
+            "pump_capacity": 1.0378172242856836,
+            "efficiency": 0.7892893396143198,
+            "leak": 0.03484870995665333,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 7,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.41291656194937365,
+        "demand": 0.7260592990042506,
+        "pump_capacity": 0.6464425371409653,
+        "efficiency": 0.796251105435633,
+        "leak": 0.11314730446213075
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.16460899999947287,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 16,
+          "maximum_inflow": 0.5147305847991088,
+          "target_required_inflow": 0.782632951235316,
+          "target_equilibrium_command": 1.5204710470833303,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.41291656194937365,
+            "demand": 0.7260592990042506,
+            "pump_capacity": 0.6464425371409653,
+            "efficiency": 0.796251105435633,
+            "leak": 0.11314730446213075,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 8,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.11357790369332106,
+        "demand": 0.7708156220655321,
+        "pump_capacity": 1.3495253770353206,
+        "efficiency": 0.7582304273068986,
+        "leak": 0.03943753555271769
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135800_671b910927"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6453944000022602,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 1.0232512032909946,
+          "target_required_inflow": 0.790534389841891,
+          "target_equilibrium_command": 0.7725711802726088,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.11357790369332106,
+            "demand": 0.7708156220655321,
+            "pump_capacity": 1.3495253770353206,
+            "efficiency": 0.7582304273068986,
+            "leak": 0.03943753555271769,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 9,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.5453839107311322,
+        "demand": 0.46615032206411894,
+        "pump_capacity": 0.535960105095319,
+        "efficiency": 0.9201536158458696,
+        "leak": 0.06402805682533072
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135801_db5c757cde"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.004480532941998461,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": true,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 1,
+            "max_violation_magnitude": 0.004480532941998461
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.004480532941998461,
+        "worst_case": 0.004480532941998461,
+        "stddev": 0.0,
+        "failure_frequency": 1.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.48648729999695206,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "bounded_operation_feasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.49316562865259006,
+          "target_required_inflow": 0.4981643504767843,
+          "target_equilibrium_command": 1.0101359898860989,
+          "reachable_final_interval": [
+            0.05,
+            0.45609400408637957
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.5453839107311322,
+            "demand": 0.46615032206411894,
+            "pump_capacity": 0.535960105095319,
+            "efficiency": 0.9201536158458696,
+            "leak": 0.06402805682533072,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 10,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8362325761050812,
+        "demand": 0.587586256598996,
+        "pump_capacity": 1.0833038269604112,
+        "efficiency": 0.6687499294755445,
+        "leak": 0.06594454623440328
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135801_ef518b9a5b"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.5880384999982198,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.7244593578803624,
+          "target_required_inflow": 0.6205585297161976,
+          "target_equilibrium_command": 0.8565815638462316,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8362325761050812,
+            "demand": 0.587586256598996,
+            "pump_capacity": 1.0833038269604112,
+            "efficiency": 0.6687499294755445,
+            "leak": 0.06594454623440328,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 11,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.2625487268202167,
+        "demand": 0.5793679011616755,
+        "pump_capacity": 0.8299356672139757,
+        "efficiency": 0.7169542584014282,
+        "leak": 0.11888456262600114
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135802_980592d986"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.007084248163364518,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": true,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 1,
+            "max_violation_magnitude": 0.007084248163364518
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.007084248163364518,
+        "worst_case": 0.007084248163364518,
+        "stddev": 0.0,
+        "failure_frequency": 1.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.4564392999964184,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "bounded_operation_feasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.5950259108082905,
+          "target_required_inflow": 0.638810182474676,
+          "target_equilibrium_command": 1.0735838068075196,
+          "reachable_final_interval": [
+            0.05,
+            0.14367339173277366
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.2625487268202167,
+            "demand": 0.5793679011616755,
+            "pump_capacity": 0.8299356672139757,
+            "efficiency": 0.7169542584014282,
+            "leak": 0.11888456262600114,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 12,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.4632623931991182,
+        "demand": 0.3699309802009982,
+        "pump_capacity": 1.101844333786072,
+        "efficiency": 0.7240931233443362,
+        "leak": 0.06781656967448603
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135803_e9ac354e5c"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6477086000013514,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.7978379050904162,
+          "target_required_inflow": 0.4038392650382412,
+          "target_equilibrium_command": 0.5061670578216957,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.4632623931991182,
+            "demand": 0.3699309802009982,
+            "pump_capacity": 1.101844333786072,
+            "efficiency": 0.7240931233443362,
+            "leak": 0.06781656967448603,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 13,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.31165182623287346,
+        "demand": 0.4308247741139168,
+        "pump_capacity": 0.7006119966645945,
+        "efficiency": 0.8095904026310878,
+        "leak": 0.11297988066961415
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135803_030adc9873"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.5959187999978894,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.5672087484678594,
+          "target_required_inflow": 0.4873147144487239,
+          "target_equilibrium_command": 0.8591452719392203,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.31165182623287346,
+            "demand": 0.4308247741139168,
+            "pump_capacity": 0.7006119966645945,
+            "efficiency": 0.8095904026310878,
+            "leak": 0.11297988066961415,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 14,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8462819159419815,
+        "demand": 0.9380353950820648,
+        "pump_capacity": 0.7167408996542981,
+        "efficiency": 0.9906840171247409,
+        "leak": 0.06797903827356223
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.15766599999915343,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 31,
+          "maximum_inflow": 0.7100637537071208,
+          "target_required_inflow": 0.972024914218846,
+          "target_equilibrium_command": 1.3689262536554934,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8462819159419815,
+            "demand": 0.9380353950820648,
+            "pump_capacity": 0.7167408996542981,
+            "efficiency": 0.9906840171247409,
+            "leak": 0.06797903827356223,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 15,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6136939640674786,
+        "demand": 0.4546272116129172,
+        "pump_capacity": 0.8872326491948969,
+        "efficiency": 0.7079571018655025,
+        "leak": 0.1166067715825849
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135804_f15a6d41cb"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6568745999975363,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.6281226550044713,
+          "target_required_inflow": 0.5129305974042097,
+          "target_equilibrium_command": 0.8166089748833504,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6136939640674786,
+            "demand": 0.4546272116129172,
+            "pump_capacity": 0.8872326491948969,
+            "efficiency": 0.7079571018655025,
+            "leak": 0.1166067715825849,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 16,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.25951767091960837,
+        "demand": 0.5996979306594066,
+        "pump_capacity": 0.8718743770140621,
+        "efficiency": 0.7883709733655926,
+        "leak": 0.04002398982863242
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135805_812bc1a043"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.00017074413176147718,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": true,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 1,
+            "max_violation_magnitude": 0.00017074413176147718
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.00017074413176147718,
+        "worst_case": 0.00017074413176147718,
+        "stddev": 0.0,
+        "failure_frequency": 1.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.47917839999718126,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.6873604512590958,
+          "target_required_inflow": 0.6197099255737228,
+          "target_equilibrium_command": 0.9015792579258061,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.25951767091960837,
+            "demand": 0.5996979306594066,
+            "pump_capacity": 0.8718743770140621,
+            "efficiency": 0.7883709733655926,
+            "leak": 0.04002398982863242,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 17,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.5329294599162577,
+        "demand": 0.9960188432056151,
+        "pump_capacity": 1.2903361537852551,
+        "efficiency": 0.8932715834518594,
+        "leak": 0.08244750783126689
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135805_321b8479ec"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.8102317000011681,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 1.1526206192769368,
+          "target_required_inflow": 1.0372425971212484,
+          "target_equilibrium_command": 0.899899394279388,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.5329294599162577,
+            "demand": 0.9960188432056151,
+            "pump_capacity": 1.2903361537852551,
+            "efficiency": 0.8932715834518594,
+            "leak": 0.08244750783126689,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 18,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.2573343248796154,
+        "demand": 0.7266812004319845,
+        "pump_capacity": 1.3874368844638394,
+        "efficiency": 0.6727692932030698,
+        "leak": 0.034800804957088295
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135806_c7ef794061"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.817505799997889,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9334249321246064,
+          "target_required_inflow": 0.7440816029105286,
+          "target_equilibrium_command": 0.7971520550848092,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.2573343248796154,
+            "demand": 0.7266812004319845,
+            "pump_capacity": 1.3874368844638394,
+            "efficiency": 0.6727692932030698,
+            "leak": 0.034800804957088295,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 19,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6517677890942862,
+        "demand": 0.6784267176440313,
+        "pump_capacity": 1.133842242055099,
+        "efficiency": 0.8103304381095761,
+        "leak": 0.001794472419927886
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135807_97406e75ea"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 1.0222081999963848,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9187868807516524,
+          "target_required_inflow": 0.6793239538539952,
+          "target_equilibrium_command": 0.7393705418369118,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6517677890942862,
+            "demand": 0.6784267176440313,
+            "pump_capacity": 1.133842242055099,
+            "efficiency": 0.8103304381095761,
+            "leak": 0.001794472419927886,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 20,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.18542537122257638,
+        "demand": 0.6253618155253932,
+        "pump_capacity": 1.2599158086959532,
+        "efficiency": 0.7931708453588087,
+        "leak": 0.0362947295230964
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135808_6f0c4e0fa1"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.7049427999954787,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9993284870642963,
+          "target_required_inflow": 0.6435091802869414,
+          "target_equilibrium_command": 0.6439415953980889,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.18542537122257638,
+            "demand": 0.6253618155253932,
+            "pump_capacity": 1.2599158086959532,
+            "efficiency": 0.7931708453588087,
+            "leak": 0.0362947295230964,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 21,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.7091807966076509,
+        "demand": 0.578129672305551,
+        "pump_capacity": 0.9942903280318693,
+        "efficiency": 0.8788954815145489,
+        "leak": 0.06480918515237384
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135808_d9c0e8deab"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6878854999959003,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8738772766208286,
+          "target_required_inflow": 0.6105342648817379,
+          "target_equilibrium_command": 0.6986498919420306,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.7091807966076509,
+            "demand": 0.578129672305551,
+            "pump_capacity": 0.9942903280318693,
+            "efficiency": 0.8788954815145489,
+            "leak": 0.06480918515237384,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 22,
+      "status": "invalid",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.5412903934379999,
+        "demand": 1.0215121543711732,
+        "pump_capacity": 1.3696524185487942,
+        "efficiency": 0.9712422815616549,
+        "leak": 0.07419974904077913
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": {
+        "type": "ScenarioValidationError",
+        "message": "demand must be <= 1.0"
+      },
+      "elapsed_seconds": 0.0004751999949803576,
+      "candidate_analysis": {}
+    },
+    {
+      "trial_index": 23,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.1210037391470328,
+        "demand": 0.5962096889893312,
+        "pump_capacity": 1.3327390636998107,
+        "efficiency": 0.9379952931747644,
+        "leak": 0.004644938481664735
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135809_28ad9d2628"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6938315000006696,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 1.250102968780565,
+          "target_required_inflow": 0.5985321582301636,
+          "target_equilibrium_command": 0.47878628655206884,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.1210037391470328,
+            "demand": 0.5962096889893312,
+            "pump_capacity": 1.3327390636998107,
+            "efficiency": 0.9379952931747644,
+            "leak": 0.004644938481664735,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 24,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.4821009045624679,
+        "demand": 0.4198764395664681,
+        "pump_capacity": 1.313018289914518,
+        "efficiency": 0.604291654532797,
+        "leak": 0.09137317210913218
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135810_291b5fd7ca"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.5501221000013174,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.7934459948442678,
+          "target_required_inflow": 0.4655630256210342,
+          "target_equilibrium_command": 0.5867608238572201,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.4821009045624679,
+            "demand": 0.4198764395664681,
+            "pump_capacity": 1.313018289914518,
+            "efficiency": 0.604291654532797,
+            "leak": 0.09137317210913218,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 25,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.27632434725028676,
+        "demand": 0.5130592177387925,
+        "pump_capacity": 1.0894883552691284,
+        "efficiency": 0.8572226978897829,
+        "leak": 0.1115402814191748
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135810_224054c1b8"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.5395535999996355,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9339341472233045,
+          "target_required_inflow": 0.5688293584483799,
+          "target_equilibrium_command": 0.6090679521030216,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.27632434725028676,
+            "demand": 0.5130592177387925,
+            "pump_capacity": 1.0894883552691284,
+            "efficiency": 0.8572226978897829,
+            "leak": 0.1115402814191748,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 26,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8715309953605255,
+        "demand": 0.7183467188130452,
+        "pump_capacity": 0.6792554998859289,
+        "efficiency": 0.980990954071382,
+        "leak": 0.09234450600716872
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.13629819999914616,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 92,
+          "maximum_inflow": 0.6663435008913309,
+          "target_required_inflow": 0.7645189718166295,
+          "target_equilibrium_command": 1.1473346266512314,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8715309953605255,
+            "demand": 0.7183467188130452,
+            "pump_capacity": 0.6792554998859289,
+            "efficiency": 0.980990954071382,
+            "leak": 0.09234450600716872,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 27,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.20604150561966428,
+        "demand": 0.7645246772352994,
+        "pump_capacity": 0.5160784084067673,
+        "efficiency": 0.600768194508146,
+        "leak": 0.03307201729155413
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.09953629999654368,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 4,
+          "maximum_inflow": 0.3100434936431712,
+          "target_required_inflow": 0.7810606858810765,
+          "target_equilibrium_command": 2.5191971510293927,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.20604150561966428,
+            "demand": 0.7645246772352994,
+            "pump_capacity": 0.5160784084067673,
+            "efficiency": 0.600768194508146,
+            "leak": 0.03307201729155413,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 28,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.33793109028871293,
+        "demand": 0.9463500382529835,
+        "pump_capacity": 0.9543938527427234,
+        "efficiency": 0.6839046086258416,
+        "leak": 0.047935124165875226
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.10227979999763193,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 10,
+          "maximum_inflow": 0.6527143543349213,
+          "target_required_inflow": 0.9703176003359211,
+          "target_equilibrium_command": 1.486588419408394,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.33793109028871293,
+            "demand": 0.9463500382529835,
+            "pump_capacity": 0.9543938527427234,
+            "efficiency": 0.6839046086258416,
+            "leak": 0.047935124165875226,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 29,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.49378139924473563,
+        "demand": 0.7960123889164237,
+        "pump_capacity": 1.0220338282864012,
+        "efficiency": 0.7576413305824596,
+        "leak": 0.08672885865119245
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.16235369999776594,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 105,
+          "maximum_inflow": 0.7743350695631941,
+          "target_required_inflow": 0.8393768182420199,
+          "target_equilibrium_command": 1.083996904228445,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.49378139924473563,
+            "demand": 0.7960123889164237,
+            "pump_capacity": 1.0220338282864012,
+            "efficiency": 0.7576413305824596,
+            "leak": 0.08672885865119245,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 30,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8246795571089421,
+        "demand": 0.9517816593876987,
+        "pump_capacity": 1.0907779609848087,
+        "efficiency": 0.8329969455191093,
+        "leak": 0.08660787352847976
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.33449079999991227,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 102,
+          "maximum_inflow": 0.9086147097399079,
+          "target_required_inflow": 0.9950855961519386,
+          "target_equilibrium_command": 1.095167825795802,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8246795571089421,
+            "demand": 0.9517816593876987,
+            "pump_capacity": 1.0907779609848087,
+            "efficiency": 0.8329969455191093,
+            "leak": 0.08660787352847976,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 31,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.19692239401739836,
+        "demand": 0.5215867232959931,
+        "pump_capacity": 1.2866239196116327,
+        "efficiency": 0.7031849506326213,
+        "leak": 0.09518614465819986
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135812_20a2268494"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.9785900999995647,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9047345773948556,
+          "target_required_inflow": 0.569179795625093,
+          "target_equilibrium_command": 0.6291124599924343,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.19692239401739836,
+            "demand": 0.5215867232959931,
+            "pump_capacity": 1.2866239196116327,
+            "efficiency": 0.7031849506326213,
+            "leak": 0.09518614465819986,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 32,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6117776993815582,
+        "demand": 0.7634184545957143,
+        "pump_capacity": 0.7387345140335213,
+        "efficiency": 0.8335047056764758,
+        "leak": 0.05421307039114053
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.22953969999798574,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 34,
+          "maximum_inflow": 0.6157386936925645,
+          "target_required_inflow": 0.7905249897912846,
+          "target_equilibrium_command": 1.2838644020412822,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6117776993815582,
+            "demand": 0.7634184545957143,
+            "pump_capacity": 0.7387345140335213,
+            "efficiency": 0.8335047056764758,
+            "leak": 0.05421307039114053,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 33,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.5929716915371456,
+        "demand": 0.5149558533593115,
+        "pump_capacity": 0.8370136819342866,
+        "efficiency": 0.984583075803934,
+        "leak": 0.04318256730822305
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135813_9c8c2e2f54"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.8112733000016306,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8241095054488357,
+          "target_required_inflow": 0.536547137013423,
+          "target_equilibrium_command": 0.6510629151416022,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.5929716915371456,
+            "demand": 0.5149558533593115,
+            "pump_capacity": 0.8370136819342866,
+            "efficiency": 0.984583075803934,
+            "leak": 0.04318256730822305,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 34,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.38672146149974107,
+        "demand": 0.39050751494072583,
+        "pump_capacity": 1.2992497341753095,
+        "efficiency": 0.7248587707793005,
+        "leak": 0.07211600120166888
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135814_8c587225df"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.7077533999981824,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.9417725652496478,
+          "target_required_inflow": 0.42656551554156025,
+          "target_equilibrium_command": 0.4529389910912143,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.38672146149974107,
+            "demand": 0.39050751494072583,
+            "pump_capacity": 1.2992497341753095,
+            "efficiency": 0.7248587707793005,
+            "leak": 0.07211600120166888,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 35,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.29473658536551384,
+        "demand": 0.5214462766229,
+        "pump_capacity": 0.8698118714897449,
+        "efficiency": 0.9818879087146153,
+        "leak": 0.012039378825084088
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135814_9f5e47e7ad"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6654951000018627,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8540577594722113,
+          "target_required_inflow": 0.527465966035442,
+          "target_equilibrium_command": 0.6175998756353485,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.29473658536551384,
+            "demand": 0.5214462766229,
+            "pump_capacity": 0.8698118714897449,
+            "efficiency": 0.9818879087146153,
+            "leak": 0.012039378825084088,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 36,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.8384540006931885,
+        "demand": 0.8083827048772669,
+        "pump_capacity": 0.6254468231009308,
+        "efficiency": 0.7124826544329876,
+        "leak": 0.09972293207400555
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.146471100000781,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 20,
+          "maximum_inflow": 0.4456200127296304,
+          "target_required_inflow": 0.8582441709142696,
+          "target_equilibrium_command": 1.9259551779488624,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.8384540006931885,
+            "demand": 0.8083827048772669,
+            "pump_capacity": 0.6254468231009308,
+            "efficiency": 0.7124826544329876,
+            "leak": 0.09972293207400555,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 37,
+      "status": "rejected",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6369784974344456,
+        "demand": 0.9760795841113884,
+        "pump_capacity": 0.6758056566013986,
+        "efficiency": 0.7035364208606516,
+        "leak": 0.026759611883795394
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [],
+      "risk_scores": [],
+      "aggregate": {},
+      "error": null,
+      "elapsed_seconds": 0.16895849999855272,
+      "candidate_analysis": {
+        "accepted": false,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "infeasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": false,
+          "finite_horizon_viable": false,
+          "horizon": 200,
+          "first_unavoidable_violation_step": 12,
+          "maximum_inflow": 0.47545389284273054,
+          "target_required_inflow": 0.9894593900532861,
+          "target_equilibrium_command": 2.081083791610845,
+          "reachable_final_interval": null,
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6369784974344456,
+            "demand": 0.9760795841113884,
+            "pump_capacity": 0.6758056566013986,
+            "efficiency": 0.7035364208606516,
+            "leak": 0.026759611883795394,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 38,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.6264080465706534,
+        "demand": 0.5966088120794474,
+        "pump_capacity": 0.98372772306132,
+        "efficiency": 0.803917539538973,
+        "leak": 0.09930234106141754
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135815_099bc45a93"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.0,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": false,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 0,
+            "max_violation_magnitude": 0.0
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.0,
+        "worst_case": 0.0,
+        "stddev": 0.0,
+        "failure_frequency": 0.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.6583450000034645,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.7908359706997325,
+          "target_required_inflow": 0.6462599826101562,
+          "target_equilibrium_command": 0.8171858723602881,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.6264080465706534,
+            "demand": 0.5966088120794474,
+            "pump_capacity": 0.98372772306132,
+            "efficiency": 0.803917539538973,
+            "leak": 0.09930234106141754,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    },
+    {
+      "trial_index": 39,
+      "status": "completed",
+      "candidate_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95,
+        "initial_level": 0.17296829479503098,
+        "demand": 0.8139825494937261,
+        "pump_capacity": 1.2219251504705646,
+        "efficiency": 0.7354777350158953,
+        "leak": 0.037273397907726095
+      },
+      "scenario_seeds": [
+        340000
+      ],
+      "experiment_ids": [
+        "20261027T135816_c208cdbf85"
+      ],
+      "risk_scores": [
+        {
+          "objective_id": "pump.constraint_violation",
+          "value": 0.00032668652121157354,
+          "direction": "maximize",
+          "units": "normalized level fraction",
+          "evidence_source": "pump environment constraint evidence",
+          "evidence_status": "observed",
+          "is_failure": true,
+          "threshold": 0.0,
+          "metrics": {
+            "violation_count": 1,
+            "max_violation_magnitude": 0.00032668652121157354
+          }
+        }
+      ],
+      "aggregate": {
+        "mean": 0.00032668652121157354,
+        "worst_case": 0.00032668652121157354,
+        "stddev": 0.0,
+        "failure_frequency": 1.0,
+        "direction": "maximize",
+        "objective_id": "pump.constraint_violation"
+      },
+      "error": null,
+      "elapsed_seconds": 0.40105860000039684,
+      "candidate_analysis": {
+        "accepted": true,
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8986987420270479,
+          "target_required_inflow": 0.8326192484475892,
+          "target_equilibrium_command": 0.9264720306268438,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.17296829479503098,
+            "demand": 0.8139825494937261,
+            "pump_capacity": 1.2219251504705646,
+            "efficiency": 0.7354777350158953,
+            "leak": 0.037273397907726095,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "disjoint_from_prior_partitions": true
+      }
+    }
+  ],
+  "discoveries": [
+    {
+      "discovery_id": "disc_2ba26db7df_0001",
+      "search_id": "20261027T135757_2ba26db7df",
+      "environment_id": "pump",
+      "controller_id": "ppo",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.2625487268202167,
+          "demand": 0.5793679011616755,
+          "pump_capacity": 0.8299356672139757,
+          "efficiency": 0.7169542584014282,
+          "leak": 0.11888456262600114
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "objective": {
+        "objective_id": "pump.constraint_violation",
+        "value": 0.007084248163364518,
+        "direction": "maximize",
+        "units": "normalized level fraction",
+        "evidence_source": "pump environment constraint evidence",
+        "evidence_status": "observed",
+        "is_failure": true,
+        "threshold": 0.0,
+        "metrics": {
+          "violation_count": 1,
+          "max_violation_magnitude": 0.007084248163364518
+        },
+        "mean": 0.007084248163364518,
+        "worst_case": 0.007084248163364518,
+        "stddev": 0.0,
+        "failure_frequency": 1.0
+      },
+      "observed_failure": true,
+      "evidence_status": "observed",
+      "experiment_ids": [
+        "20261027T135802_980592d986"
+      ],
+      "replay_status": "exact_match",
+      "discovered_at_utc": "2026-10-27T13:58:02.842582+00:00",
+      "similarity_key": "{'demand': 0.57937, 'dt': 0.1, 'efficiency': 0.71695, 'horizon': 200, 'initial_level': 0.26255, 'leak': 0.11888, 'max_level': 0.95, 'min_level': 0.05, 'pump_capacity': 0.82994, 'target_level': 0.5}",
+      "held_out": {}
+    },
+    {
+      "discovery_id": "disc_2ba26db7df_0000",
+      "search_id": "20261027T135757_2ba26db7df",
+      "environment_id": "pump",
+      "controller_id": "ppo",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5453839107311322,
+          "demand": 0.46615032206411894,
+          "pump_capacity": 0.535960105095319,
+          "efficiency": 0.9201536158458696,
+          "leak": 0.06402805682533072
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "objective": {
+        "objective_id": "pump.constraint_violation",
+        "value": 0.004480532941998461,
+        "direction": "maximize",
+        "units": "normalized level fraction",
+        "evidence_source": "pump environment constraint evidence",
+        "evidence_status": "observed",
+        "is_failure": true,
+        "threshold": 0.0,
+        "metrics": {
+          "violation_count": 1,
+          "max_violation_magnitude": 0.004480532941998461
+        },
+        "mean": 0.004480532941998461,
+        "worst_case": 0.004480532941998461,
+        "stddev": 0.0,
+        "failure_frequency": 1.0
+      },
+      "observed_failure": true,
+      "evidence_status": "observed",
+      "experiment_ids": [
+        "20261027T135801_db5c757cde"
+      ],
+      "replay_status": "exact_match",
+      "discovered_at_utc": "2026-10-27T13:58:01.802719+00:00",
+      "similarity_key": "{'demand': 0.46615, 'dt': 0.1, 'efficiency': 0.92015, 'horizon': 200, 'initial_level': 0.54538, 'leak': 0.06403, 'max_level': 0.95, 'min_level': 0.05, 'pump_capacity': 0.53596, 'target_level': 0.5}",
+      "held_out": {}
+    },
+    {
+      "discovery_id": "disc_2ba26db7df_0003",
+      "search_id": "20261027T135757_2ba26db7df",
+      "environment_id": "pump",
+      "controller_id": "ppo",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.17296829479503098,
+          "demand": 0.8139825494937261,
+          "pump_capacity": 1.2219251504705646,
+          "efficiency": 0.7354777350158953,
+          "leak": 0.037273397907726095
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "objective": {
+        "objective_id": "pump.constraint_violation",
+        "value": 0.00032668652121157354,
+        "direction": "maximize",
+        "units": "normalized level fraction",
+        "evidence_source": "pump environment constraint evidence",
+        "evidence_status": "observed",
+        "is_failure": true,
+        "threshold": 0.0,
+        "metrics": {
+          "violation_count": 1,
+          "max_violation_magnitude": 0.00032668652121157354
+        },
+        "mean": 0.00032668652121157354,
+        "worst_case": 0.00032668652121157354,
+        "stddev": 0.0,
+        "failure_frequency": 1.0
+      },
+      "observed_failure": true,
+      "evidence_status": "observed",
+      "experiment_ids": [
+        "20261027T135816_c208cdbf85"
+      ],
+      "replay_status": "exact_match",
+      "discovered_at_utc": "2026-10-27T13:58:16.813794+00:00",
+      "similarity_key": "{'demand': 0.81398, 'dt': 0.1, 'efficiency': 0.73548, 'horizon': 200, 'initial_level': 0.17297, 'leak': 0.03727, 'max_level': 0.95, 'min_level': 0.05, 'pump_capacity': 1.22193, 'target_level': 0.5}",
+      "held_out": {}
+    },
+    {
+      "discovery_id": "disc_2ba26db7df_0002",
+      "search_id": "20261027T135757_2ba26db7df",
+      "environment_id": "pump",
+      "controller_id": "ppo",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.25951767091960837,
+          "demand": 0.5996979306594066,
+          "pump_capacity": 0.8718743770140621,
+          "efficiency": 0.7883709733655926,
+          "leak": 0.04002398982863242
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "objective": {
+        "objective_id": "pump.constraint_violation",
+        "value": 0.00017074413176147718,
+        "direction": "maximize",
+        "units": "normalized level fraction",
+        "evidence_source": "pump environment constraint evidence",
+        "evidence_status": "observed",
+        "is_failure": true,
+        "threshold": 0.0,
+        "metrics": {
+          "violation_count": 1,
+          "max_violation_magnitude": 0.00017074413176147718
+        },
+        "mean": 0.00017074413176147718,
+        "worst_case": 0.00017074413176147718,
+        "stddev": 0.0,
+        "failure_frequency": 1.0
+      },
+      "observed_failure": true,
+      "evidence_status": "observed",
+      "experiment_ids": [
+        "20261027T135805_812bc1a043"
+      ],
+      "replay_status": "exact_match",
+      "discovered_at_utc": "2026-10-27T13:58:05.385675+00:00",
+      "similarity_key": "{'demand': 0.5997, 'dt': 0.1, 'efficiency': 0.78837, 'horizon': 200, 'initial_level': 0.25952, 'leak': 0.04002, 'max_level': 0.95, 'min_level': 0.05, 'pump_capacity': 0.87187, 'target_level': 0.5}",
+      "held_out": {}
+    }
+  ],
+  "summary": {
+    "search_id": "20261027T135757_2ba26db7df",
+    "strategy": "random",
+    "objective_id": "pump.constraint_violation",
+    "direction": "maximize",
+    "trial_proposals": 40,
+    "valid_trials": 26,
+    "actual_simulation_evaluations": 26,
+    "execution_failures": 0,
+    "invalid_trials": 1,
+    "rejected_candidates": 13,
+    "validated_candidates": 39,
+    "simulation_attempts": 26,
+    "wall_clock_seconds": 19.565767400003097,
+    "best_objective": 0.007084248163364518,
+    "best_so_far": [
+      {
+        "trial_index": 1,
+        "value": 0.0
+      },
+      {
+        "trial_index": 4,
+        "value": 0.0
+      },
+      {
+        "trial_index": 5,
+        "value": 0.0
+      },
+      {
+        "trial_index": 6,
+        "value": 0.0
+      },
+      {
+        "trial_index": 8,
+        "value": 0.0
+      },
+      {
+        "trial_index": 9,
+        "value": 0.004480532941998461
+      },
+      {
+        "trial_index": 10,
+        "value": 0.004480532941998461
+      },
+      {
+        "trial_index": 11,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 12,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 13,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 15,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 16,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 17,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 18,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 19,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 20,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 21,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 23,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 24,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 25,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 31,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 33,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 34,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 35,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 38,
+        "value": 0.007084248163364518
+      },
+      {
+        "trial_index": 39,
+        "value": 0.007084248163364518
+      }
+    ],
+    "unique_discoveries": 4,
+    "held_out_evaluations": 0
+  },
+  "avoidable": {
+    "schema_version": "avoidable-failures:1",
+    "search_id": "20261027T135757_2ba26db7df",
+    "baseline": "20261025T205339_64b622c146",
+    "competence_verification": {
+      "passed": true,
+      "checks": {
+        "evidence": true,
+        "execution": true,
+        "physical": true,
+        "tracking": true,
+        "horizons": true
+      },
+      "thresholds": {
+        "maximum_violation_frequency": 0.0,
+        "maximum_tracking_error_mean": 0.1,
+        "maximum_execution_failures": 0,
+        "require_full_horizons": true
+      }
+    },
+    "records": [
+      {
+        "discovery_id": "disc_2ba26db7df_0001",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.2625487268202167,
+            "demand": 0.5793679011616755,
+            "pump_capacity": 0.8299356672139757,
+            "efficiency": 0.7169542584014282,
+            "leak": 0.11888456262600114
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-analytical",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "bounded_operation_feasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.5950259108082905,
+          "target_required_inflow": 0.638810182474676,
+          "target_equilibrium_command": 1.0735838068075196,
+          "reachable_final_interval": [
+            0.05,
+            0.14367339173277366
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.2625487268202167,
+            "demand": 0.5793679011616755,
+            "pump_capacity": 0.8299356672139757,
+            "efficiency": 0.7169542584014282,
+            "leak": 0.11888456262600114,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 15,
+            "measurements": {
+              "level": 0.042915751836635485,
+              "violation_magnitude": 0.007084248163364518
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "pump-analytical",
+          "version": "calibrated-feedback:1",
+          "dt": 0.1,
+          "response": 0.25,
+          "unclipped_error_pole": 0.75
+        },
+        "failure_experiment_id": "20261027T135802_980592d986",
+        "reference_experiment_id": "20261027T135817_0291de95c7",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135802_980592d986",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135817_0291de95c7",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135817_0291de95c7"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0001",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.2625487268202167,
+            "demand": 0.5793679011616755,
+            "pump_capacity": 0.8299356672139757,
+            "efficiency": 0.7169542584014282,
+            "leak": 0.11888456262600114
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-rule",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "bounded_operation_feasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.5950259108082905,
+          "target_required_inflow": 0.638810182474676,
+          "target_equilibrium_command": 1.0735838068075196,
+          "reachable_final_interval": [
+            0.05,
+            0.14367339173277366
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.2625487268202167,
+            "demand": 0.5793679011616755,
+            "pump_capacity": 0.8299356672139757,
+            "efficiency": 0.7169542584014282,
+            "leak": 0.11888456262600114,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 15,
+            "measurements": {
+              "level": 0.042915751836635485,
+              "violation_magnitude": 0.007084248163364518
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "rule-based",
+          "low_level": 0.42,
+          "high_level": 0.58
+        },
+        "failure_experiment_id": "20261027T135802_980592d986",
+        "reference_experiment_id": "20261027T135817_fdecdbb36e",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135802_980592d986",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135817_fdecdbb36e",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135817_fdecdbb36e"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0000",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.5453839107311322,
+            "demand": 0.46615032206411894,
+            "pump_capacity": 0.535960105095319,
+            "efficiency": 0.9201536158458696,
+            "leak": 0.06402805682533072
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-analytical",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "bounded_operation_feasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.49316562865259006,
+          "target_required_inflow": 0.4981643504767843,
+          "target_equilibrium_command": 1.0101359898860989,
+          "reachable_final_interval": [
+            0.05,
+            0.45609400408637957
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.5453839107311322,
+            "demand": 0.46615032206411894,
+            "pump_capacity": 0.535960105095319,
+            "efficiency": 0.9201536158458696,
+            "leak": 0.06402805682533072,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 34,
+            "measurements": {
+              "level": 0.04551946705800154,
+              "violation_magnitude": 0.004480532941998461
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "pump-analytical",
+          "version": "calibrated-feedback:1",
+          "dt": 0.1,
+          "response": 0.25,
+          "unclipped_error_pole": 0.75
+        },
+        "failure_experiment_id": "20261027T135801_db5c757cde",
+        "reference_experiment_id": "20261027T135818_122ad80158",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135801_db5c757cde",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135818_122ad80158",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135818_122ad80158"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0000",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.5453839107311322,
+            "demand": 0.46615032206411894,
+            "pump_capacity": 0.535960105095319,
+            "efficiency": 0.9201536158458696,
+            "leak": 0.06402805682533072
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-rule",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "bounded_operation_feasible",
+          "target_equilibrium": false,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.49316562865259006,
+          "target_required_inflow": 0.4981643504767843,
+          "target_equilibrium_command": 1.0101359898860989,
+          "reachable_final_interval": [
+            0.05,
+            0.45609400408637957
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.5453839107311322,
+            "demand": 0.46615032206411894,
+            "pump_capacity": 0.535960105095319,
+            "efficiency": 0.9201536158458696,
+            "leak": 0.06402805682533072,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 34,
+            "measurements": {
+              "level": 0.04551946705800154,
+              "violation_magnitude": 0.004480532941998461
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "rule-based",
+          "low_level": 0.42,
+          "high_level": 0.58
+        },
+        "failure_experiment_id": "20261027T135801_db5c757cde",
+        "reference_experiment_id": "20261027T135818_dc299b2345",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135801_db5c757cde",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135818_dc299b2345",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135818_dc299b2345"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0003",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.17296829479503098,
+            "demand": 0.8139825494937261,
+            "pump_capacity": 1.2219251504705646,
+            "efficiency": 0.7354777350158953,
+            "leak": 0.037273397907726095
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-analytical",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8986987420270479,
+          "target_required_inflow": 0.8326192484475892,
+          "target_equilibrium_command": 0.9264720306268438,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.17296829479503098,
+            "demand": 0.8139825494937261,
+            "pump_capacity": 1.2219251504705646,
+            "efficiency": 0.7354777350158953,
+            "leak": 0.037273397907726095,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 33,
+            "measurements": {
+              "level": 0.04967331347878843,
+              "violation_magnitude": 0.00032668652121157354
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "pump-analytical",
+          "version": "calibrated-feedback:1",
+          "dt": 0.1,
+          "response": 0.25,
+          "unclipped_error_pole": 0.75
+        },
+        "failure_experiment_id": "20261027T135816_c208cdbf85",
+        "reference_experiment_id": "20261027T135818_aae5422aeb",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135816_c208cdbf85",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135818_aae5422aeb",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135818_aae5422aeb"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0003",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.17296829479503098,
+            "demand": 0.8139825494937261,
+            "pump_capacity": 1.2219251504705646,
+            "efficiency": 0.7354777350158953,
+            "leak": 0.037273397907726095
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-rule",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.8986987420270479,
+          "target_required_inflow": 0.8326192484475892,
+          "target_equilibrium_command": 0.9264720306268438,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.17296829479503098,
+            "demand": 0.8139825494937261,
+            "pump_capacity": 1.2219251504705646,
+            "efficiency": 0.7354777350158953,
+            "leak": 0.037273397907726095,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 33,
+            "measurements": {
+              "level": 0.04967331347878843,
+              "violation_magnitude": 0.00032668652121157354
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "rule-based",
+          "low_level": 0.42,
+          "high_level": 0.58
+        },
+        "failure_experiment_id": "20261027T135816_c208cdbf85",
+        "reference_experiment_id": "20261027T135819_2ca062e8b8",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135816_c208cdbf85",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135819_2ca062e8b8",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135819_2ca062e8b8"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0002",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.25951767091960837,
+            "demand": 0.5996979306594066,
+            "pump_capacity": 0.8718743770140621,
+            "efficiency": 0.7883709733655926,
+            "leak": 0.04002398982863242
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-analytical",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.6873604512590958,
+          "target_required_inflow": 0.6197099255737228,
+          "target_equilibrium_command": 0.9015792579258061,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.25951767091960837,
+            "demand": 0.5996979306594066,
+            "pump_capacity": 0.8718743770140621,
+            "efficiency": 0.7883709733655926,
+            "leak": 0.04002398982863242,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 39,
+            "measurements": {
+              "level": 0.049829255868238526,
+              "violation_magnitude": 0.00017074413176147718
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "pump-analytical",
+          "version": "calibrated-feedback:1",
+          "dt": 0.1,
+          "response": 0.25,
+          "unclipped_error_pole": 0.75
+        },
+        "failure_experiment_id": "20261027T135805_812bc1a043",
+        "reference_experiment_id": "20261027T135819_f21a3eb277",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135805_812bc1a043",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135819_f21a3eb277",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135819_f21a3eb277"
+        }
+      },
+      {
+        "discovery_id": "disc_2ba26db7df_0002",
+        "scenario": {
+          "environment_id": "pump",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "min_level": 0.05,
+            "max_level": 0.95,
+            "initial_level": 0.25951767091960837,
+            "demand": 0.5996979306594066,
+            "pump_capacity": 0.8718743770140621,
+            "efficiency": 0.7883709733655926,
+            "leak": 0.04002398982863242
+          },
+          "seed": 340000,
+          "environment_version": "sirfex-pump:1",
+          "schema_version": "1",
+          "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+          "tags": [
+            "search"
+          ],
+          "provenance": {
+            "search_space_schema": "1"
+          }
+        },
+        "controller_id": "ppo",
+        "controller_config": {
+          "checkpoint": {
+            "checkpoint_id": "ppo_3_10240",
+            "training_run_id": "20261025T205339_64b622c146",
+            "path": "ppo_3_10240.zip",
+            "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+            "environment_id": "pump",
+            "observation_shape": [
+              6
+            ],
+            "action_shape": [
+              1
+            ],
+            "ppo_config": {
+              "learning_rate": 0.0003,
+              "n_steps": 128,
+              "batch_size": 32,
+              "n_epochs": 4,
+              "gamma": 0.99,
+              "gae_lambda": 0.95,
+              "ent_coef": 0.0,
+              "vf_coef": 0.5,
+              "net_arch": [
+                64,
+                64
+              ],
+              "device": "cpu",
+              "torch_threads": 2
+            },
+            "training_seed": 3,
+            "training_timesteps": 10240,
+            "dependencies": {
+              "sirfex": "0.1.0",
+              "numpy": "2.5.4",
+              "gymnasium": "1.4.0",
+              "stable-baselines3": "2.9.0",
+              "torch": "2.14.1"
+            },
+            "observation_schema": "pump-calibrated:1",
+            "reward_schema": "pump-survival-tracking:2",
+            "policy_action_schema": "pump-normalized:1",
+            "termination_schema": "pump-terminate-on-violation:1"
+          }
+        },
+        "search_id": "20261027T135757_2ba26db7df",
+        "reference_id": "pump-rule",
+        "avoidable": true,
+        "evidence_strength": [
+          "reference-demonstrated",
+          "feasibility-proven"
+        ],
+        "feasibility": {
+          "schema_version": "pump-feasibility:1",
+          "classification": "target_feasible",
+          "target_equilibrium": true,
+          "interval_equilibrium": true,
+          "finite_horizon_viable": true,
+          "horizon": 200,
+          "first_unavoidable_violation_step": null,
+          "maximum_inflow": 0.6873604512590958,
+          "target_required_inflow": 0.6197099255737228,
+          "target_equilibrium_command": 0.9015792579258061,
+          "reachable_final_interval": [
+            0.05,
+            0.95
+          ],
+          "method": "exact-rational affine reachable intervals with per-step constraints",
+          "parameters": {
+            "dt": 0.1,
+            "horizon": 200,
+            "target_level": 0.5,
+            "initial_level": 0.25951767091960837,
+            "demand": 0.5996979306594066,
+            "pump_capacity": 0.8718743770140621,
+            "efficiency": 0.7883709733655926,
+            "leak": 0.04002398982863242,
+            "min_level": 0.05,
+            "max_level": 0.95
+          }
+        },
+        "failure_event": [
+          {
+            "category": "constraint_violation",
+            "explanation": "Tank level crossed a configured operating constraint.",
+            "step": 39,
+            "measurements": {
+              "level": 0.049829255868238526,
+              "violation_magnitude": 0.00017074413176147718
+            },
+            "threshold": "level outside [0.05, 0.95]",
+            "evidence_source": "environment",
+            "evidence_status": "observed"
+          }
+        ],
+        "reference_controller": {
+          "kind": "rule-based",
+          "low_level": 0.42,
+          "high_level": 0.58
+        },
+        "failure_experiment_id": "20261027T135805_812bc1a043",
+        "reference_experiment_id": "20261027T135820_aa0f670ff4",
+        "replay": [
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135805_812bc1a043",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          },
+          {
+            "status": "exact_match",
+            "experiment_id": "20261027T135820_aa0f670ff4",
+            "explanation": "All recorded fields matched exactly.",
+            "mismatches": []
+          }
+        ],
+        "witness": {
+          "type": "replayed physical control sequence",
+          "horizon": 200,
+          "reference_experiment_id": "20261027T135820_aa0f670ff4"
+        }
+      }
+    ],
+    "status": "completed",
+    "configuration": {
+      "environment_id": "pump",
+      "environment_version": "sirfex-pump:1",
+      "schema_version": "1",
+      "objective": "pump.constraint_violation",
+      "controller_id": "ppo",
+      "baseline_seed": 3,
+      "strategy": "random",
+      "seed": 34,
+      "scenario_seed": 340000,
+      "trials": 40,
+      "wall_seconds": 180,
+      "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+      "fixed_parameters": {
+        "dt": 0.1,
+        "horizon": 200,
+        "target_level": 0.5,
+        "min_level": 0.05,
+        "max_level": 0.95
+      },
+      "parameters": {
+        "initial_level": {
+          "type": "float",
+          "low": 0.1,
+          "high": 0.9
+        },
+        "demand": {
+          "type": "float",
+          "low": 0.35,
+          "high": 1.05
+        },
+        "pump_capacity": {
+          "type": "float",
+          "low": 0.5,
+          "high": 1.4
+        },
+        "efficiency": {
+          "type": "float",
+          "low": 0.6,
+          "high": 1.0
+        },
+        "leak": {
+          "type": "float",
+          "low": 0.0,
+          "high": 0.12
+        }
+      }
+    },
+    "summary": {
+      "search_id": "20261027T135757_2ba26db7df",
+      "strategy": "random",
+      "objective_id": "pump.constraint_violation",
+      "direction": "maximize",
+      "trial_proposals": 40,
+      "valid_trials": 26,
+      "actual_simulation_evaluations": 26,
+      "execution_failures": 0,
+      "invalid_trials": 1,
+      "rejected_candidates": 13,
+      "validated_candidates": 39,
+      "simulation_attempts": 26,
+      "wall_clock_seconds": 19.565767400003097,
+      "best_objective": 0.007084248163364518,
+      "best_so_far": [
+        {
+          "trial_index": 1,
+          "value": 0.0
+        },
+        {
+          "trial_index": 4,
+          "value": 0.0
+        },
+        {
+          "trial_index": 5,
+          "value": 0.0
+        },
+        {
+          "trial_index": 6,
+          "value": 0.0
+        },
+        {
+          "trial_index": 8,
+          "value": 0.0
+        },
+        {
+          "trial_index": 9,
+          "value": 0.004480532941998461
+        },
+        {
+          "trial_index": 10,
+          "value": 0.004480532941998461
+        },
+        {
+          "trial_index": 11,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 12,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 13,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 15,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 16,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 17,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 18,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 19,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 20,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 21,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 23,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 24,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 25,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 31,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 33,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 34,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 35,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 38,
+          "value": 0.007084248163364518
+        },
+        {
+          "trial_index": 39,
+          "value": 0.007084248163364518
+        }
+      ],
+      "unique_discoveries": 4,
+      "held_out_evaluations": 0,
+      "readiness": "ready",
+      "competence_replicated": true,
+      "robustness_continuation_performed": false,
+      "feasible_candidates": 26,
+      "observed_controller_violations": 4,
+      "reference_evaluations": 8,
+      "competence_recheck_evaluations": 12,
+      "search_replay_executions": 4,
+      "witness_replay_executions": 16,
+      "avoidable_discoveries": 4,
+      "replay_verified_avoidable_discoveries": 4,
+      "reference_success_discoveries": 4,
+      "wall_seconds_including_references": 26.348991200000455,
+      "reference_candidate_limit": 8,
+      "note": "Search evaluations, reference evaluations and replay executions are separate",
+      "memory": {
+        "rss_bytes": 306581504,
+        "peak_working_set_bytes": 307773440
+      }
+    }
+  }
+}

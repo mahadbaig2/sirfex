@@ -100,6 +100,21 @@ the sealed nominal and feasible-stress final sets are evaluated. The existing
 representative reproducibility evidence; the optional training module does not
 change the core adapter or Studio. See the [protocol](MATCHED_ROBUSTNESS_STUDY.md).
 
+## Phase 3.4 staged research workflow
+
+`sirfex.training.phase34` adds an optional staged study around the same pump
+adapter, PPO checkpoint loader, feasibility analyzer, search runner, evaluator,
+artifact store and replay service. Preparation characterizes historical policy
+behavior, generates disjoint controller-independent development/final physical
+sets, and reuses feasibility-aware search with an explicit final-set exclusion.
+Screening reloads a fixed competent model/optimizer for each candidate and
+evaluates only development partitions. Its frozen selector either records
+`no_eligible_curriculum` or writes a selected final protocol. Confirmation is
+gated on that selected status; it trains three matched seed pairs and opens
+final sets only after six hashed checkpoints complete. Phase 3.4's actual
+screen stopped at the no-eligible gate. Core evaluation/search imports remain
+independent of Stable-Baselines3; Studio remains an optional evidence reader.
+
 ## Search workflow
 
 Phase 2 composes the experiment layer rather than duplicating it:

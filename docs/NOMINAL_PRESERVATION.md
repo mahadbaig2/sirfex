@@ -26,3 +26,9 @@ guardrail failure is `regressed`; incomplete or mixed evidence is
 `inconclusive`. Known-stress gains alone never satisfy the improvement rule.
 Three independent seeds support descriptive paired inference only; scenario
 count does not enlarge the number of independently trained policies.
+
+The actual Phase 3.4 screen found no curriculum that met both development
+stress-gain and nominal-preservation conditions. It stopped before final
+training. The final classification rule above was frozen but **not applied**;
+there is no Phase 3.4 controller regression verdict. See the
+[measured report](PHASE_3_4_REPORT.md).

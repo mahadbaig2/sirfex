@@ -159,3 +159,128 @@ def test_final_rule_uses_tracking_at_zero_frequency_floor_and_nominal_guardrail(
 def test_extended_profile_requires_opt_in():
     with pytest.raises(ValueError):
         configuration({"profile": "extended"})
+
+
+def test_tiny_actual_ppo_screen_persists_equal_start_and_stops_before_final(tmp_path, monkeypatch):
+    pytest.importorskip("stable_baselines3")
+    from sirfex.training import phase34
+    from sirfex.training.config import PPOConfig
+    from sirfex.training.matched_study import model_fingerprint
+    from sirfex.training.persistence import TrainingStore
+    from sirfex.training.ppo import train_ppo
+    from sirfex.training.protocol import content_hash, scenario_record
+    from sirfex.training.pump_gym import PumpGymEnv
+    from sirfex.training.validation import _checkpoint
+
+    store = TrainingStore(tmp_path / "training")
+    normal = Scenario("pump", {"horizon": 200, "demand": 0.48}, seed=101)
+    validation = Scenario("pump", {"horizon": 200, "demand": 0.52}, seed=102)
+    stress = Scenario("pump", {"horizon": 200, "demand": 0.68}, seed=103)
+    final_nominal = Scenario("pump", {"horizon": 200, "demand": 0.54}, seed=104)
+    final_stress = Scenario("pump", {"horizon": 200, "demand": 0.72}, seed=105)
+    ppo = PPOConfig(n_steps=128, batch_size=32, torch_threads=2)
+    env = PumpGymEnv(
+        [normal],
+        observation_schema="pump-calibrated:1",
+        policy_action_schema="pump-normalized:1",
+        reward_schema="pump-survival-tracking:2",
+    )
+    model = train_ppo(env, ppo, seed=3, timesteps=128)
+    env.close()
+    source_id, study_id = "smokesource34", "smokestudy34"
+    source_groups = {
+        "training": [scenario_record(normal)],
+        "validation": [scenario_record(validation)],
+    }
+    store.save(
+        source_id,
+        {
+            "manifest.json": {
+                "schema_version": "2",
+                "training_run_id": source_id,
+                "status": "completed",
+            },
+            "dataset_partitions.json": {
+                "groups": source_groups,
+                "hashes": {k: content_hash(v) for k, v in source_groups.items()},
+            },
+        },
+    )
+    source_dir = store.directory(source_id)
+    meta = _checkpoint(
+        model,
+        source_dir,
+        source_id,
+        "baseline",
+        {
+            "ppo": ppo.to_dict(),
+            "policy_action_schema": "pump-normalized:1",
+            "reward_schema": "pump-survival-tracking:2",
+        },
+        3,
+        "pump-calibrated:1",
+    )
+    monkeypatch.setattr(phase34, "SOURCE_32", source_id)
+    benchmark_groups = {
+        "screening_stress": [scenario_record(stress)],
+        "final_nominal": [scenario_record(final_nominal)],
+        "final_stress": [scenario_record(final_stress)],
+    }
+    benchmark = {
+        "groups": benchmark_groups,
+        "hashes": {k: content_hash(v) for k, v in benchmark_groups.items()},
+    }
+    policy = {
+        "nominal_relative_mae_max": 0.1,
+        "nominal_violation_increase_max": 0,
+        "stress_violation_increase_max": 0,
+        "execution_failure_increase_max": 0,
+        "development_stress_mae_gain_min": 1000.0,
+    }
+    candidates = [
+        {"id": "normal", "pool": "none", "stress_ratio": 0.0},
+        {"id": "original_5", "pool": "original", "stress_ratio": 0.05},
+    ]
+    protocol = {
+        "benchmark_hashes": benchmark["hashes"],
+        "development_validation_hash": content_hash(source_groups["validation"]),
+        "training_hash": content_hash(source_groups["training"]),
+    }
+    store.save(
+        study_id,
+        {
+            "manifest.json": {
+                "schema_version": "2",
+                "phase": "3.4",
+                "training_run_id": study_id,
+                "status": "prepared",
+                "protocol_sha256": content_hash(protocol),
+                "preparation_seconds": 0,
+                "checkpoints": {},
+            },
+            "config.json": {"wall_seconds": 300, "screen_steps": 128},
+            "protocol.json": protocol,
+            "stress_benchmark.json": benchmark,
+            "baseline_verification.json": {
+                "3": {"checkpoint": meta.to_dict(), "fingerprint": model_fingerprint(model)}
+            },
+            "candidate_curricula.json": {
+                "screening": {"candidates": candidates, "policy": policy},
+                "original": {"old": {"scenario": stress.to_dict()}},
+                "new": {},
+            },
+            "development_results.json": {"calibration": {}},
+        },
+    )
+    result = phase34.screen(study_id, store)
+    assert result["status"] == "no_eligible_curriculum"
+    assert result["actual_screening_steps"] == 256
+    saved = store.load(study_id)
+    runs = saved["development_results"]["screening_runs"]
+    assert len(runs) == 2
+    assert runs[0]["starting_fingerprint"] == runs[1]["starting_fingerprint"]
+    assert all(r["actual_additional_steps"] == 128 for r in runs)
+    assert "final_evaluation" not in saved
+    assert "continuation_runs" not in saved
+    with pytest.raises(ValueError, match="selected"):
+        phase34.confirm(study_id, store, None)

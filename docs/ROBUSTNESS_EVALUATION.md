@@ -25,3 +25,17 @@ violation frequency, magnitudes, tracking, horizon, command, saturation and
 execution failures are persisted. Representative runs use the existing
 experiment replay service. See [held-out methodology](HELD_OUT_STRESS_EVALUATION.md)
 and [Phase 3.3 results](PHASE_3_3_REPORT.md).
+
+## Phase 3.4 staged evaluation
+
+The new four-stratum pump benchmark has 24 development stress and 64 sealed
+final stress configurations, plus 12 separate sealed final nominal cases.
+It is generated and feasibility-checked without candidate-controller outcomes.
+The designated baseline and references characterize development stress; the
+5%/10% candidate screen reads only this development stress set and the old
+development validation set. The fixed final primary is physical violation
+frequency, with held-out tracking MAE as a prespecified continuous fallback
+when both arms hit a zero-frequency floor. Since no curriculum passed the
+development gate, Phase 3.4 has **no final evaluation or paired final result**.
+See the [benchmark design](STRESS_BENCHMARK_DESIGN.md) and
+[measured report](PHASE_3_4_REPORT.md).

@@ -30,3 +30,14 @@ frequency and pass every guardrail. Complete guardrail failure is `regressed`;
 mixed or incomplete evidence is `inconclusive`. The paired-seed bootstrap is
 exploratory at n=3. See [the frozen protocol](MATCHED_ROBUSTNESS_STUDY.md) and
 [analysis](ROBUSTNESS_STATISTICAL_ANALYSIS.md).
+
+## Frozen Phase 3.4 workflow outcome
+
+`no_eligible_curriculum` is a development workflow status, not an `improved`,
+`regressed` or `inconclusive` controller verdict. It requires stopping before
+confirmatory training. If a candidate had qualified, the frozen final rule
+would have applied a 10% nominal tracking guardrail, no additional nominal or
+stress violations or execution failures, paired training-seed comparison, and
+the prespecified held-out tracking fallback at a zero-violation floor. In the
+observed screen, no candidate qualified, so no Phase 3.4 final regression
+classification was computed. See [nominal preservation](NOMINAL_PRESERVATION.md).

@@ -45,3 +45,11 @@ sees the new final set until a candidate is selected and all matched final
 checkpoints are saved and verified. Reference performance is diagnostic; a
 valid constructive safe trace can establish feasibility even if either
 reference controller fails.
+
+The generated benchmark accepted 24 development stress, 64 sealed final stress
+and 12 sealed final nominal cases. The designated original seed-3 policy
+violated 6/24 development stress cases (one high, five near-boundary); both
+references had zero development violations. The final policy outcomes remain
+unmeasured because [curriculum screening](CURRICULUM_SCREENING.md) found no
+eligible candidate. Proposal, feasibility and difficulty distributions are
+reported in the [Phase 3.4 report](PHASE_3_4_REPORT.md).

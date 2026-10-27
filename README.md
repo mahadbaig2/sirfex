@@ -8,7 +8,7 @@ SIRFEX is an open-source, local-first Physical AI testing engine for autonomous 
 
 ## Project status
 
-SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.3. Its first frozen three-seed matched continuation study found **no incremental held-out violation reduction** from failure-informed training over equal normal training, and **nominal tracking regressed in all three seeds** beyond the prespecified tolerance. The technical requirements remain defined in [the technical PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md); the [Phase 3.3 report](docs/PHASE_3_3_REPORT.md) and [public evidence](docs/evidence/phase_3_3_results.json) give the measured result. The negative [Phase 3.1 report](docs/PHASE_3_1_REPORT.md) remains part of the evidence.
+SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.4. Phase 3.3 found **no incremental held-out violation reduction** from 30% failure-informed training and **nominal tracking regression in all three seeds**. Phase 3.4 froze a more varied feasible-stress benchmark and found four new avoidable failures, but **no low-intensity curriculum passed its development screening rule**; the new final holdouts remain sealed. The technical requirements remain in [the PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md), and the measured evidence is in the [Phase 3.3](docs/PHASE_3_3_REPORT.md) and [Phase 3.4](docs/PHASE_3_4_REPORT.md) reports.
 
 The project is intentionally CPU-first and local-first. It will not require paid APIs, hosted simulation, cloud training, or a dedicated GPU.
 
@@ -93,6 +93,15 @@ The [competence study](docs/PPO_COMPETENCE_STUDY.md) met the unchanged nominal g
 
 The two arms each reached 0/60 held-out violations for all three seeds after continuation, leaving no incremental physical-violation gain. Failure-informed training degraded nominal mean tracking error by 235.93%, 40.76% and 106.43% relative to its normal arm; the overall frozen classification is **`regressed`**. See the [preregistered protocol](docs/MATCHED_ROBUSTNESS_STUDY.md), [held-out set](docs/HELD_OUT_STRESS_EVALUATION.md), [statistical analysis](docs/ROBUSTNESS_STATISTICAL_ANALYSIS.md), and [Phase 3.3 report](docs/PHASE_3_3_REPORT.md) for details and limits.
 
+## Implemented in Phase 3.4
+
+- Analyzed the saved Phase 3.3 nominal regression and action distributions without changing historical evidence.
+- Froze a controller-independent, four-stratum feasible pump benchmark with 24 development stress, 64 sealed final stress and 12 sealed final nominal scenarios.
+- Reused bounded feasibility-aware search and replay to add four avoidable failures to the three historical discoveries.
+- Screened equal-step normal, 5% and 10% failure-informed candidates on development data under a fixed nominal-preservation rule.
+
+The [Phase 3.4 report](docs/PHASE_3_4_REPORT.md) records **`no_eligible_curriculum`**. Original-pool candidates had no stress gain; expanded-pool candidates breached the 10% nominal tracking limit. As preregistered, no confirmatory training or final holdout evaluation followed. The [benchmark design](docs/STRESS_BENCHMARK_DESIGN.md), [screening rule](docs/CURRICULUM_SCREENING.md), [nominal-preservation policy](docs/NOMINAL_PRESERVATION.md), [study evidence](docs/evidence/phase_3_4_results.json) and [search evidence](docs/evidence/phase_3_4_search.json) preserve the inputs and results.
+
 ## Planned v1 scope
 
 - Headless LunarLander and simplified industrial pump-control environments.
@@ -101,7 +110,7 @@ The two arms each reached 0/60 held-out violations for all three seeds after con
 - CPU benchmarking and optional PPO workflows.
 - A Python package and CLI using the `sirfex` namespace and command.
 
-Bounded retraining and matched robustness evaluation are implemented; this study did not demonstrate an incremental robustness benefit. A remote API and cloud execution remain outside the current results. See the PRD for the complete requirements, constraints, architecture, and roadmap.
+Bounded retraining and matched robustness evaluation are implemented; these studies have not demonstrated an incremental held-out robustness benefit. A remote API and cloud execution remain outside the current results. See the PRD for the complete requirements, constraints, architecture, and roadmap.
 
 ## Development
 
@@ -149,6 +158,9 @@ sirfex train robustness-study --config configs/training/pump_phase_3_3.json --pr
 sirfex train robustness-study --study <prepared-study-id>
 sirfex train report <matched-study-id>
 sirfex train verify <matched-study-id>
+sirfex train phase-3-4 --config configs/training/pump_phase_3_4.json --stage prepare
+sirfex train phase-3-4 --study <study-id> --stage screen
+sirfex train phase-3-4 --study <selected-study-id> --stage confirm
 python scripts/ppo_smoke_test.py --steps 256
 python scripts/run_training_benchmark.py --profile smoke --seed 3
 python scripts/run_search_benchmark.py --trials 20 --seed 11
