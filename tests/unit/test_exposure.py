@@ -151,3 +151,48 @@ def test_exposure_gate_reports_adequate_insufficient_and_invalid():
     assert exposure_adequacy(summary, 1, trial_complete=False)["status"] == "invalid_exposure"
     assert exposure_adequacy(None, 1)["status"] == "invalid_exposure"
     env.close()
+
+
+def test_scheduled_stress_only_changes_on_episode_boundaries():
+    normal, stress = _scenario(1, horizon=10), _scenario(2, horizon=10, demand=0.6)
+    env = PumpGymEnv(
+        [normal],
+        stress_scenarios=[stress],
+        seed=7,
+        stress_schedule=[
+            {"until_step": 100, "stress_fraction": 0.0},
+            {"until_step": 200, "stress_fraction": 0.1},
+        ],
+    )
+    for _ in range(20):
+        env.reset()
+        _run_episode(env)
+    result = env.exposure_summary(scheduled_interactions=200, model_interactions=200)
+    assert result["reconciliation_valid"]
+    assert result["sampling_mode"] == "interaction-schedule:1"
+    assert 0 < result["stress_interactions"] <= 20
+    assert result["stress_completed_episodes"] >= 1
+    env.close()
+
+
+def test_weighted_pool_requires_valid_exact_weights():
+    normal = _scenario(1)
+    first, second = _scenario(2, demand=0.6), _scenario(3, demand=0.7)
+    ids = [scenario_record(s)["scenario_id"] for s in (first, second)]
+    with pytest.raises(ValueError):
+        PumpGymEnv(
+            [normal], stress_scenarios=[first, second], stress_ratio=1, stress_weights={ids[0]: 1}
+        )
+    env = PumpGymEnv(
+        [normal],
+        stress_scenarios=[first, second],
+        stress_ratio=1,
+        stress_weights={ids[0]: 9, ids[1]: 1},
+        seed=11,
+    )
+    for _ in range(100):
+        env.reset()
+        _run_episode(env)
+    counts = env.exposure_summary()["per_scenario_episode_starts"]
+    assert counts[ids[0]] > counts[ids[1]]
+    env.close()

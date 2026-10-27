@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added Phase 3.6 numerical policy diagnostics, strict optional agent proposals, bounded approval-gated research execution, local evidence memory, and an offline mock versus deterministic-selector software smoke. A live GPT-OSS improvement comparison remains unrun.
+
 - Added Phase 3.5 exact curriculum transition accounting, a frozen exposure adequacy gate, episode-boundary interaction targets, a two-seed development screen and gated matched confirmation workflow. Published the protocol and neutral calibration before candidate outcome evaluation.
 
 - Added Phase 3.4 historical policy diagnostics, a frozen four-stratum feasible-stress benchmark, leakage-aware avoidable-failure search, development-only curriculum screening and a gated matched confirmation path. Four new avoidable failures were verified. No 5%/10% candidate met both stress-gain and nominal-preservation criteria, so the study stopped with `no_eligible_curriculum` before final evaluation.

@@ -6,9 +6,11 @@ SIRFEX is an open-source, local-first Physical AI testing engine for autonomous 
 
 > Find failure conditions before they find your controller.
 
+Phase 3.6 adds development-only numerical policy diagnostics and an optional, approval-gated agent research workflow. Its offline mock comparison verifies the software path; a live GPT-OSS comparison and robustness improvement remain untested. See the [Phase 3.6 report](docs/PHASE_3_6_REPORT.md) and [research protocol](docs/AGENT_EXPERIMENT_PROTOCOL.md).
+
 ## Project status
 
-SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows through Phase 3.5. Phase 3.3 found **no incremental held-out violation reduction** from 30% failure-informed training and **nominal tracking regression in all three seeds**. Phase 3.4 froze a more varied feasible-stress benchmark and found four new avoidable failures, but **no low-intensity curriculum passed its development screening rule**. Phase 3.5 measures actual curriculum interactions and runs a frozen exposure-controlled comparison. Its research result is recorded in the [Phase 3.5 report](docs/PHASE_3_5_REPORT.md). The technical requirements remain in [the PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md).
+SIRFEX implements evaluation, failure search, a local Evidence Explorer, and optional CPU PPO workflows, and development-only policy research through Phase 3.6. Phase 3.3 found **no incremental held-out violation reduction** from 30% failure-informed training and **nominal tracking regression in all three seeds**. Phase 3.4 froze a more varied feasible-stress benchmark and found four new avoidable failures, but **no low-intensity curriculum passed its development screening rule**. Phase 3.5 measures actual curriculum interactions and runs a frozen exposure-controlled comparison. Its research result is recorded in the [Phase 3.5 report](docs/PHASE_3_5_REPORT.md). The technical requirements remain in [the PRD](SIRFEX_Technical_PRD_and_Architecture_v1.md).
 
 The project is intentionally CPU-first and local-first. It will not require paid APIs, hosted simulation, cloud training, or a dedicated GPU.
 

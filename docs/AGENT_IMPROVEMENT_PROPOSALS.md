@@ -1,0 +1,7 @@
+# Phase 3.6 proposal contract
+
+`sirfex-agent-proposal:1` is a strict Pydantic object with a hypothesis, bounded evidence references, a seed, a fixed continuation interaction count, exactly one intervention, development-only evaluation, an expected effect, and a possible failure mode. Unknown fields and unsupported intervention types are rejected. Evidence references must exist in the local diagnostic or historical-development record, or name one of seven replay-verified feasible discoveries.
+
+The initial registry supports `scheduled_curriculum`, `nominal_rehearsal`, and `discovery_weighting`. Scheduled exposure has two or three monotone boundaries aligned to 128 interactions, ends at the approved cap, and keeps stress probability within 0–15%. Nominal rehearsal uses an explicit 20–50% nominal-only tail within the same total cap. Discovery weighting requires all seven eligible IDs, normalized weights, and per-discovery bounds. Severity-aware ordering and learning-rate multipliers are deferred because the current prototype has no independently validated severity ordering or factorial optimizer study.
+
+The validator rejects unknown evidence, discovery IDs, extra settings, final-holdout requests, changed reward or action contracts, invalid boundaries, and exceeded budgets. Configuration identity includes the intervention, source checkpoint hash, development dataset hashes, seed, and interaction count. Repeated equivalent configurations are rejected unless a distinct seed changes the contract. Prose is excluded from the identity.

@@ -1,0 +1,63 @@
+{
+  "schema_version": "sirfex-phase-3-6-public-smoke:1",
+  "classification": "offline_software_smoke",
+  "matched_contract_checks": {
+    "starting_checkpoint": true,
+    "development_sets": true,
+    "starting_seed": true,
+    "requested_steps": true,
+    "actual_steps": true,
+    "evidence_context": true,
+    "continuation_seed": true
+  },
+  "agent_minus_baseline_nominal_mae": 0.0,
+  "agent_minus_baseline_stress_mae": 0.0,
+  "results": {
+    "agent": {
+      "run_id": "20261027T192619_707a8c02ae",
+      "method": "mock_agent",
+      "provider_model": "offline-mock:1",
+      "actual_training_interactions": 256,
+      "actual_stress_interactions": 15,
+      "stress_completed_episodes": 1,
+      "decision": "smoke_inconclusive",
+      "nominal_mae": 0.05452725133500899,
+      "stress_mae": 0.27066018201766817,
+      "nominal_violation_frequency": 0.0,
+      "stress_violation_frequency": 0.25,
+      "provider_calls": 1,
+      "llm_calls": 0,
+      "training_seconds": 9.504669900000408,
+      "starting_checkpoint_sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+      "candidate_checkpoint_sha256": "1236e632ddda735e48e7a2f7e019a6c5c737922ac0ffb81b49f1be0b48679688",
+      "exposure_reconciled": true
+    },
+    "non_llm": {
+      "run_id": "20261027T192827_51f292034e",
+      "method": "non_llm",
+      "provider_model": "deterministic-selector:1",
+      "actual_training_interactions": 256,
+      "actual_stress_interactions": 15,
+      "stress_completed_episodes": 1,
+      "decision": "smoke_inconclusive",
+      "nominal_mae": 0.05452725133500899,
+      "stress_mae": 0.27066018201766817,
+      "nominal_violation_frequency": 0.0,
+      "stress_violation_frequency": 0.25,
+      "provider_calls": 1,
+      "llm_calls": 0,
+      "training_seconds": 9.48371859999952,
+      "starting_checkpoint_sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+      "candidate_checkpoint_sha256": "d812ed2b21443c2b3c5a42c913c102e23d60e3b85821ea54601ae001412c7374",
+      "exposure_reconciled": true
+    }
+  },
+  "groq_no_key_probe": {
+    "run_id": "20261027T193144_fa2e1724a4",
+    "status": "provider_failed",
+    "error_type": "RuntimeError",
+    "ppo_executed": false
+  },
+  "final_holdouts_accessed": false,
+  "interpretation": "Offline mock checks software wiring only; no GPT-OSS or robustness claim."
+}

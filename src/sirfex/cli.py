@@ -164,11 +164,20 @@ def build_parser() -> argparse.ArgumentParser:
     research = subparsers.add_parser("research", help="development-only policy research")
     research.add_argument("--store", default="artifacts/research")
     research.add_argument("--training-store", default="artifacts/training")
+    research.add_argument("--experiment-store", default="artifacts/experiments")
     research_sub = research.add_subparsers(dest="research_command", required=True)
     research_sub.add_parser("diagnose").add_argument("--config", required=True)
+    research_sub.add_parser("propose").add_argument("--config", required=True)
     research_sub.add_parser("list")
     research_sub.add_parser("show").add_argument("research_run_id")
     research_sub.add_parser("verify").add_argument("research_run_id")
+    research_sub.add_parser("validate").add_argument("research_run_id")
+    research_execute = research_sub.add_parser("execute")
+    research_execute.add_argument("research_run_id")
+    research_execute.add_argument("--approve-training", action="store_true")
+    research_compare = research_sub.add_parser("compare")
+    research_compare.add_argument("agent_run_id")
+    research_compare.add_argument("baseline_run_id")
     return parser
 
 
@@ -416,6 +425,31 @@ def main(argv: list[str] | None = None) -> int:
             with open(args.config, encoding="utf-8") as stream:
                 value = json.load(stream)
             result = diagnose(value, TrainingStore(args.training_store), store)
+        elif args.research_command == "propose":
+            from sirfex.research.workflow import propose
+
+            with open(args.config, encoding="utf-8") as stream:
+                value = json.load(stream)
+            result = propose(value, TrainingStore(args.training_store), store)
+        elif args.research_command == "execute":
+            from sirfex.research.executor import execute
+
+            result = execute(
+                args.research_run_id,
+                approved=args.approve_training,
+                training=TrainingStore(args.training_store),
+                research=store,
+                experiments_store=ExperimentStore(args.experiment_store),
+            )
+        elif args.research_command == "validate":
+            from sirfex.research.verification import validate_saved
+
+            result = validate_saved(args.research_run_id, TrainingStore(args.training_store), store)
+        elif args.research_command == "compare":
+            from sirfex.research.comparison import compare
+
+            result = compare(store, args.agent_run_id, args.baseline_run_id)
+            store.write(args.agent_run_id, "comparison.json", result)
         elif args.research_command == "list":
             result = store.list()
         elif args.research_command == "show":
@@ -424,16 +458,12 @@ def main(argv: list[str] | None = None) -> int:
                 "summary": store.read(args.research_run_id, "summary.json"),
             }
         elif args.research_command == "verify":
-            manifest = store.read(args.research_run_id, "manifest.json")
-            protocol = store.read(args.research_run_id, "protocol.json")
-            if content_hash(protocol) != manifest["protocol_sha256"]:
-                raise ValueError("Research protocol hash mismatch")
-            result = {
-                "run_id": args.research_run_id,
-                "protocol_verified": True,
-                "status": manifest["status"],
-            }
+            from sirfex.research.verification import verify_run
+
+            result = verify_run(args.research_run_id, store)
         print(json.dumps(result, indent=2, sort_keys=True))
+        if args.research_command == "propose" and result.get("status") != "awaiting_approval":
+            return 1
         return 0
     if args.command == "train":
         from sirfex.training.checkpoints import verify_checkpoint

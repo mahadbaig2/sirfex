@@ -1,5 +1,7 @@
 # SIRFEX Phase 0 Architecture
 
+Phase 3.6 adds `sirfex.research` as an optional layer above the existing training and evidence interfaces. Headless diagnostics require no LLM. The agent graph can propose only strict, development-only interventions; independent validation and a CLI approval gate precede CPU PPO continuation. Numerical evaluation and guardrails remain in SIRFEX. Local JSON research artifacts carry provenance; LangGraph process memory is not authoritative persistence. See [agentic architecture](AGENTIC_RESEARCH_ARCHITECTURE.md).
+
 Phase 3.2 adds an optional training layer above the unchanged pump adapter. The
 Gymnasium policy action coordinate may be direct `[0,1]` or normalized `[-1,1]`;
 the latter maps to the same physical `[0,1]` command before the pump transition.

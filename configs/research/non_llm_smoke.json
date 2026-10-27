@@ -1,0 +1,11 @@
+{
+  "profile": "smoke",
+  "method": "non_llm",
+  "diagnostic_run_id": "20261027T191840_736f65993d",
+  "starting_seed": 3,
+  "training_timesteps": 256,
+  "max_provider_calls": 1,
+  "max_total_tokens": 2048,
+  "max_completion_tokens": 512,
+  "wall_seconds": 120
+}

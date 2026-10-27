@@ -55,3 +55,6 @@ records per-seed adequacy and nominal/stress checks. `final_protocol.json`,
 `replay_verification.json` exist only if the corresponding gated stages ran.
 The compact public preregistration and calibration are in `docs/evidence/`;
 local binary checkpoints remain outside Git.
+# Phase 3.6 research artifacts
+
+`artifacts/research/<run-id>/` contains a hashed `protocol.json`, `manifest.json`, evidence context, proposal, validation, plan, explicit approval, model usage, training record, development evaluation, deterministic decision, critique, and research memory when the corresponding stage completes. Candidate PPO binaries stay in this ignored local directory and are verified by SHA-256. Diagnostics use separate `policy-regression-diagnostics` runs with fixed-observation actions and independent tracking outcomes. Public compact exports omit local checkpoint paths; see [Phase 3.6 report](PHASE_3_6_REPORT.md).

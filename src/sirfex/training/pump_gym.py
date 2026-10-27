@@ -35,6 +35,8 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
         termination_schema: str = TERMINATION,
         discovery_ids: dict[str, str] | None = None,
         stress_target_fraction: float | None = None,
+        stress_schedule: list[dict[str, float | int]] | None = None,
+        stress_weights: dict[str, float] | None = None,
     ) -> None:
         super().__init__()
         self._adapter = PumpObservationEnvironment(observation_schema)
@@ -65,8 +67,26 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
                 raise ValueError("Exposure target must be in [0,1] with a stress pool")
             if stress_ratio != 0:
                 raise ValueError("Use episode probability or interaction target, not both")
+        if stress_schedule is not None:
+            if stress_ratio != 0 or stress_target_fraction is not None:
+                raise ValueError("Stress schedule is exclusive of other sampler modes")
+            previous = 0
+            for segment in stress_schedule:
+                if (
+                    set(segment) != {"until_step", "stress_fraction"}
+                    or type(segment["until_step"]) is not int
+                    or segment["until_step"] <= previous
+                    or not 0 <= segment["stress_fraction"] <= 1
+                ):
+                    raise ValueError("Invalid stress schedule boundary or fraction")
+                previous = segment["until_step"]
+            if not stress_schedule or (
+                any(s["stress_fraction"] > 0 for s in stress_schedule) and not self.stress_scenarios
+            ):
+                raise ValueError("Stress schedule requires valid segments and stress pool")
         self.stress_ratio = stress_ratio
         self.stress_target_fraction = stress_target_fraction
+        self.stress_schedule = [dict(s) for s in stress_schedule] if stress_schedule else None
         self._normal_scenario_ids = {scenario_record(s)["scenario_id"] for s in self.scenarios}
         self._stress_scenario_ids = {
             scenario_record(s)["scenario_id"] for s in self.stress_scenarios
@@ -74,6 +94,26 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
         self.discovery_ids = dict(discovery_ids or {})
         if set(self.discovery_ids) - self._stress_scenario_ids:
             raise ValueError("Discovery mapping contains a scenario outside the stress pool")
+        self.stress_weights = dict(stress_weights) if stress_weights is not None else None
+        if self.stress_weights is not None:
+            if (
+                set(self.stress_weights) != self._stress_scenario_ids
+                or not self.stress_weights
+                or any(
+                    type(v) not in (int, float) or not np.isfinite(v) or v <= 0
+                    for v in self.stress_weights.values()
+                )
+            ):
+                raise ValueError("Stress weights must be positive and cover the stress pool")
+            total_weight = sum(self.stress_weights.values())
+            self._stress_probabilities = np.array(
+                [
+                    self.stress_weights[scenario_record(s)["scenario_id"]] / total_weight
+                    for s in self.stress_scenarios
+                ]
+            )
+        else:
+            self._stress_probabilities = None
         self._exposure = ExposureLedger(seed)
         self.sample_counts = {"normal": 0, "stress": 0}
         self.sample_counts_by_scenario_id: dict[str, int] = {}
@@ -104,7 +144,24 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
                 else "unassigned"
             )
         else:
-            if self.stress_target_fraction is None:
+            if self.stress_schedule is not None:
+                total = sum(self._exposure.interactions.values())
+                desired = 0.0
+                previous = 0
+                active_fraction = 0.0
+                for segment in self.stress_schedule:
+                    until = segment["until_step"]
+                    desired += max(0, min(total, until) - previous) * segment["stress_fraction"]
+                    if total < until:
+                        active_fraction = segment["stress_fraction"]
+                        break
+                    previous = until
+                stress = (
+                    active_fraction > 0
+                    and total > 0
+                    and self._exposure.interactions["stress"] < desired
+                )
+            elif self.stress_target_fraction is None:
                 stress = self.stress_ratio > 0 and self._rng.random() < self.stress_ratio
             else:
                 total = sum(self._exposure.interactions.values())
@@ -114,7 +171,11 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
                     and self._exposure.interactions["stress"] < self.stress_target_fraction * total
                 )
             pool = self.stress_scenarios if stress else self.scenarios
-            self._scenario = pool[int(self._rng.integers(len(pool)))]
+            if stress and self._stress_probabilities is not None:
+                index = int(self._rng.choice(len(pool), p=self._stress_probabilities))
+            else:
+                index = int(self._rng.integers(len(pool)))
+            self._scenario = pool[index]
             mode = "stress" if stress else "normal"
             key = scenario_record(self._scenario)["scenario_id"]
         observation, info = self._adapter.reset(self._scenario)
@@ -179,14 +240,20 @@ class PumpGymEnv(gym.Env[np.ndarray, np.ndarray]):
             model_interactions=model_interactions,
         )
         summary["sampling_mode"] = (
-            "interaction-debt:1"
+            "interaction-schedule:1"
+            if self.stress_schedule is not None
+            else "interaction-debt:1"
             if self.stress_target_fraction is not None
             else "episode-probability:1"
         )
         summary["configured_stress_probability"] = (
-            self.stress_ratio if self.stress_target_fraction is None else None
+            self.stress_ratio
+            if self.stress_target_fraction is None and self.stress_schedule is None
+            else None
         )
         summary["target_stress_interaction_fraction"] = self.stress_target_fraction
+        summary["stress_schedule"] = self.stress_schedule
+        summary["stress_weights"] = self.stress_weights
         summary["sampler_episode_starts"] = dict(self.sample_counts)
         summary["sampler_start_reconciles"] = (
             summary["nominal_episode_starts"] == self.sample_counts["normal"]
