@@ -1,0 +1,33 @@
+{
+  "schema_version": "pump-robustness-calibration:1",
+  "profile": "software_calibration_only",
+  "search_space": {
+    "environment_id": "pump",
+    "environment_version": "sirfex-pump:1",
+    "schema_version": "1",
+    "description": "Checkpoint 1 synthetic differential calibration domain",
+    "fixed_parameters": {
+      "dt": 0.1,
+      "horizon": 40,
+      "target_level": 0.5,
+      "min_level": 0.05,
+      "max_level": 0.95,
+      "pump_capacity": 0.8,
+      "efficiency": 0.9,
+      "leak": 0.02
+    },
+    "parameters": {
+      "initial_level": {"type": "float", "low": 0.35, "high": 0.65},
+      "demand": {"type": "float", "low": 0.35, "high": 0.65}
+    }
+  },
+  "controllers": [
+    {"id": "pump-rule", "config": {}},
+    {"id": "pump-analytical", "config": {"dt": 0.1, "response": 0.25}}
+  ],
+  "proposals": 2,
+  "search_seed": 3701,
+  "scenario_seed_start": 370100,
+  "near_miss_delta": 0.05,
+  "excluded_scenarios": []
+}

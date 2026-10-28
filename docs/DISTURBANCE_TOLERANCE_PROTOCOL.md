@@ -1,0 +1,13 @@
+# Pump disturbance tolerance protocol (Checkpoint 1)
+
+This is a software protocol for bounded development calibration. A later reviewed protocol must freeze the scientific grid and controller set.
+
+For nonnegative dimensionless `delta`, adverse axes transform demand `d' = d(1+delta)`, capacity `c' = c(1-delta)`, efficiency `e' = e(1-delta)`, and leak `l' = l + delta*d/h_mid`, where `h_mid = (lo+hi)/2`. The 15 nonempty axis subsets and a separate surplus-demand direction `d' = d(1-delta)` form 16 supported directions. Only selected axes change. Both demand and leak zero make the leak-scaled direction `undefined_axis`; a meaningful zero-effect transform remains valid. Invalid parameters are never clamped.
+
+The anchor/direction/grid determines a controller-independent valid domain. `prepare_grid` validates each generated scenario and applies the existing finite-horizon pump feasibility analyzer before any controller run. Controllers receive identical valid scenarios. Every valid grid point is evaluated, even after a controller fails. The result records the ordered outcome and feasibility vectors, `nonmonotone` if survival follows a failure, and `physics_nonmonotone` if viability follows proven infeasibility. `undetermined` remains unknown.
+
+The cell status is `fails_at_nominal`, `failed`, `censored_bound`, `censored_max`, or `undefined_axis`. `delta_first` is the first **observed grid** violation, never a global optimum. `delta_infeasible_grid` is the first grid point proven physically infeasible. If both are finite and the latter is positive, their descriptive ratio is reported with both raw values. Missing thresholds are JSON `null`, not zero. A successful complete controller episode at a point proven infeasible raises `FeasibilityDiscrepancy` and stops the case with diagnostic evidence.
+
+Optional feasibility bracket refinement applies only to adverse directions with a viable/infeasible adjacent bracket, no observed physics nonmonotonicity, and `0 <= dt*l'(delta) <= 1` across the bracket. The bisection refines the physical ceiling bracket, never the controller's first-failure threshold. It is a restricted model argument and numerical implementation, not proof that all controller outcomes are monotone. Out-of-domain brackets are labeled `ceiling_unresolved_domain`.
+
+The provisional full-grid concept is `delta=0.025*k`, `k=0..24`, maximum `0.60`; Checkpoint 1 CLI permits only a smaller calibration grid of at most five points, four directions, two anchors and three controllers. Run `sirfex robustness tolerance --config configs/robustness/pump_calibration.json --output-dir artifacts/robustness --mode calibration`. The result is a software check, not a scientific comparison or a physical-system guarantee.

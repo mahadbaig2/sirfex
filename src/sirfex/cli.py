@@ -178,6 +178,26 @@ def build_parser() -> argparse.ArgumentParser:
     research_compare = research_sub.add_parser("compare")
     research_compare.add_argument("agent_run_id")
     research_compare.add_argument("baseline_run_id")
+    robustness = subparsers.add_parser(
+        "robustness", help="bounded, development-only pump robustness measurements"
+    )
+    robustness_sub = robustness.add_subparsers(dest="robustness_command", required=True)
+    margins = robustness_sub.add_parser("margins", help="signed margin from a recorded episode")
+    margin_source = margins.add_mutually_exclusive_group(required=True)
+    margin_source.add_argument("--result", help="EpisodeResult JSON including trace")
+    margin_source.add_argument("--experiment-id", help="recorded experiment ID")
+    margins.add_argument("--experiment-store", default="artifacts/experiments")
+    margins.add_argument("--output", help="optional local JSON output path")
+    for name in ("tolerance", "differential"):
+        operation = robustness_sub.add_parser(name, help=f"bounded software calibration for {name}")
+        operation.add_argument("--config", required=True)
+        operation.add_argument("--output-dir", required=True)
+        operation.add_argument("--mode", choices=["calibration"], required=True)
+    robustness_report = robustness_sub.add_parser(
+        "report", help="render a verified JSON robustness report"
+    )
+    robustness_report.add_argument("--input", required=True)
+    robustness_report.add_argument("--output", required=True)
     return parser
 
 
@@ -465,6 +485,42 @@ def main(argv: list[str] | None = None) -> int:
         if args.research_command == "propose" and result.get("status") != "awaiting_approval":
             return 1
         return 0
+    if args.command == "robustness":
+        from pathlib import Path
+
+        from sirfex.robustness.margins import MarginEvidenceError, evaluate_margin
+        from sirfex.robustness.report import render_markdown
+        from sirfex.robustness.service import run_differential, run_tolerance
+        from sirfex.robustness.store import _atomic_json, atomic_text
+
+        try:
+            if args.robustness_command == "margins":
+                if args.result:
+                    value = json.loads(Path(args.result).read_text(encoding="utf-8"))
+                else:
+                    stored = ExperimentStore(args.experiment_store).load(args.experiment_id)
+                    value = {**stored.result, "trace": stored.trajectory}
+                output = evaluate_margin(value).to_dict()
+                if args.output:
+                    _atomic_json(Path(args.output), output)
+            elif args.robustness_command == "report":
+                value = json.loads(Path(args.input).read_text(encoding="utf-8"))
+                atomic_text(Path(args.output), render_markdown(value))
+                output = {
+                    "output_path": str(Path(args.output).resolve()),
+                    "report_sha256": value["semantic_sha256"],
+                }
+            else:
+                value = json.loads(Path(args.config).read_text(encoding="utf-8"))
+                output = (
+                    run_tolerance(value, args.output_dir)
+                    if args.robustness_command == "tolerance"
+                    else run_differential(value, args.output_dir)
+                )
+            print(json.dumps(output, indent=2, sort_keys=True))
+            return 0
+        except (MarginEvidenceError, ValueError, OSError, KeyError, TypeError) as exc:
+            parser.error(str(exc))
     if args.command == "train":
         from sirfex.training.checkpoints import verify_checkpoint
         from sirfex.training.config import training_profile

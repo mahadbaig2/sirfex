@@ -1,0 +1,30 @@
+{
+  "schema_version": "pump-robustness-calibration:1",
+  "profile": "software_calibration_only",
+  "anchor_scenarios": [
+    {
+      "environment_id": "pump",
+      "environment_version": "sirfex-pump:1",
+      "parameters": {
+        "dt": 0.1,
+        "horizon": 40,
+        "initial_level": 0.5,
+        "target_level": 0.5,
+        "demand": 0.5,
+        "pump_capacity": 0.8,
+        "efficiency": 0.9,
+        "leak": 0.02,
+        "min_level": 0.05,
+        "max_level": 0.95
+      },
+      "seed": 370001,
+      "provenance": {"partition": "synthetic_software_calibration"}
+    }
+  ],
+  "directions": [["demand"], ["capacity"], ["leak"], ["surplus_demand"]],
+  "grid": [0, 0.05, 0.1],
+  "controllers": [
+    {"id": "pump-rule", "config": {}},
+    {"id": "pump-analytical", "config": {"dt": 0.1, "response": 0.25}}
+  ]
+}

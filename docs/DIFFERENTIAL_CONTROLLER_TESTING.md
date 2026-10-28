@@ -1,0 +1,9 @@
+# Same-scenario differential controller testing (Checkpoint 1)
+
+The bounded sampler uses the existing versioned pump `SearchSpace`, a seeded NumPy generator, independent scenario seeds, the current leakage checker and finite-horizon feasibility analyzer. It excludes overlapping and nonviable proposals; excluded counts remain visible. It makes no adaptive optimization claim.
+
+For viable scenario `s`, let `X` be the controller under test and `Y` the comparison. Both use the same scenario and `M_post`. Define `gap = M_post(Y,s) - M_post(X,s)` in normalized tank level fraction. **Class A** is a safe near miss: neither violates and `gap >= epsilon`, where the calibration example uses provisional `epsilon=0.05`. **Class B** is an avoidable actual failure: `X` violates, `Y` survives, feasibility proves finite-horizon viability, and deterministic repeated episodes for both match the originals under existing replay comparison. A potential B with missing or mismatched replay remains `class_b_unverified`, separate from confirmed findings. Other pairs are `none`.
+
+Ranking is lexicographic: verified B, A, unverified B, then none; within a class larger gap ranks first, then scenario ID breaks ties. Top findings are reported by class and an empty class is an explicit empty list. The small development sampler may find no differential: that is a bounded negative result, not proof of parity. An initial state shared by both controllers cannot suppress a difference because comparisons use post-initial margins.
+
+Run `sirfex robustness differential --config configs/robustness/pump_differential_calibration.json --output-dir artifacts/robustness --mode calibration`. Checkpoint 1 caps proposals at five and requires exactly two distinct controllers. The near-miss threshold, controller set and search domain remain open for Checkpoint 2.
