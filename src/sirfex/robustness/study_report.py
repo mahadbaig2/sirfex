@@ -11,7 +11,46 @@ from sirfex.robustness.identity import semantic_hash
 from sirfex.robustness.store import RobustnessStorageError, controller_identity
 from sirfex.robustness.study_store import StudyStore
 
-REPORT_SCHEMA = "pump-scientific-study-report:1"
+REPORT_SCHEMA = "pump-scientific-study-report:2"
+VIABLE_FEASIBILITY = {"target_feasible", "bounded_operation_feasible"}
+
+
+def _grid_feasibility_counts(points: list[dict]) -> dict:
+    """Count only analyzer-proven finite-horizon viable cases as avoidable."""
+    groups = {
+        key: {"scenarios": 0, "evaluated": 0, "failures": 0, "survivals": 0, "missing_evidence": 0}
+        for key in ("viable", "infeasible", "unknown", "invalid")
+    }
+    censored = 0
+    for point in points:
+        if point.get("domain_status") != "valid":
+            censored += 1
+            continue
+        feasibility = point.get("feasibility")
+        group = (
+            "viable"
+            if feasibility in VIABLE_FEASIBILITY
+            else "infeasible"
+            if feasibility == "infeasible"
+            else "unknown"
+            if feasibility == "undetermined"
+            else "invalid"
+        )
+        counts = groups[group]
+        counts["scenarios"] += 1
+        failure = point.get("failure")
+        if type(failure) is bool:
+            counts["evaluated"] += 1
+            counts["failures" if failure else "survivals"] += 1
+        else:
+            counts["missing_evidence"] += 1
+    return {
+        "groups": groups,
+        "censored": censored,
+        "valid_evaluated": sum(
+            groups[key]["evaluated"] for key in ("viable", "infeasible", "unknown")
+        ),
+    }
 
 
 def _distribution(values: list[float]) -> dict:
@@ -130,14 +169,10 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
         nominal_rows = nominal[key]
         stress_rows = stress[key]
         grid_rows = cells[key]
-        all_grid = [
-            point
-            for cell in grid_rows
-            for point in cell["grid_outcomes"]
-            if point["domain_status"] == "valid"
-        ]
-        viable = [point for point in all_grid if point["feasibility"] != "infeasible"]
-        infeasible = [point for point in all_grid if point["feasibility"] == "infeasible"]
+        all_points = [point for cell in grid_rows for point in cell["grid_outcomes"]]
+        all_grid = [point for point in all_points if point["domain_status"] == "valid"]
+        feasibility = _grid_feasibility_counts(all_points)
+        groups = feasibility["groups"]
         controllers.append(
             {
                 "controller": key,
@@ -171,10 +206,20 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
                     r["margin"]["constraint_violated"] for r in stress_rows.values()
                 ),
                 "all_grid_points": len(all_grid),
-                "physically_viable_points": len(viable),
-                "physically_infeasible_points": len(infeasible),
-                "avoidable_grid_violations": sum(p["failure"] for p in viable),
-                "infeasible_grid_violations": sum(p["failure"] for p in infeasible),
+                "requested_grid_points": len(all_points),
+                "valid_evaluated_grid_points": feasibility["valid_evaluated"],
+                "grid_missing_evidence": sum(
+                    group["missing_evidence"] for group in groups.values()
+                ),
+                "grid_invalid_feasibility_points": groups["invalid"]["scenarios"],
+                "grid_censored_points": feasibility["censored"],
+                "feasibility_coverage": groups,
+                "physically_viable_points": groups["viable"]["evaluated"],
+                "physically_infeasible_points": groups["infeasible"]["evaluated"],
+                "physically_unknown_points": groups["unknown"]["evaluated"],
+                "avoidable_grid_violations": groups["viable"]["failures"],
+                "infeasible_grid_violations": groups["infeasible"]["failures"],
+                "unknown_feasibility_grid_violations": groups["unknown"]["failures"],
                 "first_failure_thresholds": [cell["delta_first"] for cell in grid_rows],
                 "physical_infeasibility_thresholds": [
                     cell["delta_infeasible_grid"] for cell in grid_rows
@@ -204,6 +249,10 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
         pair["nominal"]["status"] == pair["stress"]["status"] == "complete" for pair in pairs
     )
     complete &= not unverified_selected
+    complete &= all(
+        row["grid_missing_evidence"] == row["grid_invalid_feasibility_points"] == 0
+        for row in controllers
+    )
     context = [
         {
             "x": pair["x"],
@@ -295,14 +344,15 @@ def render_study_markdown(report: dict) -> str:
         "## Controllers",
         "",
         "| Controller | Nominal | Stress | Grid cells | Viable grid | "
-        "Infeasible grid | Avoidable grid violations |",
-        "|---|---:|---:|---:|---:|---:|---:|",
+        "Infeasible grid | Unknown grid | Avoidable grid violations |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for row in report["controllers"]:
         lines.append(
             f"| `{row['controller']}` | {row['nominal_coverage']} | "
             f"{row['stress_coverage']} | {row['grid_cell_coverage']} | "
             f"{row['physically_viable_points']} | {row['physically_infeasible_points']} | "
+            f"{row['physically_unknown_points']} | "
             f"{row['avoidable_grid_violations']} |"
         )
     lines += ["", "## Matched comparisons", ""]
