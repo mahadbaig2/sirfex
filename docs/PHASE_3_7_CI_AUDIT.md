@@ -12,6 +12,11 @@ The repository has one workflow, [CI](../.github/workflows/ci.yml), on Ubuntu wi
 | [40901665888](https://github.com/mahadbaig2/sirfex/actions/runs/40901665888) | PR at `80a917a`: failed `test`, passed `training` | Formatting and lint passed; test collection lacked `pydantic` because CI omitted the declared `agents` extra. |
 | [40901968701](https://github.com/mahadbaig2/sirfex/actions/runs/40901968701) | PR at `1508eff`: failed `test`, passed `training` | Test collection passed. Four tests assumed ignored local PPO checkpoint files; one real PPO test ran in the core job without Stable-Baselines3. |
 | [40902410991](https://github.com/mahadbaig2/sirfex/actions/runs/40902410991) | PR at `04660f2`: **passed `test` and `training`** | GitHub completed both jobs on the working branch. |
+| [40953966709](https://github.com/mahadbaig2/sirfex/actions/runs/40953966709) | PR at `b646e12`: **passed both jobs** | CI audit documentation push triggered the PR workflow. |
+| [40954416235](https://github.com/mahadbaig2/sirfex/actions/runs/40954416235) | PR at `61dd066`: **passed both jobs** | Physical-feasibility report correction. |
+| [40955501083](https://github.com/mahadbaig2/sirfex/actions/runs/40955501083) | PR at `98d85eb`: **passed both jobs** | Unclean invocation accounting and budget tests. |
+| [40955969350](https://github.com/mahadbaig2/sirfex/actions/runs/40955969350) | PR at `2b3bfcf`: **passed both jobs** | Separate authorization record and gate tests. |
+| [40971519690](https://github.com/mahadbaig2/sirfex/actions/runs/40971519690) | PR at `4671b79`: **passed both jobs** | Final report, ledger and synthetic-pilot corrections. |
 
 The formatting defect was fixed in `80a917a`. `1508eff` installed the existing agent extra in the core test job. `04660f2` made plan-structure tests independent of ignored checkpoint binaries, retained the checkpoint-dependent dry-run test for environments with installed artifacts, and routed the optional real PPO smoke test to the CPU training job. Scientific execution still verifies checkpoint bytes unconditionally before running; CI does not fabricate them or weaken that gate.
 
