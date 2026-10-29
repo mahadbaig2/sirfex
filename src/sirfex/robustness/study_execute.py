@@ -16,7 +16,8 @@ from sirfex.robustness.evidence import archive_selected_findings
 from sirfex.robustness.identity import scenario_identity, semantic_hash
 from sirfex.robustness.margins import evaluate_margin
 from sirfex.robustness.service import _Session
-from sirfex.robustness.store import RobustnessStorageError, _atomic_json
+from sirfex.robustness.store import RobustnessStorageError, _atomic_json, atomic_text
+from sirfex.robustness.study_report import build_study_report, render_study_markdown
 from sirfex.robustness.study_store import InvocationBudget, StudyBudgetExhausted, StudyStore
 from sirfex.search.space import SearchSpace
 from sirfex.training.checkpoints import verify_checkpoint
@@ -474,3 +475,47 @@ class StudyEngine:
         finally:
             self.pool.close()
         return self.store.status()
+
+    def regenerate_report(self, *, persist: bool = True) -> dict:
+        """Regenerate from verified cases, including durable selected experiments."""
+        report = build_study_report(self.store, self.protocol, self.manifest, self.specs)
+        markdown = render_study_markdown(report)
+        if persist:
+            prefix = "report" if report["execution_status"] == "complete" else "partial_report"
+            json_path = self.store.directory / f"{prefix}.json"
+            markdown_path = self.store.directory / f"{prefix}.md"
+            for path, value in ((json_path, report), (markdown_path, markdown)):
+                if path.exists():
+                    saved = (
+                        json.loads(path.read_text(encoding="utf-8"))
+                        if path.suffix == ".json"
+                        else path.read_text(encoding="utf-8")
+                    )
+                    if saved != value:
+                        raise RobustnessStorageError(
+                            "Stored scientific report differs from verified evidence"
+                        )
+                else:
+                    self.store._check_storage(report)
+                    if path.suffix == ".json":
+                        _atomic_json(path, report)
+                    else:
+                        atomic_text(path, markdown)
+        return report
+
+    def execute_report(self, *, resume: bool = False) -> dict:
+        item = next(row for row in self.plan["work_items"] if row["stage"] == "report")
+        stage_status = self.store.status()["stages"]
+        if any(
+            counts["pending"] or counts["running"] or counts["failed"] or counts["invalid"]
+            for stage, counts in stage_status.items()
+            if stage != "report"
+        ):
+            return self.regenerate_report(persist=False)
+        self._run_item(
+            item,
+            lambda: {"report_sha256": self.regenerate_report(persist=True)["semantic_sha256"]},
+            controllers=(),
+            resume=resume,
+        )
+        return self.regenerate_report(persist=True)

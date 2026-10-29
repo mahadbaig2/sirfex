@@ -172,5 +172,10 @@ def test_synthetic_differential_archive_and_resume(tmp_path):
         evidence = archive["findings"]["class_b"][0]["durable_evidence"]
         assert evidence["verification_status"] == "independently_replayed"
         assert len(evidence["experiments"]) == 4
+        report = resumed.execute_report(resume=True)
+        assert report["execution_status"] == "complete"
+        assert report["differential"][0]["findings"]["class_b"]
+        assert report["semantic_sha256"] == resumed.regenerate_report()["semantic_sha256"]
+        assert resumed.store.status()["status"] == "complete"
     finally:
         resumed.close()
