@@ -1,7 +1,9 @@
 # SIRFEX Phase 3.7 Checkpoint 2A completion report
 
-**Engineering status:** `checkpoint_2a_complete_awaiting_protocol_review`  
-**Scientific execution status:** `not_authorized_not_run`  
+**Engineering status:** `checkpoint_2a_complete_awaiting_protocol_review`
+
+**Scientific execution status:** `not_authorized_not_run`
+
 **Protocol:** [candidate JSON](../configs/robustness/phase37_checkpoint2_protocol.candidate.json), still `executable: false`.
 
 ## Scope and Git history
