@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import tempfile
 import time
@@ -15,6 +16,13 @@ from tests.integration.test_robustness_study_execution import synthetic_package
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--output",
+        default="docs/evidence/phase_3_7_study_pilot_2a1.json",
+        help="Repository-relative output for this bounded synthetic pilot",
+    )
+    args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     protocol, manifest = synthetic_package()
     plan = build_plan(protocol, manifest, root, synthetic=True)
@@ -97,7 +105,10 @@ def main() -> None:
             evidence_module.replay_experiment = original_replay
             engine.close()
             tracemalloc.stop()
-    destination = root / "docs" / "evidence" / "phase_3_7_study_pilot.json"
+    destination = (root / args.output).resolve()
+    if not destination.is_relative_to(root):
+        raise ValueError("Synthetic pilot output must stay within the repository")
+    destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(result, indent=2, sort_keys=True))
 

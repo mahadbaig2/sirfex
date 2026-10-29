@@ -35,7 +35,8 @@ class StudyStore:
         self.items_dir.mkdir(parents=True, exist_ok=True)
         with _exclusive_lock(self.directory / ".plan.lock"):
             path = self.directory / "plan.json"
-            if path.exists():
+            existing_plan = path.exists()
+            if existing_plan:
                 try:
                     saved = json.loads(path.read_text(encoding="utf-8"))
                 except (OSError, ValueError) as exc:
@@ -45,6 +46,10 @@ class StudyStore:
             else:
                 _atomic_json(path, self.plan)
             if not (self.directory / "budget.json").exists():
+                if existing_plan:
+                    raise RobustnessStorageError(
+                        "Existing study budget ledger is missing; usage cannot be reset"
+                    )
                 budget = {
                     "schema_version": "pump-study-budget:1",
                     "plan_sha256": self.plan["semantic_sha256"],
@@ -86,12 +91,16 @@ class StudyStore:
     def _check_storage(
         self, value: dict, *, replacing: Path | None = None, critical: bool = False
     ) -> None:
+        serialized = len(
+            (json.dumps(value, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8")
+        )
+        self.check_storage_bytes(serialized, critical=critical)
+
+    def check_storage_bytes(self, amount: int, *, critical: bool = False) -> None:
         cap = self.plan["resource_limits"].get("artifact_bytes_cap", 0)
         reserve = min(8192, cap // 10) if not critical else 0
-        serialized = len(json.dumps(value, sort_keys=True, allow_nan=False).encode("utf-8"))
-        old = replacing.stat().st_size if replacing and replacing.exists() else 0
         # Atomic replacement temporarily needs the old and new files simultaneously.
-        if cap <= 0 or self._storage_bytes() + 2 * serialized > cap - reserve or old > cap:
+        if cap <= 0 or amount < 0 or self._storage_bytes() + amount > cap - reserve:
             raise StudyBudgetExhausted("study_storage_budget_exhausted")
 
     def write(
@@ -135,6 +144,14 @@ class StudyStore:
                 or value["plan_sha256"] != self.plan["semantic_sha256"]
             ):
                 raise RobustnessStorageError("Study invocation journal changed")
+            if (
+                value.get("schema_version") != "pump-study-invocation:1"
+                or value.get("state") not in {"active", "closed"}
+                or not isinstance(value.get("last_checkpoint_epoch"), (int, float))
+                or not isinstance(value.get("recovery_events"), list)
+                or not isinstance(value.get("active_controllers"), list)
+            ):
+                raise RobustnessStorageError("Study invocation journal is malformed")
             value["semantic_sha256"] = digest
             return value
         except (OSError, ValueError, KeyError, TypeError) as exc:
@@ -156,6 +173,10 @@ class StudyStore:
         if previous and previous["state"] == "active":
             if not resume:
                 raise RobustnessStorageError("Unclean study invocation requires explicit resume")
+            if wall_epoch < previous["last_checkpoint_epoch"]:
+                raise RobustnessStorageError(
+                    "Wall clock moved backward; recovery time is unbounded"
+                )
             upper = max(0.0, wall_epoch - previous["last_checkpoint_epoch"])
             # This upper bound includes downtime; it is deliberately conservative.
             active_controllers = previous.get("active_controllers", [])
@@ -166,7 +187,7 @@ class StudyStore:
                 "uncharged_wall_seconds_upper": upper,
                 "downtime_included": True,
                 "controller_time_upper_charged_to": active_controllers,
-                "wall_clock_rollback_detected": wall_epoch < previous["last_checkpoint_epoch"],
+                "wall_clock_rollback_detected": False,
             }
             events = previous["recovery_events"] + [recovery]
         else:

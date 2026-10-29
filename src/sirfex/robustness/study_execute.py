@@ -512,10 +512,11 @@ class StudyEngine:
                             "Stored scientific report differs from verified evidence"
                         )
                 else:
-                    self.store._check_storage(report)
                     if path.suffix == ".json":
+                        self.store._check_storage(report)
                         _atomic_json(path, report)
                     else:
+                        self.store.check_storage_bytes(len(markdown.encode("utf-8")))
                         atomic_text(path, markdown)
         return report
 

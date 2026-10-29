@@ -144,6 +144,18 @@ def test_unclean_restart_near_wall_ceiling_cannot_extend_budget(tmp_path):
     assert store.budget()["cumulative_wall_seconds"] >= 6.0
 
 
+def test_unclean_restart_with_clock_rollback_fails_closed(tmp_path):
+    plan, _ = fixture_plan()
+    store = StudyStore(tmp_path, plan)
+    store.open()
+    first = InvocationBudget(store, clock=lambda: 0.0, wall_clock=lambda: 100.0)
+    first.start(resume=False)
+    restarted = InvocationBudget(store, clock=lambda: 0.0, wall_clock=lambda: 99.0)
+    with pytest.raises(RobustnessStorageError, match="Wall clock moved backward"):
+        restarted.start(resume=True)
+    assert store.invocation()["state"] == "active"
+
+
 def test_budget_write_failure_preserves_previous_ledger(tmp_path, monkeypatch):
     import sirfex.robustness.study_store as module
 
@@ -162,3 +174,12 @@ def test_budget_write_failure_preserves_previous_ledger(tmp_path, monkeypatch):
     with pytest.raises(RobustnessStorageError, match="ledger write failed"):
         store.charge(1.0, {})
     assert store.budget() == before
+
+
+def test_missing_budget_ledger_cannot_reset_existing_study(tmp_path):
+    plan, _ = fixture_plan()
+    store = StudyStore(tmp_path, plan)
+    store.open()
+    (store.directory / "budget.json").unlink()
+    with pytest.raises(RobustnessStorageError, match="cannot be reset"):
+        StudyStore(tmp_path, plan).open()

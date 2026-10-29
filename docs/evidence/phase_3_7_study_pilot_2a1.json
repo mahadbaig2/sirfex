@@ -1,0 +1,34 @@
+{
+  "artifact_bytes": 108406,
+  "controller_evaluation_seconds": {
+    "pump-analytical": 0.07643770000504446,
+    "pump-fixed": 0.04526790000454639,
+    "pump-rule": 0.10506050000185496
+  },
+  "independent_replay_count": 4,
+  "limitations": "Synthetic classical controllers only; Python heap peak excludes native allocations and is not a scientific runtime estimate.",
+  "measured_seconds": {
+    "differential_total": 1.828,
+    "evidence_archival_including_replay": 1.031,
+    "fixed_and_grid_total": 2.078,
+    "grid_preparation": 0.172,
+    "independent_replay": 0.141,
+    "report": 1.047
+  },
+  "peak_python_allocated_bytes": 330811,
+  "plan_sha256": "ef258fb41afa30b4e31b8dd361145225ee78e43e2d731a1059148a7afc0d3f2e",
+  "protocol_sha256": "4657b53cec5532fbbdb0a38799a8d9b6b1d11164af8ac52b83d8a973e0414f2d",
+  "report_sha256": "3577b06c403e8d28aa446f39138a490e8af3bade285369b9917dfbf1d565880a",
+  "report_status": "complete",
+  "schema_version": "phase37-synthetic-pilot:1",
+  "scope": "synthetic_test_only",
+  "selected_class_b_count": 1,
+  "total_seconds": 5.047,
+  "work_counts": {
+    "archive": 1,
+    "differential": 1,
+    "fixed_stress": 3,
+    "grid": 3,
+    "report": 1
+  }
+}

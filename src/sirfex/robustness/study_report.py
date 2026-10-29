@@ -69,13 +69,16 @@ def _distribution(values: list[float]) -> dict:
     }
 
 
-def _paired(left: dict[str, dict], right: dict[str, dict]) -> dict:
-    if set(left) != set(right) or not left:
+def _paired(left: dict[str, dict], right: dict[str, dict], expected: list[str]) -> dict:
+    if set(left) != set(right) or set(left) != set(expected) or not left:
         return {
             "status": "incomplete",
             "shared": len(set(left) & set(right)),
             "left": len(left),
             "right": len(right),
+            "expected": len(expected),
+            "missing_x": sorted(set(expected) - set(left)),
+            "missing_y": sorted(set(expected) - set(right)),
             "differences": [],
         }
     differences = [
@@ -97,6 +100,9 @@ def _paired(left: dict[str, dict], right: dict[str, dict]) -> dict:
         "shared": len(differences),
         "left": len(left),
         "right": len(right),
+        "expected": len(expected),
+        "missing_x": [],
+        "missing_y": [],
         "differences": differences,
     }
 
@@ -236,8 +242,10 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
                 "class": pair["class"],
                 "x": pair["x"],
                 "y": pair["y"],
-                "nominal": _paired(nominal[pair["x"]], nominal[pair["y"]]),
-                "stress": _paired(stress[pair["x"]], stress[pair["y"]]),
+                "nominal": _paired(
+                    nominal[pair["x"]], nominal[pair["y"]], plan["nominal_scenarios"]
+                ),
+                "stress": _paired(stress[pair["x"]], stress[pair["y"]], plan["stress_scenarios"]),
             }
         )
     mandatory = {stage: counts for stage, counts in stage_counts.items() if stage != "report"}
@@ -258,8 +266,8 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
             "x": pair["x"],
             "y": pair["y"],
             "class": pair["class"],
-            "nominal": _paired(nominal[pair["x"]], nominal[pair["y"]]),
-            "stress": _paired(stress[pair["x"]], stress[pair["y"]]),
+            "nominal": _paired(nominal[pair["x"]], nominal[pair["y"]], plan["nominal_scenarios"]),
+            "stress": _paired(stress[pair["x"]], stress[pair["y"]], plan["stress_scenarios"]),
         }
         for pair in protocol.get("context_pairs", [])
     ]

@@ -1,6 +1,21 @@
 """Feasibility denominators use the analyzer's actual classification contract."""
 
-from sirfex.robustness.study_report import _grid_feasibility_counts, build_study_report
+from sirfex.robustness.study_report import _grid_feasibility_counts, _paired, build_study_report
+
+
+def test_equal_missing_scenarios_do_not_make_a_pair_complete():
+    same = {
+        "one": {
+            "tracking_mae": 0.1,
+            "margin": {
+                "post_initial_minimum_margin": 0.2,
+                "constraint_violated": False,
+            },
+        }
+    }
+    result = _paired(same, same, ["one", "two"])
+    assert result["status"] == "incomplete"
+    assert result["missing_x"] == result["missing_y"] == ["two"]
 
 
 def test_viable_infeasible_unknown_and_missing_remain_separate():

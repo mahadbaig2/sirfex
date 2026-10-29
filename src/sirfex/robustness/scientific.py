@@ -274,22 +274,22 @@ def scientific_execute(
             engine.execute_fixed_and_grid(resume=resume)
             engine.execute_differential(resume=resume)
             report = engine.execute_report(resume=resume)
-            return {
+            result = {
                 "status": report["execution_status"],
                 "run_id": engine.store.run_id,
                 "report_sha256": report["semantic_sha256"],
-                "work_status": engine.store.status(),
             }
         except StudyBudgetExhausted as exc:
             partial = engine.regenerate_report(persist=False)
-            return {
+            result = {
                 "status": str(exc),
                 "run_id": engine.store.run_id,
                 "report_sha256": partial["semantic_sha256"],
-                "work_status": engine.store.status(),
             }
     finally:
         engine.close()
+    result["work_status"] = engine.store.status()
+    return result
 
 
 def regenerate_study_report(
