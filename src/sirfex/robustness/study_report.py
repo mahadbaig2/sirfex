@@ -75,6 +75,7 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
     stress: dict[str, dict[str, dict]] = defaultdict(dict)
     cells: dict[str, list[dict]] = defaultdict(list)
     differential = []
+    unverified_selected = False
     for item in plan["work_items"]:
         if item["stage"] == "report":
             continue
@@ -95,6 +96,7 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
                 nominal[item["controller"]][item["anchor_id"]] = result["nominal"]
         elif item["stage"] == "archive":
             archive = result["result"]
+            unverified_selected |= bool(archive["findings"]["class_b_unverified"])
             pair = next(row for row in plan["pairs"] if row["id"] == item["pair_id"])
             for finding in archive["findings"]["class_b"] + archive["findings"]["class_a"]:
                 durable = finding.get("durable_evidence")
@@ -201,6 +203,7 @@ def build_study_report(store: StudyStore, protocol: dict, manifest: dict, specs:
     complete &= all(
         pair["nominal"]["status"] == pair["stress"]["status"] == "complete" for pair in pairs
     )
+    complete &= not unverified_selected
     context = [
         {
             "x": pair["x"],

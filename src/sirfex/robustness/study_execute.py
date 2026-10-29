@@ -186,6 +186,11 @@ class StudyEngine:
             result = evaluate()
             status = "censored" if result.get("censored", False) else "completed"
             saved = self.store.write(item, status, result, resume=resume)
+        except StudyBudgetExhausted:
+            self.budget.charge(
+                {key: max(0.0, self.pool.seconds(key) - before[key]) for key in controllers}
+            )
+            raise
         except Exception as exc:
             try:
                 self.store.write(
@@ -462,7 +467,7 @@ class StudyEngine:
                 if interrupt_after is not None and completed_this_invocation >= interrupt_after:
                     raise StudyBudgetExhausted("synthetic_interruption")
                 pair = next(row for row in self.plan["pairs"] if row["id"] == item["pair_id"])
-                controllers = (pair["x"], pair["y"]) if item["stage"] == "differential" else ()
+                controllers = (pair["x"], pair["y"])
                 self._run_item(
                     item,
                     (lambda item=item: self._evaluate_proposal(item))

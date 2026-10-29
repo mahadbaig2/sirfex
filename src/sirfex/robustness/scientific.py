@@ -148,6 +148,9 @@ def scientific_execute(
     *,
     protocol_file: Path | str,
     approval_digest: str | None,
+    frozen_commit: str | None = None,
+    output_dir: Path | str | None = None,
+    resume: bool = False,
 ) -> dict:
     """Refuse candidate and uncommitted protocols before any scientific side effect.
 
@@ -164,18 +167,78 @@ def scientific_execute(
         raise StudyGateError("Missing explicit operator approval digest")
     if approval_digest != digest:
         raise StudyGateError("Approval digest does not match protocol")
+    if frozen_commit is None or not isinstance(frozen_commit, str) or len(frozen_commit) != 40:
+        raise StudyGateError("Frozen protocol is not committed at a declared commit")
     root = Path(root).resolve()
     file = Path(protocol_file).resolve()
     try:
         relative = file.relative_to(root).as_posix()
         committed = subprocess.check_output(
-            ["git", "show", f"HEAD:{relative}"],
+            ["git", "show", f"{frozen_commit}:{relative}"],
             cwd=root,
             timeout=5,
         )
+        subprocess.run(
+            ["git", "merge-base", "--is-ancestor", frozen_commit, "HEAD"],
+            cwd=root,
+            timeout=5,
+            check=True,
+            capture_output=True,
+        )
     except (ValueError, OSError, subprocess.SubprocessError) as exc:
         raise StudyGateError("Frozen protocol is not committed at HEAD") from exc
-    if json.loads(committed) != protocol:
+    if file.read_bytes() != committed or json.loads(committed) != protocol:
         raise StudyGateError("Working protocol differs from committed frozen protocol")
     dry_run(protocol, manifest, root)
-    raise StudyGateError("Scientific execution adapter disabled until Checkpoint 2B approval")
+    if output_dir is None:
+        raise StudyGateError("Scientific execution requires an explicit output directory")
+    from sirfex.robustness.study import build_plan
+    from sirfex.robustness.study_execute import StudyEngine
+    from sirfex.robustness.study_store import StudyBudgetExhausted
+
+    plan = build_plan(protocol, manifest, root, inputs_verified=True)
+    engine = StudyEngine(protocol, manifest, plan, root, output_dir)
+    try:
+        try:
+            engine.execute_fixed_and_grid(resume=resume)
+            engine.execute_differential(resume=resume)
+            report = engine.execute_report(resume=resume)
+            return {
+                "status": report["execution_status"],
+                "run_id": engine.store.run_id,
+                "report_sha256": report["semantic_sha256"],
+                "work_status": engine.store.status(),
+            }
+        except StudyBudgetExhausted as exc:
+            partial = engine.regenerate_report(persist=False)
+            return {
+                "status": str(exc),
+                "run_id": engine.store.run_id,
+                "report_sha256": partial["semantic_sha256"],
+                "work_status": engine.store.status(),
+            }
+    finally:
+        engine.close()
+
+
+def regenerate_study_report(
+    protocol: dict, manifest: dict, root: Path | str, output_dir: Path | str
+) -> dict:
+    """Read verified artifacts and regenerate a partial or complete report."""
+    from sirfex.robustness.study import build_plan
+    from sirfex.robustness.study_execute import StudyEngine
+
+    plan = build_plan(protocol, manifest, root)
+    run_name = f"study_{plan['semantic_sha256'][:20]}"
+    if not (Path(output_dir).resolve() / run_name / "plan.json").is_file():
+        raise StudyGateError("No stored scientific study exists for this plan")
+    engine = StudyEngine(protocol, manifest, plan, root, output_dir)
+    try:
+        report = engine.regenerate_report(persist=True)
+        return {
+            "status": report["execution_status"],
+            "run_id": engine.store.run_id,
+            "report_sha256": report["semantic_sha256"],
+        }
+    finally:
+        engine.close()
