@@ -5,6 +5,7 @@ import pytest
 from sirfex.robustness.identity import semantic_hash
 from sirfex.robustness.study import build_plan
 from sirfex.robustness.study_execute import StudyEngine
+from sirfex.robustness.study_report import REPORT_SCHEMA
 from sirfex.robustness.study_store import StudyBudgetExhausted
 from tests.integration.test_robustness_study_execution import synthetic_package
 
@@ -64,3 +65,77 @@ def test_storage_budget_stops_before_overwriting_evidence(tmp_path):
         assert engine.store.read(item["work_id"]) == before
     finally:
         engine.close()
+
+
+def test_storage_stop_during_case_persistence_keeps_prior_evidence(tmp_path, monkeypatch):
+    engine = _limited_engine(tmp_path)
+    original = engine.store._check_storage
+    first = next(row for row in engine.plan["work_items"] if row["stage"] == "fixed_stress")
+    engine.store.write(first, "completed", {"synthetic_prior": True})
+    before = engine.store.read(first["work_id"])
+
+    def deny_completion(value, **kwargs):
+        if (
+            value.get("schema_version") == "pump-study-work-item:1"
+            and value.get("status") == "completed"
+        ):
+            raise StudyBudgetExhausted("study_storage_budget_exhausted")
+        return original(value, **kwargs)
+
+    monkeypatch.setattr(engine.store, "_check_storage", deny_completion)
+    try:
+        with pytest.raises(StudyBudgetExhausted, match="storage_budget"):
+            engine.execute_fixed_and_grid()
+        assert engine.store.read(first["work_id"]) == before
+        assert engine.store.status()["status"] == "incomplete"
+        assert engine.store.budget()["cumulative_wall_seconds"] > 0
+    finally:
+        engine.close()
+
+
+def test_storage_stop_during_archive_and_report_is_resumable(tmp_path, monkeypatch):
+    engine = _limited_engine(tmp_path)
+    try:
+        engine.execute_fixed_and_grid()
+        with pytest.raises(StudyBudgetExhausted, match="synthetic_interruption"):
+            engine.execute_differential(interrupt_after=1)
+        proposal = next(row for row in engine.plan["work_items"] if row["stage"] == "differential")
+        saved_proposal = engine.store.read(proposal["work_id"])
+        original_check = engine.store.check_budget
+
+        def deny_archive(controllers=(), *, reserve_bytes=0):
+            if reserve_bytes and reserve_bytes != 1_000_000:
+                raise StudyBudgetExhausted("study_storage_budget_exhausted")
+            return original_check(controllers, reserve_bytes=reserve_bytes)
+
+        monkeypatch.setattr(engine.store, "check_budget", deny_archive)
+        with pytest.raises(StudyBudgetExhausted, match="storage_budget"):
+            engine.execute_differential(resume=True)
+        assert engine.store.read(proposal["work_id"]) == saved_proposal
+        monkeypatch.undo()
+    finally:
+        engine.close()
+
+    resumed = _limited_engine(tmp_path)
+    try:
+        resumed.execute_differential(resume=True)
+        original_storage = resumed.store._check_storage
+
+        def deny_report(value, **kwargs):
+            if value.get("schema_version") == REPORT_SCHEMA:
+                raise StudyBudgetExhausted("study_storage_budget_exhausted")
+            return original_storage(value, **kwargs)
+
+        monkeypatch.setattr(resumed.store, "_check_storage", deny_report)
+        with pytest.raises(StudyBudgetExhausted, match="storage_budget"):
+            resumed.execute_report(resume=True)
+        assert resumed.store.status()["status"] == "incomplete"
+        monkeypatch.undo()
+    finally:
+        resumed.close()
+
+    final = _limited_engine(tmp_path)
+    try:
+        assert final.execute_report(resume=True)["execution_status"] == "complete"
+    finally:
+        final.close()

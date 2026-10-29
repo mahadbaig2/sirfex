@@ -55,6 +55,7 @@ class ControllerPool:
         self.specs = specs
         self.max_open = max_open
         self.sessions: dict[str, _Session] = {}
+        self.closed_seconds: dict[str, float] = {}
 
     def get(self, key: str) -> _Session:
         if key not in self.specs:
@@ -62,7 +63,9 @@ class ControllerPool:
         if key not in self.sessions:
             if len(self.sessions) >= self.max_open:
                 oldest = next(iter(self.sessions))
-                self.sessions.pop(oldest).close()
+                session = self.sessions.pop(oldest)
+                self.closed_seconds[oldest] = self.closed_seconds.get(oldest, 0.0) + session.seconds
+                session.close()
             self.sessions[key] = _Session(self.specs[key])
         return self.sessions[key]
 
@@ -70,10 +73,13 @@ class ControllerPool:
         return self.get(key).evaluate(scenario)
 
     def seconds(self, key: str) -> float:
-        return self.sessions[key].seconds if key in self.sessions else 0.0
+        return self.closed_seconds.get(key, 0.0) + (
+            self.sessions[key].seconds if key in self.sessions else 0.0
+        )
 
     def close(self) -> None:
-        for session in self.sessions.values():
+        for key, session in self.sessions.items():
+            self.closed_seconds[key] = self.closed_seconds.get(key, 0.0) + session.seconds
             session.close()
         self.sessions.clear()
 
@@ -132,11 +138,13 @@ class StudyEngine:
         self.proposals: dict[str, list[dict]] = {}
 
     def close(self) -> None:
-        self.pool.close()
+        try:
+            self.budget.finish()
+        finally:
+            self.pool.close()
 
     def prepare(self) -> None:
         """Recompute shared physics and bind its ordered hashes before evaluation."""
-        started = self.budget.clock()
         grid = self.plan["grid"]
         for anchor_id in self.plan["nominal_scenarios"]:
             anchor = self.scenarios[anchor_id]
@@ -170,8 +178,7 @@ class StudyEngine:
         else:
             self.store._check_storage(record)
             _atomic_json(path, record)
-        self.store.charge(self.budget.clock() - started, {})
-        self.budget.charged_until = self.budget.clock()
+        self.budget.charge({})
 
     def _run_item(self, item: dict, evaluate, *, controllers: tuple[str, ...], resume: bool):
         previous = self.store.read(item["work_id"])
@@ -181,6 +188,7 @@ class StudyEngine:
             raise RobustnessStorageError("Incomplete work item requires explicit resume")
         self.budget.check(controllers)
         self.store.write(item, "running", resume=resume)
+        self.budget.begin_item(controllers)
         before = {key: self.pool.seconds(key) for key in controllers}
         try:
             result = evaluate()
@@ -210,6 +218,7 @@ class StudyEngine:
         return saved
 
     def execute_fixed_and_grid(self, *, resume: bool = False, interrupt_after: int | None = None):
+        self.budget.start(resume=resume)
         self.prepare()
         completed_this_invocation = 0
         try:
@@ -459,6 +468,7 @@ class StudyEngine:
     def execute_differential(
         self, *, resume: bool = False, interrupt_after: int | None = None
     ) -> dict:
+        self.budget.start(resume=resume)
         self.prepare_proposals()
         completed_this_invocation = 0
         try:
@@ -510,6 +520,7 @@ class StudyEngine:
         return report
 
     def execute_report(self, *, resume: bool = False) -> dict:
+        self.budget.start(resume=resume)
         item = next(row for row in self.plan["work_items"] if row["stage"] == "report")
         stage_status = self.store.status()["stages"]
         if any(

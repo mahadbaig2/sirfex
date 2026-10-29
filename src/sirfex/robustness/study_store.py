@@ -83,12 +83,15 @@ class StudyStore:
     def _storage_bytes(self) -> int:
         return sum(path.stat().st_size for path in self.directory.rglob("*") if path.is_file())
 
-    def _check_storage(self, value: dict, *, replacing: Path | None = None) -> None:
+    def _check_storage(
+        self, value: dict, *, replacing: Path | None = None, critical: bool = False
+    ) -> None:
         cap = self.plan["resource_limits"].get("artifact_bytes_cap", 0)
+        reserve = min(8192, cap // 10) if not critical else 0
         serialized = len(json.dumps(value, sort_keys=True, allow_nan=False).encode("utf-8"))
         old = replacing.stat().st_size if replacing and replacing.exists() else 0
         # Atomic replacement temporarily needs the old and new files simultaneously.
-        if cap <= 0 or self._storage_bytes() + 2 * serialized > cap or old > cap:
+        if cap <= 0 or self._storage_bytes() + 2 * serialized > cap - reserve or old > cap:
             raise StudyBudgetExhausted("study_storage_budget_exhausted")
 
     def write(
@@ -120,6 +123,94 @@ class StudyStore:
             _atomic_json(path, value)
             return value
 
+    def invocation(self) -> dict | None:
+        path = self.directory / "invocation.json"
+        if not path.exists():
+            return None
+        try:
+            value = json.loads(path.read_text(encoding="utf-8"))
+            digest = value.pop("semantic_sha256")
+            if (
+                digest != semantic_hash(value)
+                or value["plan_sha256"] != self.plan["semantic_sha256"]
+            ):
+                raise RobustnessStorageError("Study invocation journal changed")
+            value["semantic_sha256"] = digest
+            return value
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            raise RobustnessStorageError("Study invocation journal is corrupt") from exc
+
+    def _write_invocation(self, value: dict) -> None:
+        path = self.directory / "invocation.json"
+        value["semantic_sha256"] = semantic_hash(
+            {key: item for key, item in value.items() if key != "semantic_sha256"}
+        )
+        self._check_storage(value, replacing=path, critical=True)
+        try:
+            _atomic_json(path, value)
+        except OSError as exc:
+            raise RobustnessStorageError("Study invocation journal write failed") from exc
+
+    def start_invocation(self, *, resume: bool, wall_epoch: float) -> None:
+        previous = self.invocation()
+        if previous and previous["state"] == "active":
+            if not resume:
+                raise RobustnessStorageError("Unclean study invocation requires explicit resume")
+            upper = max(0.0, wall_epoch - previous["last_checkpoint_epoch"])
+            # This upper bound includes downtime; it is deliberately conservative.
+            active_controllers = previous.get("active_controllers", [])
+            self.charge(upper, {controller: upper for controller in active_controllers})
+            recovery = {
+                "classification": "unclean_restart",
+                "uncharged_wall_seconds_lower": 0.0,
+                "uncharged_wall_seconds_upper": upper,
+                "downtime_included": True,
+                "controller_time_upper_charged_to": active_controllers,
+                "wall_clock_rollback_detected": wall_epoch < previous["last_checkpoint_epoch"],
+            }
+            events = previous["recovery_events"] + [recovery]
+        else:
+            events = previous["recovery_events"] if previous else []
+        self._write_invocation(
+            {
+                "schema_version": "pump-study-invocation:1",
+                "plan_sha256": self.plan["semantic_sha256"],
+                "state": "active",
+                "last_checkpoint_epoch": wall_epoch,
+                "active_controllers": [],
+                "recovery_events": events,
+            }
+        )
+
+    def begin_item(self, controllers: tuple[str, ...]) -> None:
+        value = self.invocation()
+        if value is None or value["state"] != "active":
+            raise RobustnessStorageError("No active study invocation")
+        value["active_controllers"] = list(controllers)
+        value.pop("semantic_sha256")
+        self._write_invocation(value)
+
+    def checkpoint_invocation(self, wall_epoch: float, *, clear_item: bool = True) -> None:
+        value = self.invocation()
+        if value is None or value["state"] != "active":
+            raise RobustnessStorageError("No active study invocation")
+        value["last_checkpoint_epoch"] = wall_epoch
+        if clear_item:
+            value["active_controllers"] = []
+        value.pop("semantic_sha256")
+        self._write_invocation(value)
+
+    def finish_invocation(self, wall_epoch: float) -> None:
+        value = self.invocation()
+        if value is None or value["state"] != "active":
+            return
+        if value.get("active_controllers"):
+            raise RobustnessStorageError("Uncharged controller work requires explicit recovery")
+        value["last_checkpoint_epoch"] = wall_epoch
+        value["state"] = "closed"
+        value.pop("semantic_sha256")
+        self._write_invocation(value)
+
     def budget(self) -> dict:
         path = self.directory / "budget.json"
         try:
@@ -145,8 +236,13 @@ class StudyStore:
             for key, amount in controller_seconds.items():
                 value["controller_seconds"][key] = value["controller_seconds"].get(key, 0) + amount
             value["semantic_sha256"] = semantic_hash(value)
-            self._check_storage(value, replacing=path)
-            _atomic_json(path, value)
+            self._check_storage(value, replacing=path, critical=True)
+            try:
+                _atomic_json(path, value)
+            except OSError as exc:
+                raise RobustnessStorageError(
+                    "Study budget ledger write failed; usage uncertain"
+                ) from exc
 
     def check_budget(self, controllers: tuple[str, ...] = (), *, reserve_bytes: int = 0) -> None:
         limits = self.plan["resource_limits"]
@@ -161,7 +257,9 @@ class StudyStore:
             ):
                 if ledger["controller_seconds"].get(controller, 0) >= limits["per_ppo_seconds_cap"]:
                     raise StudyBudgetExhausted(f"controller_budget_exhausted:{controller}")
-        if self._storage_bytes() + reserve_bytes >= limits["artifact_bytes_cap"]:
+        cap = limits["artifact_bytes_cap"]
+        headroom = min(8192, cap // 10)
+        if self._storage_bytes() + reserve_bytes >= cap - headroom:
             raise StudyBudgetExhausted("study_storage_budget_exhausted")
 
     def status(self) -> dict:
@@ -186,6 +284,7 @@ class StudyStore:
             "status": "complete" if complete else "incomplete",
             "stages": stages,
             "resource_usage": self.budget(),
+            "invocation": self.invocation(),
             "artifact_bytes": self._storage_bytes(),
         }
 
@@ -193,11 +292,31 @@ class StudyStore:
 class InvocationBudget:
     """Monotonic per-invocation time with durable cumulative charges at item boundaries."""
 
-    def __init__(self, store: StudyStore, clock=time.monotonic) -> None:
+    def __init__(self, store: StudyStore, clock=time.monotonic, wall_clock=time.time) -> None:
         self.store = store
         self.clock = clock
+        self.wall_clock = wall_clock
         self.started = clock()
         self.charged_until = self.started
+        self.active = False
+
+    def start(self, *, resume: bool) -> None:
+        if self.active:
+            return
+        self.store.start_invocation(resume=resume, wall_epoch=self.wall_clock())
+        self.charged_until = self.clock()
+        self.active = True
+
+    def finish(self) -> None:
+        if not self.active:
+            return
+        self.charge({}, clear_item=False)
+        self.store.finish_invocation(self.wall_clock())
+        self.active = False
+
+    def begin_item(self, controllers: tuple[str, ...]) -> None:
+        if self.active:
+            self.store.begin_item(controllers)
 
     def check(self, controllers: tuple[str, ...] = (), reserve_bytes: int = 0) -> None:
         now = self.clock()
@@ -207,12 +326,19 @@ class InvocationBudget:
             >= self.store.plan["resource_limits"]["wall_seconds_cap"]
         ):
             # Persist elapsed time before rejecting work so a restart cannot reset it.
-            self.store.charge(pending, {})
-            self.charged_until = now
+            self.charge({}, now=now)
             raise StudyBudgetExhausted("study_wall_budget_exhausted")
         self.store.check_budget(controllers, reserve_bytes=reserve_bytes)
 
-    def charge(self, controller_seconds: dict[str, float]) -> None:
-        now = self.clock()
+    def charge(
+        self,
+        controller_seconds: dict[str, float],
+        *,
+        now: float | None = None,
+        clear_item: bool = True,
+    ) -> None:
+        now = self.clock() if now is None else now
         self.store.charge(now - self.charged_until, controller_seconds)
         self.charged_until = now
+        if self.active:
+            self.store.checkpoint_invocation(self.wall_clock(), clear_item=clear_item)

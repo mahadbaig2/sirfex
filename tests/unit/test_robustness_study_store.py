@@ -99,3 +99,66 @@ def test_elapsed_wall_budget_is_durable_before_rejection(tmp_path):
     reopened.open()
     with pytest.raises(StudyBudgetExhausted, match="wall_budget"):
         reopened.check_budget()
+
+
+def test_unclean_restart_requires_resume_and_charges_conservative_upper_bound(tmp_path):
+    plan, item = fixture_plan(wall=30)
+    store = StudyStore(tmp_path, plan)
+    store.open()
+    store.write(item, "running")
+    ticks = iter((0.0, 0.0, 1.0))
+    first = InvocationBudget(store, clock=lambda: next(ticks), wall_clock=lambda: 100.0)
+    first.start(resume=False)
+    first.charge({"screen_3_normal": 0.4})
+    first.begin_item(("screen_3_normal",))
+    assert store.budget()["cumulative_wall_seconds"] == 1.0
+    restarted = InvocationBudget(store, clock=lambda: 5.0, wall_clock=lambda: 110.0)
+    with pytest.raises(RobustnessStorageError, match="explicit resume"):
+        restarted.start(resume=False)
+    restarted.start(resume=True)
+    assert store.read(item["work_id"])["status"] == "running"
+    assert store.budget()["cumulative_wall_seconds"] == 11.0
+    assert store.invocation()["recovery_events"][-1] == {
+        "classification": "unclean_restart",
+        "uncharged_wall_seconds_lower": 0.0,
+        "uncharged_wall_seconds_upper": 10.0,
+        "downtime_included": True,
+        "controller_time_upper_charged_to": ["screen_3_normal"],
+        "wall_clock_rollback_detected": False,
+    }
+    assert store.budget()["controller_seconds"]["screen_3_normal"] == 10.4
+    restarted.finish()
+    assert store.invocation()["state"] == "closed"
+
+
+def test_unclean_restart_near_wall_ceiling_cannot_extend_budget(tmp_path):
+    plan, _ = fixture_plan(wall=5)
+    store = StudyStore(tmp_path, plan)
+    store.open()
+    first = InvocationBudget(store, clock=lambda: 0.0, wall_clock=lambda: 100.0)
+    first.start(resume=False)
+    restarted = InvocationBudget(store, clock=lambda: 0.0, wall_clock=lambda: 106.0)
+    restarted.start(resume=True)
+    with pytest.raises(StudyBudgetExhausted, match="wall_budget"):
+        restarted.check()
+    assert store.budget()["cumulative_wall_seconds"] >= 6.0
+
+
+def test_budget_write_failure_preserves_previous_ledger(tmp_path, monkeypatch):
+    import sirfex.robustness.study_store as module
+
+    plan, _ = fixture_plan()
+    store = StudyStore(tmp_path, plan)
+    store.open()
+    before = store.budget()
+    original = module._atomic_json
+
+    def fail_budget(path, value):
+        if path.name == "budget.json":
+            raise OSError("simulated full disk")
+        return original(path, value)
+
+    monkeypatch.setattr(module, "_atomic_json", fail_budget)
+    with pytest.raises(RobustnessStorageError, match="ledger write failed"):
+        store.charge(1.0, {})
+    assert store.budget() == before
