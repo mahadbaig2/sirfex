@@ -138,11 +138,17 @@ def _save_episode(
 
 
 def archive_selected_findings(
-    result: dict, controllers: list[dict], evaluator, directory: Path, protocol_sha256: str
+    result: dict,
+    controllers: list[dict],
+    evaluator,
+    directory: Path,
+    protocol_sha256: str,
+    *,
+    label_specs: dict[str, dict] | None = None,
 ) -> dict:
     """Archive only ranked headlines; downgrade B unless repeats and replay verify."""
     store = ExperimentStore(directory / "experiments")
-    specs = {item["id"]: item for item in controllers}
+    specs = label_specs if label_specs is not None else {item["id"]: item for item in controllers}
     records = {row["scenario_id"]: row for row in result["records"] if row["status"] == "evaluated"}
     promoted = []
     downgraded = []
@@ -158,12 +164,12 @@ def archive_selected_findings(
                     "Headline scenario lacks proven finite-horizon viability"
                 )
             episodes = {}
-            for label, spec in (
-                ("x", specs[result["controller_x"]]),
-                ("y", specs[result["controller_y"]]),
+            for label, controller_key, spec in (
+                ("x", result["controller_x"], specs[result["controller_x"]]),
+                ("y", result["controller_y"], specs[result["controller_y"]]),
             ):
                 for role in ("original", "repeat"):
-                    episode = evaluator(spec["id"], scenario)
+                    episode = evaluator(controller_key, scenario)
                     episodes[f"{label}_{role}"] = (
                         episode,
                         _save_episode(
