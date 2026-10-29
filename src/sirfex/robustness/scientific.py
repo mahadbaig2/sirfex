@@ -126,6 +126,9 @@ def dry_run(protocol: dict, manifest: dict, root: Path | str) -> dict:
         or budget.get("wall_seconds_cap", 0) > 8 * 3600
     ):
         raise StudyGateError("Study exceeds approved preflight budget ceilings")
+    from sirfex.robustness.study import build_plan
+
+    plan = build_plan(protocol, manifest, root, inputs_verified=True)
     return {
         "status": "dry_run_passed_no_scientific_execution",
         "protocol_sha256": digest,
@@ -133,6 +136,8 @@ def dry_run(protocol: dict, manifest: dict, root: Path | str) -> dict:
         "controllers": len(inventory),
         "pairs": len(pairs),
         "episode_upper": budget["total_episode_upper"],
+        "work_plan_sha256": plan["semantic_sha256"],
+        "work_counts": plan["work_counts"],
     }
 
 
