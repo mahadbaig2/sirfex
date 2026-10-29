@@ -45,8 +45,7 @@ def main() -> None:
         },
         "final_holdouts_accessed": False,
         "interpretation": (
-            "Offline mock checks software wiring only; "
-            "no GPT-OSS or robustness claim."
+            "Offline mock checks software wiring only; no GPT-OSS or robustness claim."
         ),
     }
     target = Path("docs/evidence/phase_3_6_smoke.json")
