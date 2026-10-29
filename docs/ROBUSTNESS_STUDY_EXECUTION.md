@@ -14,13 +14,13 @@ This verifies the development-only manifest, controller checkpoint hashes, exact
 
 ## Authorization boundary
 
-Only a separately reviewed frozen protocol with status `FROZEN — AUTHORIZED FOR EXECUTION` and `executable: true` can enter the runner. An operator must supply the exact protocol semantic SHA-256 as `--approval-digest` and its committed Git revision as `--frozen-commit`. The protocol file's bytes must match that commit, which must be reachable from HEAD. The manifest and all checkpoint hashes are rechecked before work starts. This repository does not issue a frozen protocol or approval token.
+Only a separately reviewed frozen protocol with status `FROZEN — AUTHORIZED FOR EXECUTION` and `executable: true` can enter the runner. An operator must supply the exact protocol semantic SHA-256 as `--approval-digest`, a separate human [authorization record](ROBUSTNESS_STUDY_AUTHORIZATION.md) as `--authorization-record`, and its committed Git revision as `--frozen-commit`. The protocol file's bytes must match that commit, which must be reachable from HEAD. The manifest and all checkpoint hashes are rechecked before work starts. This repository does not issue a frozen protocol or approval token.
 
 After a future authorization, the interface is:
 
 ```powershell
-sirfex robustness study --mode scientific-execute --protocol <frozen-protocol.json> --manifest <development-manifest.json> --approval-digest <approved-sha256> --frozen-commit <40-character-commit> --output-dir <local-run-root>
-sirfex robustness study --mode resume --protocol <frozen-protocol.json> --manifest <development-manifest.json> --approval-digest <approved-sha256> --frozen-commit <40-character-commit> --output-dir <same-local-run-root>
+sirfex robustness study --mode scientific-execute --protocol <frozen-protocol.json> --manifest <development-manifest.json> --approval-digest <approved-sha256> --authorization-record <independent-approval.json> --frozen-commit <40-character-commit> --output-dir <local-run-root>
+sirfex robustness study --mode resume --protocol <frozen-protocol.json> --manifest <development-manifest.json> --approval-digest <approved-sha256> --authorization-record <same-independent-approval.json> --frozen-commit <40-character-commit> --output-dir <same-local-run-root>
 sirfex robustness study --mode report --protocol <frozen-protocol.json> --manifest <development-manifest.json> --output-dir <same-local-run-root>
 ```
 
@@ -32,6 +32,6 @@ The plan orders fixed development stress episodes, one shared physical disturban
 
 Each work item is hashed and written atomically. Completed and censored items are immutable. `resume` reuses them, reruns failed or interrupted items, and refuses changed plans or corrupted stored evidence. Proposal sequences and prepared grids are recomputed and compared before reuse. Selected headline episodes are archived and independently replayed. An unverified Class B selection prevents a complete report.
 
-Wall time is monotonic and cumulative across invocations. PPO controller evaluation time is charged per controller. Storage includes the run directory and is checked before atomic writes and archive selection. The approved limits are part of the plan; resuming does not reset them. A stop returns a distinct budget-exhausted status and leaves a partial operational report. Extending a limit changes plan identity and requires a separate protocol review.
+Wall time is monotonic and cumulative across invocations. PPO controller evaluation time is charged per controller, including after session eviction. An invocation journal distinguishes a closed run from an unclean restart. Explicit resume conservatively charges the wall-clock gap since the last durable checkpoint, including downtime, and charges that upper bound to controllers active at the crash. The journal reports this uncertainty; it does not claim exact crash time. Storage includes the run directory, reserves ledger/journal headroom and is checked before atomic writes and archive selection. The approved limits are part of the plan; resuming does not reset them. A stop returns a distinct budget-exhausted status and leaves a partial operational report. Extending a limit changes plan identity and requires a separate protocol review.
 
 The bounded synthetic fixture can be run with `python -m scripts.pilot_phase37_study`. It uses only classical test adapters and writes [pilot measurements](evidence/phase_3_7_study_pilot.json); it does not run the real 17-controller cohort.

@@ -209,6 +209,7 @@ def build_parser() -> argparse.ArgumentParser:
     study.add_argument("--protocol", required=True)
     study.add_argument("--manifest", required=True)
     study.add_argument("--approval-digest")
+    study.add_argument("--authorization-record")
     study.add_argument("--frozen-commit")
     study.add_argument("--output-dir")
     return parser
@@ -531,7 +532,9 @@ def main(argv: list[str] | None = None) -> int:
                         root,
                         protocol_file=args.protocol,
                         approval_digest=args.approval_digest,
+                        authorization_record=args.authorization_record,
                         frozen_commit=args.frozen_commit,
+                        manifest_file=args.manifest,
                         output_dir=args.output_dir,
                         resume=args.mode == "resume",
                     )

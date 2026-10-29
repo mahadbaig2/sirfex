@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 import subprocess
+from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 
 from sirfex.core import Scenario
 from sirfex.robustness.identity import scenario_identity, semantic_hash
@@ -20,6 +22,36 @@ def _checked_hash(value: dict) -> str:
     digest = semantic_hash(payload)
     if value.get("semantic_sha256") != digest:
         raise StudyGateError("Protocol semantic SHA-256 mismatch")
+    return digest
+
+
+def validate_authorization_record(
+    record: dict, protocol: dict, manifest: dict, plan: dict, *, frozen_commit: str
+) -> str:
+    """Check a separate operator record; its hash is integrity, not a signature."""
+    if not isinstance(record, dict):
+        raise StudyGateError("Malformed independent authorization record")
+    digest = _checked_hash(record)
+    try:
+        approved_at = datetime.fromisoformat(record["approved_at_utc"])
+        valid = (
+            record["schema_version"] == "sirfex-study-authorization:1"
+            and record["approval_status"] == "HUMAN_APPROVED"
+            and isinstance(record["approved_by"], str)
+            and len(record["approved_by"].strip()) >= 3
+            and approved_at.tzinfo is not None
+            and record["protocol_sha256"] == protocol["semantic_sha256"]
+            and record["frozen_commit"] == frozen_commit
+            and record["scenario_manifest_sha256"] == manifest["semantic_sha256"]
+            and record["controller_inventory_sha256"]
+            == semantic_hash(protocol["controller_inventory"])
+            and record["resource_limits_sha256"] == semantic_hash(protocol["budget"])
+            and record["work_plan_sha256"] == plan["semantic_sha256"]
+        )
+    except (KeyError, TypeError, ValueError) as exc:
+        raise StudyGateError("Malformed independent authorization record") from exc
+    if not valid:
+        raise StudyGateError("Authorization record does not match frozen study identity")
     return digest
 
 
@@ -148,7 +180,9 @@ def scientific_execute(
     *,
     protocol_file: Path | str,
     approval_digest: str | None,
+    authorization_record: Path | str | None = None,
     frozen_commit: str | None = None,
+    manifest_file: Path | str | None = None,
     output_dir: Path | str | None = None,
     resume: bool = False,
 ) -> dict:
@@ -189,6 +223,15 @@ def scientific_execute(
         raise StudyGateError("Frozen protocol is not committed at HEAD") from exc
     if file.read_bytes() != committed or json.loads(committed) != protocol:
         raise StudyGateError("Working protocol differs from committed frozen protocol")
+    if authorization_record is None:
+        raise StudyGateError("Missing independent authorization record")
+    record_file = Path(authorization_record).resolve()
+    if record_file == file:
+        raise StudyGateError("Authorization record must be separate from protocol")
+    try:
+        record = json.loads(record_file.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise StudyGateError("Authorization record is missing or invalid") from exc
     dry_run(protocol, manifest, root)
     if output_dir is None:
         raise StudyGateError("Scientific execution requires an explicit output directory")
@@ -197,8 +240,36 @@ def scientific_execute(
     from sirfex.robustness.study_store import StudyBudgetExhausted
 
     plan = build_plan(protocol, manifest, root, inputs_verified=True)
+    record_digest = validate_authorization_record(
+        record, protocol, manifest, plan, frozen_commit=frozen_commit
+    )
     engine = StudyEngine(protocol, manifest, plan, root, output_dir)
     try:
+        from sirfex.robustness.store import RobustnessStorageError, _atomic_json
+
+        saved_path = engine.store.directory / "authorization.json"
+        if saved_path.exists():
+            if json.loads(saved_path.read_text(encoding="utf-8")) != record:
+                raise RobustnessStorageError("Stored study authorization changed")
+        else:
+            engine.store._check_storage(record)
+            _atomic_json(saved_path, record)
+        request = {
+            "schema_version": "sirfex-study-invocation-request:1",
+            "mode": "resume" if resume else "scientific-execute",
+            "protocol_file": str(file),
+            "manifest_file": str(Path(manifest_file).resolve()) if manifest_file else None,
+            "authorization_file": str(record_file),
+            "output_dir": str(Path(output_dir).resolve()),
+            "approval_digest": approval_digest,
+            "frozen_commit": frozen_commit,
+            "authorization_record_sha256": record_digest,
+            "work_plan_sha256": plan["semantic_sha256"],
+        }
+        request["semantic_sha256"] = semantic_hash(request)
+        request_path = engine.store.directory / f"invocation_request_{uuid4().hex}.json"
+        engine.store._check_storage(request)
+        _atomic_json(request_path, request)
         try:
             engine.execute_fixed_and_grid(resume=resume)
             engine.execute_differential(resume=resume)
