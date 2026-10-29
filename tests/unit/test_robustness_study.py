@@ -25,8 +25,8 @@ def candidate():
 
 def test_candidate_plan_is_complete_and_deterministic(candidate):
     protocol, manifest = candidate
-    first = build_plan(protocol, manifest, ROOT)
-    second = build_plan(protocol, manifest, ROOT)
+    first = build_plan(protocol, manifest, ROOT, inputs_verified=True)
+    second = build_plan(protocol, manifest, ROOT, inputs_verified=True)
     assert first["semantic_sha256"] == second["semantic_sha256"]
     assert first["work_counts"] == {
         "archive": 7,
@@ -49,4 +49,4 @@ def test_pair_identity_change_requires_new_hash(candidate):
         {key: value for key, value in protocol.items() if key != "semantic_sha256"}
     )
     with pytest.raises(StudyGateError, match="unavailable controller"):
-        build_plan(protocol, manifest, ROOT)
+        build_plan(protocol, manifest, ROOT, inputs_verified=True)

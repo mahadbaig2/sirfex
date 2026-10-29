@@ -92,13 +92,6 @@ def dry_run(protocol: dict, manifest: dict, root: Path | str) -> dict:
     inventory = protocol.get("controller_inventory", [])
     if len(inventory) != 17:
         raise StudyGateError("Incomplete controller inventory")
-    for row in inventory:
-        if row["group"] == "reference":
-            continue
-        path = root / row["source_artifact"]
-        if not path.is_file():
-            raise StudyGateError(f"Missing checkpoint: {row['source_key']}")
-        verify_checkpoint(path, row["sha256"])
     grid = protocol.get("disturbance", {}).get("grid", [])
     if grid != [round(i * 0.025, 3) for i in range(25)]:
         raise StudyGateError("Proposed disturbance grid changed")
@@ -126,6 +119,13 @@ def dry_run(protocol: dict, manifest: dict, root: Path | str) -> dict:
         or budget.get("wall_seconds_cap", 0) > 8 * 3600
     ):
         raise StudyGateError("Study exceeds approved preflight budget ceilings")
+    for row in inventory:
+        if row["group"] == "reference":
+            continue
+        path = root / row["source_artifact"]
+        if not path.is_file():
+            raise StudyGateError(f"Missing checkpoint: {row['source_key']}")
+        verify_checkpoint(path, row["sha256"])
     from sirfex.robustness.study import build_plan
 
     plan = build_plan(protocol, manifest, root, inputs_verified=True)
