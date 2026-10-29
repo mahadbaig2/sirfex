@@ -2,6 +2,8 @@
 
 from copy import deepcopy
 
+import pytest
+
 from sirfex.training.exposure import exposure_adequacy
 from sirfex.training.phase35 import CANDIDATES, SCREEN_SEEDS, select
 
@@ -68,6 +70,7 @@ def test_underexposed_trial_cannot_support_effect_interpretation():
 
 
 def test_real_ppo_rollout_exposure_reconciles(tmp_path):
+    pytest.importorskip("stable_baselines3")
     from sirfex.core import Scenario
     from sirfex.training.config import PPOConfig
     from sirfex.training.ppo import train_ppo

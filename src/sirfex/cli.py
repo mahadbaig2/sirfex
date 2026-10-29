@@ -209,6 +209,9 @@ def build_parser() -> argparse.ArgumentParser:
     study.add_argument("--protocol", required=True)
     study.add_argument("--manifest", required=True)
     study.add_argument("--approval-digest")
+    study.add_argument("--authorization-record")
+    study.add_argument("--frozen-commit")
+    study.add_argument("--output-dir")
     return parser
 
 
@@ -506,14 +509,22 @@ def main(argv: list[str] | None = None) -> int:
 
         try:
             if args.robustness_command == "study":
-                from sirfex.robustness.scientific import dry_run, scientific_execute
+                from sirfex.robustness.scientific import (
+                    dry_run,
+                    regenerate_study_report,
+                    scientific_execute,
+                )
 
                 protocol = json.loads(Path(args.protocol).read_text(encoding="utf-8"))
                 manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
                 root = Path.cwd()
-                if args.mode in ("preflight", "dry-run", "report"):
+                if args.mode in ("preflight", "dry-run"):
                     output = dry_run(protocol, manifest, root)
                     output["mode"] = args.mode
+                elif args.mode == "report":
+                    if not args.output_dir:
+                        raise ValueError("Study report requires --output-dir")
+                    output = regenerate_study_report(protocol, manifest, root, args.output_dir)
                 else:
                     output = scientific_execute(
                         protocol,
@@ -521,6 +532,11 @@ def main(argv: list[str] | None = None) -> int:
                         root,
                         protocol_file=args.protocol,
                         approval_digest=args.approval_digest,
+                        authorization_record=args.authorization_record,
+                        frozen_commit=args.frozen_commit,
+                        manifest_file=args.manifest,
+                        output_dir=args.output_dir,
+                        resume=args.mode == "resume",
                     )
             elif args.robustness_command == "margins":
                 if args.result:
