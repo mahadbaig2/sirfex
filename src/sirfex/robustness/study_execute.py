@@ -6,14 +6,22 @@ import json
 import time
 from pathlib import Path
 
+import numpy as np
+
 from sirfex.core import Scenario
+from sirfex.experiments.replay import compare_results
+from sirfex.robustness.differential import classify_pair
 from sirfex.robustness.disturbance import evaluate_direction, prepare_grid
+from sirfex.robustness.evidence import archive_selected_findings
 from sirfex.robustness.identity import scenario_identity, semantic_hash
 from sirfex.robustness.margins import evaluate_margin
 from sirfex.robustness.service import _Session
 from sirfex.robustness.store import RobustnessStorageError, _atomic_json
 from sirfex.robustness.study_store import InvocationBudget, StudyBudgetExhausted, StudyStore
+from sirfex.search.space import SearchSpace
 from sirfex.training.checkpoints import verify_checkpoint
+from sirfex.training.feasibility import analyze_feasibility
+from sirfex.training.protocol import leakage_check
 
 
 def _specs(protocol: dict, root: Path) -> dict[str, dict]:
@@ -120,6 +128,7 @@ class StudyEngine:
             row["scenario_id"]: Scenario.from_dict(row["scenario"]) for row in manifest["scenarios"]
         }
         self.prepared = {}
+        self.proposals: dict[str, list[dict]] = {}
 
     def close(self) -> None:
         self.pool.close()
@@ -257,3 +266,211 @@ class StudyEngine:
             "prepared_grid_sha256": prepared.semantic_sha256,
             "censored": cell["status"].startswith("censored") or cell["status"] == "undefined_axis",
         }
+
+    def prepare_proposals(self) -> None:
+        """Generate all proposals independent of outcomes and verify them on resume."""
+        search = self.protocol["search"]
+        if isinstance(search.get("space"), dict):
+            space = SearchSpace.from_dict(search["space"])
+        else:
+            space = SearchSpace.from_file(str(self.root / search["space"]))
+        excluded = tuple(self.scenarios.values())
+        for pair_index, pair in enumerate(self.plan["pairs"]):
+            self.budget.check()
+            rng = np.random.default_rng(search["search_seed"] + pair_index)
+            accepted = []
+            rows = []
+            for index in range(search["proposals_per_pair"]):
+                params = space.sample_parameters(rng)
+                seed = (
+                    search["scenario_seed_start"]
+                    + pair_index * search["proposals_per_pair"]
+                    + index
+                )
+                try:
+                    scenario = space.scenario(params, seed)
+                    scenario_id = scenario_identity(scenario)
+                    separate = leakage_check(
+                        {"excluded": excluded + tuple(accepted), "candidate": [scenario]}
+                    )["passed"]
+                    if not separate:
+                        status = "excluded_duplicate"
+                    else:
+                        feasibility = analyze_feasibility(scenario)
+                        status = (
+                            "evaluated"
+                            if feasibility["finite_horizon_viable"] is True
+                            else "excluded_infeasible"
+                        )
+                    if status == "evaluated":
+                        accepted.append(scenario)
+                    row = {
+                        "proposal_index": index,
+                        "scenario_id": scenario_id,
+                        "scenario": scenario.to_dict(),
+                        "status": status,
+                    }
+                except ValueError as exc:
+                    row = {
+                        "proposal_index": index,
+                        "status": "excluded_invalid",
+                        "reason": f"{type(exc).__name__}: {exc}",
+                        "parameters": params,
+                        "scenario_seed": seed,
+                    }
+                rows.append(row)
+            record = {
+                "schema_version": "pump-study-proposals:1",
+                "plan_sha256": self.plan["semantic_sha256"],
+                "pair_id": pair["id"],
+                "rows": rows,
+            }
+            record["semantic_sha256"] = semantic_hash(record)
+            path = self.store.directory / f"proposals_{pair_index:02d}.json"
+            if path.exists():
+                saved = json.loads(path.read_text(encoding="utf-8"))
+                if saved != record:
+                    raise RobustnessStorageError("Differential proposal sequence changed")
+            else:
+                self.store._check_storage(record)
+                _atomic_json(path, record)
+            self.proposals[pair["id"]] = rows
+
+    def _evaluate_proposal(self, item: dict) -> dict:
+        pair = next(row for row in self.plan["pairs"] if row["id"] == item["pair_id"])
+        proposal = self.proposals[pair["id"]][item["proposal_index"]]
+        if proposal["status"] != "evaluated":
+            return {
+                "proposal_status": proposal["status"],
+                "scenario_id": proposal.get("scenario_id"),
+                "proposal_index": item["proposal_index"],
+            }
+        scenario = Scenario.from_dict(proposal["scenario"])
+        x, y = pair["x"], pair["y"]
+        first = self.pool.evaluate(x, scenario)
+        second = self.pool.evaluate(y, scenario)
+        mx, my = evaluate_margin(first), evaluate_margin(second)
+        if mx.scenario_id != proposal["scenario_id"] or my.scenario_id != proposal["scenario_id"]:
+            raise RobustnessStorageError("Differential controller changed proposed scenario")
+        initial = classify_pair(
+            mx,
+            my,
+            finite_horizon_viable=True,
+            near_miss_delta=self.protocol["search"]["class_a_margin_gap"],
+        )
+        replay = None
+        if initial.classification == "class_b_unverified":
+            first_repeat = self.pool.evaluate(x, scenario)
+            second_repeat = self.pool.evaluate(y, scenario)
+            replay = (
+                compare_results(first.to_dict(), first_repeat.to_dict()).status,
+                compare_results(second.to_dict(), second_repeat.to_dict()).status,
+            )
+        finding = classify_pair(
+            mx,
+            my,
+            finite_horizon_viable=True,
+            near_miss_delta=self.protocol["search"]["class_a_margin_gap"],
+            replay_statuses=replay,
+        ).to_dict()
+        finding["controller_x"] = x
+        finding["controller_y"] = y
+        return {
+            "proposal_status": "evaluated",
+            "proposal_index": item["proposal_index"],
+            "scenario_id": proposal["scenario_id"],
+            "scenario": proposal["scenario"],
+            "finding": finding,
+            "margin_x": mx.to_dict(),
+            "margin_y": my.to_dict(),
+        }
+
+    def _archive_pair(self, pair: dict) -> dict:
+        proposals = [
+            row
+            for row in self.plan["work_items"]
+            if row["stage"] == "differential" and row["pair_id"] == pair["id"]
+        ]
+        records = []
+        for item in proposals:
+            saved = self.store.read(item["work_id"])
+            if saved is None or saved["status"] != "completed":
+                raise RobustnessStorageError("Differential pair has incomplete proposals")
+            result = saved["result"]
+            records.append({"status": result["proposal_status"], **result})
+        ranked = sorted(
+            (row["finding"] for row in records if row["status"] == "evaluated"),
+            key=lambda row: (
+                {"class_b_unverified": 0, "class_a": 1, "none": 2}[row["classification"]],
+                -row["signed_margin_gap"],
+                row["scenario_id"],
+            ),
+        )
+        top = self.protocol["search"]["top_per_class"]
+        result = {
+            "schema_version": "pump-differential-search:1",
+            "method": "seeded_random_nonadaptive",
+            "controller_x": pair["x"],
+            "controller_y": pair["y"],
+            "proposal_count": len(proposals),
+            "search_seed": proposals[0]["search_seed"],
+            "scenario_seed_start": proposals[0]["scenario_seed"],
+            "near_miss_delta": self.protocol["search"]["class_a_margin_gap"],
+            "coverage": {
+                "proposed": len(proposals),
+                **{
+                    status: sum(row["status"] == status for row in records)
+                    for status in (
+                        "evaluated",
+                        "excluded_duplicate",
+                        "excluded_infeasible",
+                        "excluded_invalid",
+                    )
+                },
+            },
+            "findings": {
+                "class_b": [],
+                "class_b_unverified": [
+                    row for row in ranked if row["classification"] == "class_b_unverified"
+                ][:top],
+                "class_a": [row for row in ranked if row["classification"] == "class_a"][:top],
+            },
+            "records": records,
+        }
+        self.budget.check((pair["x"], pair["y"]), reserve_bytes=1_000_000)
+        archived = archive_selected_findings(
+            result,
+            [self.specs[pair["x"]], self.specs[pair["y"]]],
+            self.pool.evaluate,
+            self.store.directory / pair["id"],
+            self.plan["protocol_sha256"],
+            label_specs={pair["x"]: self.specs[pair["x"]], pair["y"]: self.specs[pair["y"]]},
+        )
+        self.store.check_budget()
+        return {"pair_id": pair["id"], "result": archived}
+
+    def execute_differential(
+        self, *, resume: bool = False, interrupt_after: int | None = None
+    ) -> dict:
+        self.prepare_proposals()
+        completed_this_invocation = 0
+        try:
+            for item in self.plan["work_items"]:
+                if item["stage"] not in {"differential", "archive"}:
+                    continue
+                if interrupt_after is not None and completed_this_invocation >= interrupt_after:
+                    raise StudyBudgetExhausted("synthetic_interruption")
+                pair = next(row for row in self.plan["pairs"] if row["id"] == item["pair_id"])
+                controllers = (pair["x"], pair["y"]) if item["stage"] == "differential" else ()
+                self._run_item(
+                    item,
+                    (lambda item=item: self._evaluate_proposal(item))
+                    if item["stage"] == "differential"
+                    else (lambda pair=pair: self._archive_pair(pair)),
+                    controllers=controllers,
+                    resume=resume,
+                )
+                completed_this_invocation += 1
+        finally:
+            self.pool.close()
+        return self.store.status()
