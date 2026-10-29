@@ -1,0 +1,416 @@
+{
+  "schema_version": "pump-robustness-checkpoint2-candidate:1",
+  "status": "CANDIDATE \u2014 NOT FROZEN \u2014 NOT AUTHORIZED FOR EXECUTION",
+  "executable": false,
+  "scope": "development_only",
+  "environment_id": "pump",
+  "environment_version": "sirfex-pump:1",
+  "controller_inventory": [
+    {
+      "group": "phase32_start",
+      "source_run": "20261025T205339_64b622c146",
+      "source_key": "ppo_3_10240",
+      "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9",
+      "source_artifact": "artifacts/training/20261025T205339_64b622c146/checkpoints/ppo_3_10240.zip"
+    },
+    {
+      "group": "phase32_start",
+      "source_run": "20261025T205339_64b622c146",
+      "source_key": "ppo_17_10240",
+      "sha256": "05b5fe45c1f46b7eb28699bd4a1dc693e9c11d56fba3376211c5985168a9d333",
+      "source_artifact": "artifacts/training/20261025T205339_64b622c146/checkpoints/ppo_17_10240.zip"
+    },
+    {
+      "group": "phase32_start",
+      "source_run": "20261025T205339_64b622c146",
+      "source_key": "ppo_41_25600",
+      "sha256": "48fe432e373aef9f64e55e0092f9b09ba95ef407bcc6d81f76a1f61432fd83f0",
+      "source_artifact": "artifacts/training/20261025T205339_64b622c146/checkpoints/ppo_41_25600.zip"
+    },
+    {
+      "group": "phase35_screen",
+      "source_run": "20261027T143749_d88d2dd37f",
+      "source_key": "screen_3_normal",
+      "sha256": "5d11abfd79be87e11b9576046fd6e7d279ef8ee824f4559c6eebaa1030d238d4",
+      "source_artifact": "artifacts/training/20261027T143749_d88d2dd37f/checkpoints/screen_3_normal.zip"
+    },
+    {
+      "group": "phase35_screen",
+      "source_run": "20261027T143749_d88d2dd37f",
+      "source_key": "screen_3_expanded_5",
+      "sha256": "1dd1302b6e91d4227246d7eb151ec34676bf2ff2d041db78b3757f1382217557",
+      "source_artifact": "artifacts/training/20261027T143749_d88d2dd37f/checkpoints/screen_3_expanded_5.zip"
+    },
+    {
+      "group": "phase35_screen",
+      "source_run": "20261027T143749_d88d2dd37f",
+      "source_key": "screen_3_expanded_10",
+      "sha256": "f5db7f7bf937568d23a927b5ac671d270694ea291c364137b65967585167dbcf",
+      "source_artifact": "artifacts/training/20261027T143749_d88d2dd37f/checkpoints/screen_3_expanded_10.zip"
+    },
+    {
+      "group": "phase35_screen",
+      "source_run": "20261027T143749_d88d2dd37f",
+      "source_key": "screen_17_normal",
+      "sha256": "6dd798247ad77ee718773185b542a6c91b3a43cd9e665983c512c27d2712a133",
+      "source_artifact": "artifacts/training/20261027T143749_d88d2dd37f/checkpoints/screen_17_normal.zip"
+    },
+    {
+      "group": "phase35_screen",
+      "source_run": "20261027T143749_d88d2dd37f",
+      "source_key": "screen_17_expanded_5",
+      "sha256": "4fa3335b76a97569b298abb1de2f939e788320181f2eafe58b09d02dcb8cbf65",
+      "source_artifact": "artifacts/training/20261027T143749_d88d2dd37f/checkpoints/screen_17_expanded_5.zip"
+    },
+    {
+      "group": "phase35_screen",
+      "source_run": "20261027T143749_d88d2dd37f",
+      "source_key": "screen_17_expanded_10",
+      "sha256": "de4c2ea70f38b7bb25e20d1472329ea47ea9a97342b5598f005ff14664aba019",
+      "source_artifact": "artifacts/training/20261027T143749_d88d2dd37f/checkpoints/screen_17_expanded_10.zip"
+    },
+    {
+      "group": "phase33_secondary",
+      "source_run": "20261026T222151_846c8296a2",
+      "source_key": "seed_3_normal",
+      "sha256": "cca14de90a83fa3205efb586e9c34f0b461edf12afb8cfa90e74d05659f75f27",
+      "source_artifact": "artifacts/training/20261026T222151_846c8296a2/checkpoints/seed_3_normal.zip"
+    },
+    {
+      "group": "phase33_secondary",
+      "source_run": "20261026T222151_846c8296a2",
+      "source_key": "seed_3_robust",
+      "sha256": "4b2dddc8fd2aa76b49fdffa40d3c7a6848d5a49b0a6b2949d82b53e484a0b2d1",
+      "source_artifact": "artifacts/training/20261026T222151_846c8296a2/checkpoints/seed_3_robust.zip"
+    },
+    {
+      "group": "phase33_secondary",
+      "source_run": "20261026T222151_846c8296a2",
+      "source_key": "seed_17_normal",
+      "sha256": "e0889617537e2278872303626f176cfad42dc4fbc4f1b6907d7c0764f6e89f54",
+      "source_artifact": "artifacts/training/20261026T222151_846c8296a2/checkpoints/seed_17_normal.zip"
+    },
+    {
+      "group": "phase33_secondary",
+      "source_run": "20261026T222151_846c8296a2",
+      "source_key": "seed_17_robust",
+      "sha256": "21f9ae78d4176d3a2817b22d641009a6a3204734c5d5a407b9b20ca59500477c",
+      "source_artifact": "artifacts/training/20261026T222151_846c8296a2/checkpoints/seed_17_robust.zip"
+    },
+    {
+      "group": "phase33_secondary",
+      "source_run": "20261026T222151_846c8296a2",
+      "source_key": "seed_41_normal",
+      "sha256": "d46f64ac798d83ff894eec784e3995e99d7ff80e795f860b2ca0eb4c07230fa8",
+      "source_artifact": "artifacts/training/20261026T222151_846c8296a2/checkpoints/seed_41_normal.zip"
+    },
+    {
+      "group": "phase33_secondary",
+      "source_run": "20261026T222151_846c8296a2",
+      "source_key": "seed_41_robust",
+      "sha256": "a04b792f77686627775bf5d421b7e4b2b92b70ed66c7e1675f7460644bd3c54f",
+      "source_artifact": "artifacts/training/20261026T222151_846c8296a2/checkpoints/seed_41_robust.zip"
+    },
+    {
+      "group": "reference",
+      "controller_id": "pump-rule"
+    },
+    {
+      "group": "reference",
+      "controller_id": "pump-analytical"
+    }
+  ],
+  "scenario_manifest_sha256": "1bc850397b4f608b0cf7c75e63660b3bdfa52923d043b0b876f8720d763f88b0",
+  "authorized_partitions": [
+    "training",
+    "validation",
+    "screening_stress",
+    "historical_discoveries"
+  ],
+  "anchors": [
+    "fa3e8882ea750caff1f71665cb5355fb6618a9305832747b68a479edc492e5e1",
+    "67f3d6a4a76acbab861ab1059853b12a1a0ac41f5fe616e061de81635f208e21",
+    "e7422b1492b5b8c02425a836e9b26c7080ef49347c3bf0222a904e3866b1a1c7",
+    "853378dd085f919bf53d066f45131c0ba53ced3a2b06a6ed835a9062d75c4f4a",
+    "ae30cdda25be1216eea8818b18fb967dbcd4446a992be26523f5f4631cef7403",
+    "42a32bd8de76230cf58e6238834531a82fd1bc85238ae068050cfd3c5157aebb",
+    "4c05c32f9e2b66980652c184e42d70980047b1401dbce65ac3f7c925b1483d8c",
+    "787eb81b1405e624b6d080ebbc249df57b658980b49416f920441d713d4159d3",
+    "4196ae2eb6d3a429a521a0008ee379597992d5c73074140757987b4a00a833b1",
+    "2ec457a5f87eebc07563d5552f48b0b266651d42d369bed48eb91aaaa40f5586",
+    "daddb9b8a315e60352e51fca4785606d5474d153c6ad53617fa1b29d7adbbd90",
+    "421793aace47b429e066343c03651bc78b904f4b440f4ae7dc4712a254d0cbbd"
+  ],
+  "disturbance": {
+    "directions": 16,
+    "grid": [
+      0.0,
+      0.025,
+      0.05,
+      0.075,
+      0.1,
+      0.125,
+      0.15,
+      0.175,
+      0.2,
+      0.225,
+      0.25,
+      0.275,
+      0.3,
+      0.325,
+      0.35,
+      0.375,
+      0.4,
+      0.425,
+      0.45,
+      0.475,
+      0.5,
+      0.525,
+      0.55,
+      0.575,
+      0.6
+    ],
+    "censoring": "parameter bounds reported, never clamped",
+    "refinement": "disabled_pending_formal_monotonicity_review"
+  },
+  "differential_pairs": [
+    {
+      "id": "primary_3_expanded_5",
+      "class": "primary_equal_budget_screening",
+      "x": "screen_3_expanded_5",
+      "y": "screen_3_normal",
+      "source_phase": "3.5",
+      "training_seed": 3,
+      "direction_reason": "Stress continuation investigated against matched normal continuation",
+      "reverse_search": false
+    },
+    {
+      "id": "primary_3_expanded_10",
+      "class": "primary_equal_budget_screening",
+      "x": "screen_3_expanded_10",
+      "y": "screen_3_normal",
+      "source_phase": "3.5",
+      "training_seed": 3,
+      "direction_reason": "Stress continuation investigated against matched normal continuation",
+      "reverse_search": false
+    },
+    {
+      "id": "primary_17_expanded_5",
+      "class": "primary_equal_budget_screening",
+      "x": "screen_17_expanded_5",
+      "y": "screen_17_normal",
+      "source_phase": "3.5",
+      "training_seed": 17,
+      "direction_reason": "Stress continuation investigated against matched normal continuation",
+      "reverse_search": false
+    },
+    {
+      "id": "primary_17_expanded_10",
+      "class": "primary_equal_budget_screening",
+      "x": "screen_17_expanded_10",
+      "y": "screen_17_normal",
+      "source_phase": "3.5",
+      "training_seed": 17,
+      "direction_reason": "Stress continuation investigated against matched normal continuation",
+      "reverse_search": false
+    },
+    {
+      "id": "secondary_3_robust30",
+      "class": "secondary_historical",
+      "x": "seed_3_robust",
+      "y": "seed_3_normal",
+      "source_phase": "3.3",
+      "training_seed": 3,
+      "direction_reason": "Historical stress continuation investigated against within-seed normal continuation",
+      "reverse_search": false
+    },
+    {
+      "id": "secondary_17_robust30",
+      "class": "secondary_historical",
+      "x": "seed_17_robust",
+      "y": "seed_17_normal",
+      "source_phase": "3.3",
+      "training_seed": 17,
+      "direction_reason": "Historical stress continuation investigated against within-seed normal continuation",
+      "reverse_search": false
+    },
+    {
+      "id": "secondary_41_robust30",
+      "class": "secondary_historical",
+      "x": "seed_41_robust",
+      "y": "seed_41_normal",
+      "source_phase": "3.3",
+      "training_seed": 41,
+      "direction_reason": "Historical stress continuation investigated against within-seed normal continuation",
+      "reverse_search": false
+    }
+  ],
+  "context_pairs": [
+    {
+      "x": "ppo_3_10240",
+      "y": "pump-analytical",
+      "class": "context_not_training_effect"
+    },
+    {
+      "x": "ppo_3_10240",
+      "y": "pump-rule",
+      "class": "context_not_training_effect"
+    },
+    {
+      "x": "ppo_17_10240",
+      "y": "pump-analytical",
+      "class": "context_not_training_effect"
+    },
+    {
+      "x": "ppo_17_10240",
+      "y": "pump-rule",
+      "class": "context_not_training_effect"
+    },
+    {
+      "x": "ppo_41_25600",
+      "y": "pump-analytical",
+      "class": "context_not_training_effect"
+    },
+    {
+      "x": "ppo_41_25600",
+      "y": "pump-rule",
+      "class": "context_not_training_effect"
+    }
+  ],
+  "phase35_realized_exposure": {
+    "source_file_sha256": "b569b8a61a6712271d7c47f35f77a28ae72b2429f895e466bd0b81f9fd97ed9f",
+    "arms": [
+      {
+        "seed": 3,
+        "arm": "normal",
+        "checkpoint_id": "screen_3_normal",
+        "actual_environment_interactions": 51200,
+        "stress_interactions": 0,
+        "stress_interaction_fraction": 0.0,
+        "stress_completed_episodes": 0,
+        "distinct_discoveries": 0
+      },
+      {
+        "seed": 3,
+        "arm": "expanded_5",
+        "checkpoint_id": "screen_3_expanded_5",
+        "actual_environment_interactions": 51200,
+        "stress_interactions": 2635,
+        "stress_interaction_fraction": 0.05146484375,
+        "stress_completed_episodes": 37,
+        "distinct_discoveries": 7
+      },
+      {
+        "seed": 3,
+        "arm": "expanded_10",
+        "checkpoint_id": "screen_3_expanded_10",
+        "actual_environment_interactions": 51200,
+        "stress_interactions": 5165,
+        "stress_interaction_fraction": 0.10087890625,
+        "stress_completed_episodes": 47,
+        "distinct_discoveries": 7
+      },
+      {
+        "seed": 17,
+        "arm": "normal",
+        "checkpoint_id": "screen_17_normal",
+        "actual_environment_interactions": 51200,
+        "stress_interactions": 0,
+        "stress_interaction_fraction": 0.0,
+        "stress_completed_episodes": 0,
+        "distinct_discoveries": 0
+      },
+      {
+        "seed": 17,
+        "arm": "expanded_5",
+        "checkpoint_id": "screen_17_expanded_5",
+        "actual_environment_interactions": 51200,
+        "stress_interactions": 2672,
+        "stress_interaction_fraction": 0.0521875,
+        "stress_completed_episodes": 30,
+        "distinct_discoveries": 7
+      },
+      {
+        "seed": 17,
+        "arm": "expanded_10",
+        "checkpoint_id": "screen_17_expanded_10",
+        "actual_environment_interactions": 51200,
+        "stress_interactions": 5230,
+        "stress_interaction_fraction": 0.1021484375,
+        "stress_completed_episodes": 64,
+        "distinct_discoveries": 7
+      }
+    ]
+  },
+  "search": {
+    "space": "configs/search/pump_avoidable.json",
+    "space_file_sha256": "d99869ff60bc7025c2eccb545816743d58da79c172e1833621a7f65d7cfe31f6",
+    "method": "seeded_random_nonadaptive",
+    "search_seed": 3701,
+    "scenario_seed_start": 37000000,
+    "proposals_per_pair": 200,
+    "top_per_class": 5,
+    "class_a_margin_gap": 0.05,
+    "exclusion": "development training/validation/screening/historical discoveries; fixed proposals count excluded; no replacement; physical tolerance 1e-4 and seed disjoint"
+  },
+  "endpoints": [
+    "physical_violation",
+    "signed_post_initial_margin",
+    "first_observed_failure_delta",
+    "nominal_tracking_mae",
+    "stress_tracking_mae"
+  ],
+  "summary": [
+    "per_controller_distribution",
+    "per_scenario_paired_difference",
+    "minimum_margin",
+    "p10_margin",
+    "median_margin",
+    "censoring_count",
+    "class_a_count",
+    "verified_class_b_count",
+    "replay_success"
+  ],
+  "budget": {
+    "schema_version": "phase37-execution-budget:1",
+    "grid_episodes_per_controller_upper": 4800,
+    "grid_ppo_episodes_upper": 72000,
+    "grid_reference_episodes_upper": 9600,
+    "grid_episodes_upper": 81600,
+    "development_stress_context_episodes": 408,
+    "grid_valid_scenario_points": 4800,
+    "grid_physics_preprocessing_points": 4800,
+    "differential_pairs": 7,
+    "differential_first_pass_episodes_upper": 2800,
+    "differential_in_memory_repeat_episodes_upper": 2800,
+    "headline_archive_episodes_upper": 280,
+    "headline_independent_replay_episodes_upper": 280,
+    "total_episode_upper": 88168,
+    "maximum_transitions": 17633600,
+    "checkpoint_loads_nominal": 15,
+    "warm_ppo_seconds_grid_range": [
+      13896.0,
+      18288.0
+    ],
+    "warm_ppo_seconds_differential_upper_range": [
+      1188.88,
+      1564.64
+    ],
+    "cold_model_load_seconds_observed_range": [
+      58.5,
+      67.8
+    ],
+    "compact_grid_case_count": 3264,
+    "compact_grid_bytes_at_observed_case_mean": 26328893,
+    "headline_trajectory_bytes_at_observed_example": 719880,
+    "wall_seconds_cap": 28800,
+    "per_ppo_seconds_cap": 1800,
+    "artifact_bytes_cap": 2147483648,
+    "storage_policy": "compact all grid cells; full trajectory only selected headlines",
+    "storage_estimate_note": "Case and trajectory byte projections use 11 prior calibration cases and one prior 2571-byte trajectory; they are examples, not a worst-case bound"
+  },
+  "resume": "verified immutable completed cases only; failed work explicit recovery; deterministic work order",
+  "missing_evidence": "pair incomplete; no imputation or inferred ranking",
+  "approval": "No approval token issued at Checkpoint 2A",
+  "semantic_sha256": "aaef7614397fadd37f96be31afad1bdde240742528348330acfd15b76b338258"
+}

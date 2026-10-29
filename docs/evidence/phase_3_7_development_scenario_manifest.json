@@ -1,0 +1,2045 @@
+{
+  "schema_version": "phase37-development-manifest:1",
+  "scope": "development_only",
+  "provenance": "Generator prefix only; cross-checked with Phase 3.5 development hashes. Bundled final records unopened.",
+  "source_protocol": "artifacts/training/20261027T143749_d88d2dd37f/protocol.json",
+  "source_hashes": {
+    "training": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+    "validation": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+    "screening_stress": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+    "historical_discovery_pool": "73478ecd1cc599009389cc7cdba29f5d40acb9f2a94b4ec8082337a4c0d90261"
+  },
+  "leakage": {
+    "passed": true,
+    "issues": [],
+    "rule": "all physical parameters except horizon within absolute 1e-4; seeds disjoint"
+  },
+  "anchors": [
+    "fa3e8882ea750caff1f71665cb5355fb6618a9305832747b68a479edc492e5e1",
+    "67f3d6a4a76acbab861ab1059853b12a1a0ac41f5fe616e061de81635f208e21",
+    "e7422b1492b5b8c02425a836e9b26c7080ef49347c3bf0222a904e3866b1a1c7",
+    "853378dd085f919bf53d066f45131c0ba53ced3a2b06a6ed835a9062d75c4f4a",
+    "ae30cdda25be1216eea8818b18fb967dbcd4446a992be26523f5f4631cef7403",
+    "42a32bd8de76230cf58e6238834531a82fd1bc85238ae068050cfd3c5157aebb",
+    "4c05c32f9e2b66980652c184e42d70980047b1401dbce65ac3f7c925b1483d8c",
+    "787eb81b1405e624b6d080ebbc249df57b658980b49416f920441d713d4159d3",
+    "4196ae2eb6d3a429a521a0008ee379597992d5c73074140757987b4a00a833b1",
+    "2ec457a5f87eebc07563d5552f48b0b266651d42d369bed48eb91aaaa40f5586",
+    "daddb9b8a315e60352e51fca4785606d5474d153c6ad53617fa1b29d7adbbd90",
+    "421793aace47b429e066343c03651bc78b904f4b440f4ae7dc4712a254d0cbbd"
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "f3d2a50f327ff188b9e28d82e4bdc5e3f577f1e88e97ad39695c7a2320fccc92",
+      "physical_key": "64b246b5b41f77ff7968c55d5e104756abd6f10cb9514dc49f00669cd2d748ae",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.4249949136540829,
+          "target_level": 0.5895280924102841,
+          "pump_capacity": 0.9105547174308637,
+          "efficiency": 0.8531737131406935,
+          "demand": 0.3468968870665448,
+          "leak": 0.008933940743183622
+        },
+        "seed": 100000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "f79437fbc418561afcece9b9f51d670c78a242851140865d130713141466bd5c",
+      "physical_key": "3d32ce7895ac7697a14d406d2836b2bc08054d5a6254ba875f072e2fca624db7",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.45154537738115424,
+          "target_level": 0.5463853691851489,
+          "pump_capacity": 0.793921106452462,
+          "efficiency": 0.9834715895780735,
+          "demand": 0.4614438537904633,
+          "leak": 0.028058009366578273
+        },
+        "seed": 100001,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "4818df6ab0e6635fa8204bad650d06735c509e752709a73dcbb8aa1f4af78a20",
+      "physical_key": "ae40cd2616c8522aa11d54f47deca7f1ce7fb2130b76508be5b29cb56dd9a382",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.4184292050951263,
+          "target_level": 0.5252994733660726,
+          "pump_capacity": 0.7530831711026611,
+          "efficiency": 0.8963867074805286,
+          "demand": 0.3729686295511879,
+          "leak": 0.006844161237551056
+        },
+        "seed": 100002,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "304742ef51b43fd863962d2dd6961fb2b4221877f64edb3bb07e3805086806bf",
+      "physical_key": "5565eafcc659a4273e55ccf2f0f072ad015c0c896ee6651061e77a9ff0ca3db2",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5461813399879994,
+          "target_level": 0.4103475791013187,
+          "pump_capacity": 0.9839283666458887,
+          "efficiency": 0.8340359033136143,
+          "demand": 0.3980794765660753,
+          "leak": 0.011860485734663816
+        },
+        "seed": 100003,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "39be838b89ef7379e4ed7a37f075e5c74489877be8da9d5a657d87aa083cd01c",
+      "physical_key": "b1d28ef28fefc932fa51be63fb66025307990633bd2cc290d4d0e1289ae98b58",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.634123788355048,
+          "target_level": 0.43812298548521106,
+          "pump_capacity": 0.9647904461572162,
+          "efficiency": 0.8616672030641402,
+          "demand": 0.3904415091744211,
+          "leak": 0.01517843289270758
+        },
+        "seed": 100004,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "f4a13cbb134d2fd35d20a98533fb66f67575e8a701b979dc66f55cddbf9cbc53",
+      "physical_key": "738a61739fe94600a13adff4b74be2429da622c969f8a241b46269437334b52e",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.37585845068053453,
+          "target_level": 0.4947794851952017,
+          "pump_capacity": 0.8718733501505582,
+          "efficiency": 0.9255106162436236,
+          "demand": 0.45814500627361054,
+          "leak": 0.0034400677329055316
+        },
+        "seed": 100005,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "e858c2b8de27f52fff440c765242e906a79e4c3fadedf67e8f66ee42f23f03a9",
+      "physical_key": "9551f15682c268113894add2cbe9aea3060df25bf7d69280c04914e4fe1b3aba",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.603242248778149,
+          "target_level": 0.5021178729750141,
+          "pump_capacity": 0.8178289939313259,
+          "efficiency": 0.9549243908268347,
+          "demand": 0.42667389884490703,
+          "leak": 0.0007141269557938557
+        },
+        "seed": 100006,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "0273535e65631c11bc64ad96026bbfd30de994ee1d68b1b2d308f79f5c9fd4bb",
+      "physical_key": "9a2c0044eb85fefba2f10c6f5304059ad61e83f8706e0e20fcd6a713106f2eca",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.4377129435932441,
+          "target_level": 0.41229140045681856,
+          "pump_capacity": 0.9873240700874842,
+          "efficiency": 0.920604879513676,
+          "demand": 0.5537257413367535,
+          "leak": 0.028807691119960885
+        },
+        "seed": 100007,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "47f5aba91e222d96ebbe24e45fb123da28973df2bc84be4b8c2d987e9b3582eb",
+      "physical_key": "fdb9e8e75ee96fa3d0a4af7cbfb3a10dfb9b1fc724b22c92e3de2694c854ba50",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.368592239643731,
+          "target_level": 0.5619679524347057,
+          "pump_capacity": 0.7569616134945072,
+          "efficiency": 0.9293740816049051,
+          "demand": 0.3557536992613594,
+          "leak": 0.029153909650344565
+        },
+        "seed": 100008,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "7e4ff24591b8c19c086f4822bf5425053a2372c4910873cccc791011bf7c6525",
+      "physical_key": "368699c380acbf6b21ac09cc0d5a6b572e6594c06d522c019f4148b05ef9f029",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.572762533558745,
+          "target_level": 0.5431336130468812,
+          "pump_capacity": 0.9176183741777908,
+          "efficiency": 0.9823342849383374,
+          "demand": 0.462212813117033,
+          "leak": 0.016470004599916866
+        },
+        "seed": 100009,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "6fb012d61180ceb1d85ab8adba2cf25417d0c6a6f8a11f2a991605db5c590ec8",
+      "physical_key": "85d22d0ac2bee99c61967d3751058918b161f8c864490252055694b592107b7a",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.6082311257212298,
+          "target_level": 0.5634163935621895,
+          "pump_capacity": 0.9445530442045607,
+          "efficiency": 0.9073903125052816,
+          "demand": 0.45210403779083175,
+          "leak": 0.029538246185793655
+        },
+        "seed": 100010,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "cd6ca46b8420a29aabded6f9bc69205e3aa759ec575b9a33dc87121c82d39df8",
+      "physical_key": "73294813297e54db292b4eaac7f6226c13b60cfe4c3b685d3be183aaa851a11e",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5823918935658671,
+          "target_level": 0.5828468695327116,
+          "pump_capacity": 0.780638808135132,
+          "efficiency": 0.8710378797238539,
+          "demand": 0.3646252394872966,
+          "leak": 0.0013278064949248302
+        },
+        "seed": 100011,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "training",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "training",
+      "source_partition_hash": "0f66d6c9dc4e7f122c403b72c8215a951d4e7ba2b9143bb6b780395eeefe02c1",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "fa3e8882ea750caff1f71665cb5355fb6618a9305832747b68a479edc492e5e1",
+      "physical_key": "404fcc33772bae6a38fae4105e307b8d5a4f2eb243d2a135c64575a1ae891a65",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.6960119460069775,
+          "target_level": 0.41704219676816134,
+          "pump_capacity": 0.8968956706850935,
+          "efficiency": 0.8885996264855295,
+          "demand": 0.4326660603673268,
+          "leak": 0.02341858876865357
+        },
+        "seed": 110000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "67f3d6a4a76acbab861ab1059853b12a1a0ac41f5fe616e061de81635f208e21",
+      "physical_key": "87d08289991093ea36827745cc4942595db4c34fcdfa4e87cb84d6ad5497900d",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5992460913345969,
+          "target_level": 0.5314262286161351,
+          "pump_capacity": 0.9745460431235834,
+          "efficiency": 0.9036116440534753,
+          "demand": 0.4094373382731446,
+          "leak": 0.012148565738942647
+        },
+        "seed": 110001,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "e7422b1492b5b8c02425a836e9b26c7080ef49347c3bf0222a904e3866b1a1c7",
+      "physical_key": "b6bb2372718e5f2e8a04f1639853d971c1abc596c93ed0de7a2e4d38a2569d74",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5634918352863494,
+          "target_level": 0.45865506622327684,
+          "pump_capacity": 0.8333570962715953,
+          "efficiency": 0.8652237795329033,
+          "demand": 0.3979771601182938,
+          "leak": 0.016197813355385383
+        },
+        "seed": 110002,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "853378dd085f919bf53d066f45131c0ba53ced3a2b06a6ed835a9062d75c4f4a",
+      "physical_key": "4581fece3b247dd0ce99e0616ee0e7138d6be1099e8a5878e074a69447de863c",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.44743215496152683,
+          "target_level": 0.46708476364091106,
+          "pump_capacity": 0.7932064231978933,
+          "efficiency": 0.8575383587330541,
+          "demand": 0.4283950510622822,
+          "leak": 0.006817734076709484
+        },
+        "seed": 110003,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "ae30cdda25be1216eea8818b18fb967dbcd4446a992be26523f5f4631cef7403",
+      "physical_key": "8e1a43764c04c3c1eeeaca6edf170301f7a9ebf2fee72bd5066d8340f66d0f6a",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5232026341447763,
+          "target_level": 0.5608558287176763,
+          "pump_capacity": 0.8770599701663697,
+          "efficiency": 0.9163667175789117,
+          "demand": 0.4227591965627694,
+          "leak": 0.02375146796454101
+        },
+        "seed": 110004,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "42a32bd8de76230cf58e6238834531a82fd1bc85238ae068050cfd3c5157aebb",
+      "physical_key": "a1d95a2a6fb1566153e74e64aeac055ea504c22707fb0bf6b3bc3edf9d1956ff",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.31131449656311094,
+          "target_level": 0.4177389132914171,
+          "pump_capacity": 0.7904585563035814,
+          "efficiency": 0.9540178090036207,
+          "demand": 0.4227721842121989,
+          "leak": 0.005956860045107921
+        },
+        "seed": 110005,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "4c05c32f9e2b66980652c184e42d70980047b1401dbce65ac3f7c925b1483d8c",
+      "physical_key": "3359a0f7800d6979f256c20a38c00f01cbb3f6992077ac35d60c90ba8bf152cf",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5806679920022308,
+          "target_level": 0.47675450371160577,
+          "pump_capacity": 0.8493215814550594,
+          "efficiency": 0.9380730061091973,
+          "demand": 0.36932929655006586,
+          "leak": 0.021740223661469785
+        },
+        "seed": 110006,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "787eb81b1405e624b6d080ebbc249df57b658980b49416f920441d713d4159d3",
+      "physical_key": "65f8936fe626806433170d5b3e1821f80b2d21e6b04f4dcfc67973ad1a173d07",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5988060254219987,
+          "target_level": 0.4132523072591628,
+          "pump_capacity": 0.7573577105319003,
+          "efficiency": 0.8895666069291224,
+          "demand": 0.4236668956743285,
+          "leak": 0.012830792892803209
+        },
+        "seed": 110007,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "4196ae2eb6d3a429a521a0008ee379597992d5c73074140757987b4a00a833b1",
+      "physical_key": "848284d0c3fc4a7f86da2ab0390fbb0f1ad22560bdf75094cb0e426c1c3048a4",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.40158261847638665,
+          "target_level": 0.5600460320697389,
+          "pump_capacity": 0.8792596422863387,
+          "efficiency": 0.9307637325938474,
+          "demand": 0.3667803108951743,
+          "leak": 0.024428383921298192
+        },
+        "seed": 110008,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "2ec457a5f87eebc07563d5552f48b0b266651d42d369bed48eb91aaaa40f5586",
+      "physical_key": "7171cc20b602e0a298038fb6f19dc95d1427a3fae4e21894eabfb74131abb631",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5751098841218265,
+          "target_level": 0.41694427401504147,
+          "pump_capacity": 0.8867499257999709,
+          "efficiency": 0.803373275226215,
+          "demand": 0.40744274940309144,
+          "leak": 0.015650478537418872
+        },
+        "seed": 110009,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "daddb9b8a315e60352e51fca4785606d5474d153c6ad53617fa1b29d7adbbd90",
+      "physical_key": "8827e1f028b883200c8c78f7e8c0fa6a8945785c9c4978ee4fe450854507da47",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.42273833872733907,
+          "target_level": 0.42360806223864883,
+          "pump_capacity": 0.9625770709318354,
+          "efficiency": 0.8113825069276575,
+          "demand": 0.4545196464785323,
+          "leak": 0.01947138357516517
+        },
+        "seed": 110010,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "421793aace47b429e066343c03651bc78b904f4b440f4ae7dc4712a254d0cbbd",
+      "physical_key": "388f6b9f7972fcd66d8c1c4442b74f225ef5aa6ccc5a021a516f5be186872d09",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.3291021200082659,
+          "target_level": 0.5303190603999433,
+          "pump_capacity": 0.7571733099252825,
+          "efficiency": 0.8091872633658083,
+          "demand": 0.2846619284436714,
+          "leak": 0.016301410428779424
+        },
+        "seed": 110011,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "validation",
+          "generator": "pump-partitions:1"
+        }
+      },
+      "source_phase": "3.2",
+      "source_run": "20261025T205339_64b622c146",
+      "partition": "validation",
+      "source_partition_hash": "88254780b0f8ef2b15a46cefe7a1b7eb62c43f2ec838bff6933a0045390dc28f",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "disturbance_anchor"
+    },
+    {
+      "scenario_id": "28ee1c2a536a0ea73e3c1f51a77e76c6a0c0e6d2b46fd8f79c8be62700f3b54c",
+      "physical_key": "6d7bfd886ca6f53db918583fafde7b045983c98bb0139aba7a7b4c9be6f7de10",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.4158486541111611,
+          "demand": 0.6432189958387309,
+          "pump_capacity": 1.6395114874088947,
+          "efficiency": 0.7846364145148328,
+          "leak": 0.08080484623341468
+        },
+        "seed": 3400001,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "nominal_like",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "ae04a532f81517d265eb60b1b88844ae0a1737c3d50a20cc2732407a7117f5c4",
+      "physical_key": "201bd1af209abafc5c63135f3deeac16ec40b27491922abd5f7b66898f00d84e",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.671062916210885,
+          "demand": 0.562075881873061,
+          "pump_capacity": 1.1145316735006523,
+          "efficiency": 0.967597828283497,
+          "leak": 0.030584251846298916
+        },
+        "seed": 3400002,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "nominal_like",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "407664c681e8dc8a931e36d01ba08906365031948c751720439a58c411aa951f",
+      "physical_key": "09360c175ae3f25cea880b1a3330566be31af5de24e1963078f2c8aa2f44eaef",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.5336895862319432,
+          "demand": 0.4515000055520294,
+          "pump_capacity": 0.887953834449173,
+          "efficiency": 0.8939546751308317,
+          "leak": 0.01551923125370992
+        },
+        "seed": 3400003,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "nominal_like",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "4f0c5ed443623d0cd93c6fa35eba59f09f8573170da416aa07369f63a92a0451",
+      "physical_key": "d61c7d8fc5ac8124daa702d1381cb145c448fed22eae3ca7d7da42fd93b48576",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.3473060274599579,
+          "demand": 0.5885774950540283,
+          "pump_capacity": 1.074528097044977,
+          "efficiency": 0.8999033008741631,
+          "leak": 0.04209711847306052
+        },
+        "seed": 3400004,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "nominal_like",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "8daa9486d4bb635c916c9bd765cee12b9e57ba3221c58ab154645b9619a2dd76",
+      "physical_key": "e75cd4edcc3999aa346c710aa24766c96f034457e12f8a8b265b39c8049b6e2e",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.5180362585896621,
+          "demand": 0.7979784781144305,
+          "pump_capacity": 1.3654826413839525,
+          "efficiency": 0.9222197169617904,
+          "leak": 0.03222335319065044
+        },
+        "seed": 3400005,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "nominal_like",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "57c6ca96f80e124e950c556e06cb576e330704abdd508d4458fb3b7485578d1b",
+      "physical_key": "e464d9aec0c1d9eee6fc9c4fdde97f3f82f578ec366be29a0b1c8bd9f05c9a55",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.3373037425169767,
+          "demand": 0.5559548755882372,
+          "pump_capacity": 1.1585782004476852,
+          "efficiency": 0.7308023760422679,
+          "leak": 0.033122264721871575
+        },
+        "seed": 3400006,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "nominal_like",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "f96491b62bea695cceb47b709a3c294db2ba9ab73fddaa444b7d35b54d3c6433",
+      "physical_key": "c756090f855bdb3ff11e0ed36f398e887363675005427a12904016b995f233bf",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.6043098014343999,
+          "demand": 0.7938475624860102,
+          "pump_capacity": 1.0633483918901336,
+          "efficiency": 0.9661737717065086,
+          "leak": 0.03201520859777891
+        },
+        "seed": 3400007,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "moderate",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "e6f9dd3d2c7828ea65514e852bdcaf775dc8b915ee45e7ed1ef3fcc8ec538cee",
+      "physical_key": "ac9fbf229141fc276d0d22996fb9c51ea3fb0703d4aaccb6365ed39bba7ffddf",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.689253674911549,
+          "demand": 0.7365965697878099,
+          "pump_capacity": 1.348158602648193,
+          "efficiency": 0.7242276982848633,
+          "leak": 0.06152771730306233
+        },
+        "seed": 3400009,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "moderate",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "e0e25c88ed7f5f4190a6974ff3e1b2d4573f9ddc66ae4b9c438a8971dabf7547",
+      "physical_key": "368a170b23dbe7529e8e07853720ea0aa2ff622add1f59e581cf2f00b1e3ef1d",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.30928301286077714,
+          "demand": 0.7344048329840218,
+          "pump_capacity": 1.2616576423726151,
+          "efficiency": 0.7315248578001986,
+          "leak": 0.09522582922646639
+        },
+        "seed": 3400010,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "moderate",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "b2af2d7859eb0b471d306f491dae6932503affdc61b25fbc582eecbbf60a9208",
+      "physical_key": "278191ec2120052943a06989642b2b3dec115639b3c04bcb20a5f13fe3736851",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.43755795645593754,
+          "demand": 0.7734476429076741,
+          "pump_capacity": 1.042578306673553,
+          "efficiency": 0.962690880817602,
+          "leak": 0.047567775539998795
+        },
+        "seed": 3400011,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "moderate",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "1007787ae96f86a87be22338fce2c6356412ece73aa40f957ca77f2e365f83f8",
+      "physical_key": "472e8b6e6f519ff151e58018d07555471c16c0125fad6169d5aa208570d43050",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.467157396738502,
+          "demand": 0.963386926393819,
+          "pump_capacity": 1.3722155139406143,
+          "efficiency": 0.866334107798708,
+          "leak": 0.08458448639272624
+        },
+        "seed": 3400012,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "moderate",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "e3da052d289e36b0de952fde1e185da79cd3f7bc2f0b2f769fc2532c24e57f83",
+      "physical_key": "afbb46c4afcb11b7cdab6c02476abe0584993782938ad60174812136bb104672",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.46828009230710865,
+          "demand": 0.8477301663125796,
+          "pump_capacity": 1.1710314391354324,
+          "efficiency": 0.921346866331304,
+          "leak": 0.04316672763282438
+        },
+        "seed": 3400014,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "moderate",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "8a6cf959a6b132ee7c318bdb923321cdabf8f578a3c033822d3c8cd21faf035f",
+      "physical_key": "b17cb7a6eeb56a62a6d972d8c24ac504de5a9a38ab5ff945367a63b6ca23a5c8",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.430725548387362,
+          "demand": 0.7978762298155493,
+          "pump_capacity": 1.007625317780292,
+          "efficiency": 0.914371010132216,
+          "leak": 0.037561538617144966
+        },
+        "seed": 3400017,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "high",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "8b9f0f03aac71218c5d054aab0c26d09a2253bdd0845f98f5cb30e45617669ee",
+      "physical_key": "93439a0dc8e9ff05c027ae33452f7fe4c0dcfef009558e5e1fa6e9be69f4b599",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.6351221392332477,
+          "demand": 0.7887417989803999,
+          "pump_capacity": 0.9777903567108199,
+          "efficiency": 0.9265621169039673,
+          "leak": 0.044498463513869706
+        },
+        "seed": 3400018,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "high",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "9384e4c868453decb493e45bc243800abb3a5de5456ae1f6084dea090b93cf80",
+      "physical_key": "a101302de6328f8378e63cca33c3831a1491b74fd2aa52986ca42af347ad09c6",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.6328966319953757,
+          "demand": 0.8612769613220911,
+          "pump_capacity": 1.2065837117219984,
+          "efficiency": 0.8086212439204004,
+          "leak": 0.02020798420888861
+        },
+        "seed": 3400019,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "high",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "0e3b3600b714501f5e198be79cfe11687c1457c14246b5ecbfaacbf4321e9027",
+      "physical_key": "ad374613fe6407c222519d6929d30232d4cadd6d306a60ab5621c3c3d32f6114",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.34993242169531386,
+          "demand": 0.8482966797461551,
+          "pump_capacity": 1.2477953309850136,
+          "efficiency": 0.7323722917103721,
+          "leak": 0.04900011636777124
+        },
+        "seed": 3400020,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "high",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "075bd12ea12ec6949c5c4d0dc9dac72a9bb333f4be4e3c49d1c05836b4ea229c",
+      "physical_key": "7182a92a6b029756cecc8e12eb023aad0c939429f659ea14d30237de5e6ae36e",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.4367088762875898,
+          "demand": 0.8084576742381071,
+          "pump_capacity": 1.2393304014999702,
+          "efficiency": 0.7378933819101122,
+          "leak": 0.023251209714303944
+        },
+        "seed": 3400023,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "high",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "0831b4aaff6a24b02c7fd3c72dcb62d3b2d7fc0ef1e9763c2fea976ef2316eec",
+      "physical_key": "057b863985d18331b62fed7c44d4c9ab89a52647bac4770cfe4e7cda8edb60d3",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.3836380433421344,
+          "demand": 0.7792593015340876,
+          "pump_capacity": 1.260191210283146,
+          "efficiency": 0.7013659604479683,
+          "leak": 0.023084366833352077
+        },
+        "seed": 3400024,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "high",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "08a1269856d145530ccd27bcac364c91f661532b432e42ea0bbee8979edfd653",
+      "physical_key": "69e17cd173f49ec7a33c924d95e9dbe4d4b62a8b21e8309966432ec9b1453810",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.8057913922836745,
+          "demand": 0.7557917454287034,
+          "pump_capacity": 0.973374829636501,
+          "efficiency": 0.7991324695730547,
+          "leak": 0.062054309733653425
+        },
+        "seed": 3400026,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "near_boundary",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "bounded_operation_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "14c1cf85d55d90a42787ecccde6d42b1a6b8494b514dff06654f93d9de63c705",
+      "physical_key": "6939eac1506591545f18c904cbbdc43a65076ef11c81ec62c4f4fd812c1b213b",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.15692073480936503,
+          "demand": 0.9970978621762452,
+          "pump_capacity": 1.4235572677218857,
+          "efficiency": 0.7064120877363902,
+          "leak": 0.09903685848891106
+        },
+        "seed": 3400029,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "near_boundary",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "bounded_operation_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "cc273398e0809e92cd4ac4217af6fbc48e1d08afc9b6a4d6b86ceb7699660026",
+      "physical_key": "f4068e5f0bd92e98955487f4cdd9eec0d4e794efe8a7a1563d5c53962715bb26",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.8032451920242818,
+          "demand": 0.9530798036869346,
+          "pump_capacity": 1.0877087255153468,
+          "efficiency": 0.8986672786874955,
+          "leak": 0.015609948556809406
+        },
+        "seed": 3400033,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "near_boundary",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "1f997b751aa7718f81384f83c8fd7c885c88584575c26067ca3f29dd41800588",
+      "physical_key": "bc22e85e28f4ad5a05a8b31ab265db2f0530ef598fef0a1431e9e1c8557a55d7",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.1390178211901016,
+          "demand": 0.9016521291125038,
+          "pump_capacity": 1.020301559613744,
+          "efficiency": 0.9743225898541852,
+          "leak": 0.090880260043069
+        },
+        "seed": 3400034,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "near_boundary",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "603711172def49e20c8c97ff7cfda79d13462deaa4296a77f477e14bcb793789",
+      "physical_key": "33d5da24ae898835b7c02f949c5ee3b6f86a4c1c0e64ddacc6bd125131d515d1",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.17610115201751794,
+          "demand": 0.9001500810342788,
+          "pump_capacity": 1.0823878046834752,
+          "efficiency": 0.8873743349206669,
+          "leak": 0.03434382819003736
+        },
+        "seed": 3400035,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "near_boundary",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "1c601b80a7d409118abf326f2ed3c3e52dee0be02fc5b59becf22fbd94055182",
+      "physical_key": "7b0c0e94f271664a4fef7b8aa5beb322934ed70cb6b50c6ec1bfcdd0f7348c5e",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "target_level": 0.5,
+          "initial_level": 0.907992482908931,
+          "demand": 0.6808093264995104,
+          "pump_capacity": 0.7572549803573508,
+          "efficiency": 0.9966030752033691,
+          "leak": 0.08379600122746163
+        },
+        "seed": 3400038,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": null,
+        "tags": [],
+        "provenance": {
+          "partition": "screening_stress",
+          "difficulty_stratum": "near_boundary",
+          "generator": "pump-phase34:1"
+        }
+      },
+      "source_phase": "3.4",
+      "source_run": "20261027T135821_f307f4551c",
+      "partition": "screening_stress",
+      "source_partition_hash": "08c845a1b56de5dce5e77dbc36d6d1d4f8145f2723acbc99c67164dfebf00ff5",
+      "discovery_id": null,
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "1bef21e9ccdf0c4b27f57078fb911ac3b0339f899c0ade9408a14945a7bd6dfb",
+      "physical_key": "9981a7669b7649c2d6681efb5ba50951878418f1f00955918bf64b04d4f2e640",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.7161623150834033,
+          "demand": 0.7802454089749794,
+          "pump_capacity": 1.27872126936033,
+          "efficiency": 0.6476661927133296,
+          "leak": 0.11170798721969283
+        },
+        "seed": 320000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Feasible operating shifts, separate from competence partitions",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261026T090912_05c97a1dec",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "0fd057f085742db6350a6173285842191312f7687f3fbe91b7e82f8c42923fef",
+      "discovery_id": "disc_05c97a1dec_0000",
+      "physical_validation": "valid",
+      "feasibility": "bounded_operation_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "e6b98367a90ebc928ea7ce5ed2212d8edcb6b9c6d1c29e23a8c4d30e76b765e5",
+      "physical_key": "b9567fd09fa8eceb9f506e02358890074702dde05f0815f0d870efc8b4980f61",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.30177446121325535,
+          "demand": 0.3910396169030367,
+          "pump_capacity": 0.6488788002253432,
+          "efficiency": 0.6330142737787615,
+          "leak": 0.03624126511337196
+        },
+        "seed": 320000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Feasible operating shifts, separate from competence partitions",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261026T090912_05c97a1dec",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "0fd057f085742db6350a6173285842191312f7687f3fbe91b7e82f8c42923fef",
+      "discovery_id": "disc_05c97a1dec_0002",
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "44178fdc7aa63d19d98ebfabcc9b9e1720641da7cf7fe5b362aa366e7c349197",
+      "physical_key": "eaeeebf846882bf065351226322b46fb7b45feb40679343998acd53997d3ffe2",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.1780790225044992,
+          "demand": 0.4311047452789358,
+          "pump_capacity": 0.5215812193419074,
+          "efficiency": 0.9550288752467151,
+          "leak": 0.02817815002074901
+        },
+        "seed": 320000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Feasible operating shifts, separate from competence partitions",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261026T090912_05c97a1dec",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "0fd057f085742db6350a6173285842191312f7687f3fbe91b7e82f8c42923fef",
+      "discovery_id": "disc_05c97a1dec_0001",
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "69d4b5d00f54bbbada20bb62d4d2b6b3f2713eacbf701027318ed11b4e8a88b2",
+      "physical_key": "a888b04e8e58b41e22562dad9e5931ee28ea1330cd4e43c54a46bebfdf4f04af",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.2625487268202167,
+          "demand": 0.5793679011616755,
+          "pump_capacity": 0.8299356672139757,
+          "efficiency": 0.7169542584014282,
+          "leak": 0.11888456262600114
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261027T135757_2ba26db7df",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "6daf3bdb309a4da2470f4c86362c15f37a3e3a2dd0f9fef294d023aeb6c8be0e",
+      "discovery_id": "disc_2ba26db7df_0001",
+      "physical_validation": "valid",
+      "feasibility": "bounded_operation_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "1df30d9cbb9ba8e97566e56b3f2a28212e847c67e1d2cdbfb251a8782a1b3cc4",
+      "physical_key": "35304df80a456b68401de296205fe64c1fa0aaa33472054a7af0f27f444f70c8",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.5453839107311322,
+          "demand": 0.46615032206411894,
+          "pump_capacity": 0.535960105095319,
+          "efficiency": 0.9201536158458696,
+          "leak": 0.06402805682533072
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261027T135757_2ba26db7df",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "6daf3bdb309a4da2470f4c86362c15f37a3e3a2dd0f9fef294d023aeb6c8be0e",
+      "discovery_id": "disc_2ba26db7df_0000",
+      "physical_validation": "valid",
+      "feasibility": "bounded_operation_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "70830059175720aed9783f356f49a58b6888c3b8f1ccd6df6e2a9541575d2030",
+      "physical_key": "373e15e7c873591c7f8f443898ac634e26fd7513a738107acdfb6aea50f1331d",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.17296829479503098,
+          "demand": 0.8139825494937261,
+          "pump_capacity": 1.2219251504705646,
+          "efficiency": 0.7354777350158953,
+          "leak": 0.037273397907726095
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261027T135757_2ba26db7df",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "6daf3bdb309a4da2470f4c86362c15f37a3e3a2dd0f9fef294d023aeb6c8be0e",
+      "discovery_id": "disc_2ba26db7df_0003",
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    },
+    {
+      "scenario_id": "a5980dfb264563463a472ce9448b5b0160fcc0962929485ec6090c743d648818",
+      "physical_key": "09f7b0a16684a3e04550b42608f0afc0b6085a9023ea58777191b7fde6aaeabf",
+      "scenario": {
+        "environment_id": "pump",
+        "parameters": {
+          "dt": 0.1,
+          "horizon": 200,
+          "target_level": 0.5,
+          "min_level": 0.05,
+          "max_level": 0.95,
+          "initial_level": 0.25951767091960837,
+          "demand": 0.5996979306594066,
+          "pump_capacity": 0.8718743770140621,
+          "efficiency": 0.7883709733655926,
+          "leak": 0.04002398982863242
+        },
+        "seed": 340000,
+        "environment_version": "sirfex-pump:1",
+        "schema_version": "1",
+        "description": "Phase 3.4 bounded development discovery, final benchmark excluded",
+        "tags": [
+          "search"
+        ],
+        "provenance": {
+          "search_space_schema": "1"
+        }
+      },
+      "source_phase": "search",
+      "source_run": "20261027T135757_2ba26db7df",
+      "partition": "historical_discoveries",
+      "source_partition_hash": "6daf3bdb309a4da2470f4c86362c15f37a3e3a2dd0f9fef294d023aeb6c8be0e",
+      "discovery_id": "disc_2ba26db7df_0002",
+      "physical_validation": "valid",
+      "feasibility": "target_feasible",
+      "intended_use": "differential_exclusion_and_context"
+    }
+  ],
+  "semantic_sha256": "1bc850397b4f608b0cf7c75e63660b3bdfa52923d043b0b876f8720d763f88b0"
+}

@@ -198,6 +198,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     robustness_report.add_argument("--input", required=True)
     robustness_report.add_argument("--output", required=True)
+    study = robustness_sub.add_parser(
+        "study", help="Phase 3.7 scientific preflight and gated study"
+    )
+    study.add_argument(
+        "--mode",
+        choices=("preflight", "dry-run", "scientific-execute", "resume", "report"),
+        required=True,
+    )
+    study.add_argument("--protocol", required=True)
+    study.add_argument("--manifest", required=True)
+    study.add_argument("--approval-digest")
     return parser
 
 
@@ -494,7 +505,24 @@ def main(argv: list[str] | None = None) -> int:
         from sirfex.robustness.store import _atomic_json, atomic_text
 
         try:
-            if args.robustness_command == "margins":
+            if args.robustness_command == "study":
+                from sirfex.robustness.scientific import dry_run, scientific_execute
+
+                protocol = json.loads(Path(args.protocol).read_text(encoding="utf-8"))
+                manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
+                root = Path.cwd()
+                if args.mode in ("preflight", "dry-run", "report"):
+                    output = dry_run(protocol, manifest, root)
+                    output["mode"] = args.mode
+                else:
+                    output = scientific_execute(
+                        protocol,
+                        manifest,
+                        root,
+                        protocol_file=args.protocol,
+                        approval_digest=args.approval_digest,
+                    )
+            elif args.robustness_command == "margins":
                 if args.result:
                     value = json.loads(Path(args.result).read_text(encoding="utf-8"))
                 else:

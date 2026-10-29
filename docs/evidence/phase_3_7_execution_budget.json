@@ -1,0 +1,38 @@
+{
+  "schema_version": "phase37-execution-budget:1",
+  "grid_episodes_per_controller_upper": 4800,
+  "grid_ppo_episodes_upper": 72000,
+  "grid_reference_episodes_upper": 9600,
+  "grid_episodes_upper": 81600,
+  "development_stress_context_episodes": 408,
+  "grid_valid_scenario_points": 4800,
+  "grid_physics_preprocessing_points": 4800,
+  "differential_pairs": 7,
+  "differential_first_pass_episodes_upper": 2800,
+  "differential_in_memory_repeat_episodes_upper": 2800,
+  "headline_archive_episodes_upper": 280,
+  "headline_independent_replay_episodes_upper": 280,
+  "total_episode_upper": 88168,
+  "maximum_transitions": 17633600,
+  "checkpoint_loads_nominal": 15,
+  "warm_ppo_seconds_grid_range": [
+    13896.0,
+    18288.0
+  ],
+  "warm_ppo_seconds_differential_upper_range": [
+    1188.88,
+    1564.64
+  ],
+  "cold_model_load_seconds_observed_range": [
+    58.5,
+    67.8
+  ],
+  "compact_grid_case_count": 3264,
+  "compact_grid_bytes_at_observed_case_mean": 26328893,
+  "headline_trajectory_bytes_at_observed_example": 719880,
+  "wall_seconds_cap": 28800,
+  "per_ppo_seconds_cap": 1800,
+  "artifact_bytes_cap": 2147483648,
+  "storage_policy": "compact all grid cells; full trajectory only selected headlines",
+  "storage_estimate_note": "Case and trajectory byte projections use 11 prior calibration cases and one prior 2571-byte trajectory; they are examples, not a worst-case bound"
+}
