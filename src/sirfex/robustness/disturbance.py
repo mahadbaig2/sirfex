@@ -2,15 +2,17 @@
 
 from __future__ import annotations
 
+import json
 import math
 from collections.abc import Callable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
+from functools import lru_cache
 from itertools import combinations
 
 from sirfex.core import EpisodeResult, Scenario
 from sirfex.core.scenarios import ScenarioValidationError
 from sirfex.environments.pump import PumpEnvironment
-from sirfex.robustness.identity import scenario_identity
+from sirfex.robustness.identity import scenario_identity, semantic_hash
 from sirfex.robustness.margins import PumpMargin, evaluate_margin
 from sirfex.training.feasibility import analyze_feasibility
 
@@ -19,6 +21,8 @@ DIRECTIONS = tuple(
     tuple(group) for length in range(1, len(AXES) + 1) for group in combinations(AXES, length)
 ) + (("surplus_demand",),)
 SCHEMA = "pump-disturbance-cell:1"
+ANALYZER_VERSION = "pump-finite-horizon:1"
+PREPARED_SCHEMA = "pump-prepared-disturbance-grid:1"
 
 
 class UndefinedAxis(ValueError):
@@ -41,6 +45,53 @@ class GridPoint:
     scenario_id: str | None
     feasibility: str | None
     viable: bool | None
+
+
+@dataclass(frozen=True)
+class PreparedDisturbanceGrid:
+    schema_version: str
+    anchor_id: str
+    direction: tuple[str, ...]
+    grid: tuple[float, ...]
+    environment_version: str
+    analyzer_version: str
+    protocol_sha256: str | None
+    points: tuple[GridPoint, ...]
+    semantic_sha256: str
+
+    def __len__(self):
+        return len(self.points)
+
+    def __iter__(self):
+        return iter(self.points)
+
+    def __getitem__(self, index):
+        return self.points[index]
+
+
+@lru_cache(maxsize=4096)
+def _cached_feasibility(scenario_json: str, analyzer: Callable) -> dict:
+    """Reuse exact analysis only for the same serialized scenario and analyzer."""
+    return analyzer(Scenario.from_dict(json.loads(scenario_json)))
+
+
+def _prepared_payload(value: PreparedDisturbanceGrid) -> dict:
+    return {key: item for key, item in asdict(value).items() if key != "semantic_sha256"}
+
+
+def _prepared_grid(anchor, direction, grid, points, protocol_sha256):
+    value = PreparedDisturbanceGrid(
+        PREPARED_SCHEMA,
+        scenario_identity(anchor),
+        direction,
+        grid,
+        PumpEnvironment.version,
+        ANALYZER_VERSION,
+        protocol_sha256,
+        tuple(points),
+        "",
+    )
+    return replace(value, semantic_sha256=semantic_hash(_prepared_payload(value)))
 
 
 @dataclass(frozen=True)
@@ -129,14 +180,24 @@ def transform(anchor: Scenario, direction: tuple[str, ...], delta: float) -> Sce
 
 
 def prepare_grid(
-    anchor: Scenario, direction: tuple[str, ...], grid: list[float] | tuple[float, ...]
-) -> tuple[GridPoint, ...]:
+    anchor: Scenario,
+    direction: tuple[str, ...],
+    grid: list[float] | tuple[float, ...],
+    *,
+    protocol_sha256: str | None = None,
+) -> PreparedDisturbanceGrid:
     """Compute a shared domain and feasibility sequence before controller evaluation."""
     direction = validate_direction(direction)
     grid = validate_grid(grid)
     p = PumpEnvironment().validate_scenario(anchor)
     if "leak" in direction and p["demand"] == 0 and p["leak"] == 0:
-        return tuple(GridPoint(delta, "undefined_axis", None, None, None, None) for delta in grid)
+        return _prepared_grid(
+            anchor,
+            direction,
+            grid,
+            (GridPoint(delta, "undefined_axis", None, None, None, None) for delta in grid),
+            protocol_sha256,
+        )
     points = []
     domain_ended = False
     for delta in grid:
@@ -148,7 +209,10 @@ def prepare_grid(
             continue
         if domain_ended:
             raise ValueError("Disturbance validity domain unexpectedly reopens")
-        analysis = analyze_feasibility(scenario)
+        scenario_json = json.dumps(
+            scenario.to_dict(), sort_keys=True, separators=(",", ":"), allow_nan=False
+        )
+        analysis = _cached_feasibility(scenario_json, analyze_feasibility)
         points.append(
             GridPoint(
                 delta,
@@ -159,7 +223,7 @@ def prepare_grid(
                 analysis["finite_horizon_viable"],
             )
         )
-    return tuple(points)
+    return _prepared_grid(anchor, direction, grid, points, protocol_sha256)
 
 
 def _refine_ceiling(
@@ -206,14 +270,24 @@ def evaluate_direction(
     controller_id: str,
     evaluator: Callable[[Scenario], EpisodeResult | dict],
     *,
-    prepared: tuple[GridPoint, ...] | None = None,
+    prepared: PreparedDisturbanceGrid | None = None,
     refine_feasibility: bool = False,
+    protocol_sha256: str | None = None,
 ) -> DisturbanceCell:
     direction = validate_direction(direction)
     grid = validate_grid(grid)
-    points = prepared if prepared is not None else prepare_grid(anchor, direction, grid)
-    if len(points) != len(grid) or any(p.delta != d for p, d in zip(points, grid, strict=True)):
-        raise ValueError("Prepared shared grid does not match the requested grid")
+    expected = prepare_grid(anchor, direction, grid, protocol_sha256=protocol_sha256)
+    if prepared is not None:
+        if not isinstance(prepared, PreparedDisturbanceGrid):
+            raise ValueError("Prepared grid requires a versioned bound structure")
+        if (
+            prepared.semantic_sha256 != semantic_hash(_prepared_payload(prepared))
+            or prepared != expected
+        ):
+            raise ValueError("Prepared grid integrity or requested protocol mismatch")
+        points = prepared.points
+    else:
+        points = expected.points
     anchor_id = scenario_identity(anchor)
     if points[0].domain_status == "undefined_axis":
         return DisturbanceCell(

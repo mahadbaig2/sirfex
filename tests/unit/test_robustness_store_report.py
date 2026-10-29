@@ -10,7 +10,12 @@ import pytest
 from sirfex.core import Scenario
 from sirfex.robustness.identity import semantic_hash
 from sirfex.robustness.report import build_report, render_markdown, verify_report
-from sirfex.robustness.store import RobustnessStorageError, RobustnessStore, run_items
+from sirfex.robustness.store import (
+    RobustnessStorageError,
+    RobustnessStore,
+    _exclusive_lock,
+    run_items,
+)
 
 
 def protocol():
@@ -143,11 +148,161 @@ def test_report_is_deterministic_json_authoritative_and_null_explicit():
         verify_report(tampered)
 
 
-def test_core_margin_import_does_not_load_optional_ml_or_agent_packages():
+def test_core_numerical_imports_do_not_load_optional_ml_or_agent_packages():
     code = (
-        "import sys; import sirfex.robustness.margins; "
+        "import sys; import sirfex.robustness.margins, "
+        "sirfex.robustness.disturbance, sirfex.robustness.differential; "
         "assert not {'torch','stable_baselines3','groq','langgraph','streamlit'} "
         "& set(sys.modules)"
     )
     result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+def test_completed_case_is_write_once_with_idempotent_retry_and_identity_checks(tmp_path):
+    store = RobustnessStore(tmp_path)
+    spec, anchor = items()[0]
+    from sirfex.robustness.identity import scenario_identity
+    from sirfex.robustness.store import controller_identity
+
+    p = {
+        **protocol(),
+        "controllers": [{"identity_sha256": controller_identity(spec)}],
+        "anchors": [scenario_identity(anchor)],
+    }
+    run_id = store.open_run(p)
+    case_id = store.case_id(run_id, spec, anchor)
+    record = {
+        "schema_version": "pump-robustness-case:1",
+        "case_id": case_id,
+        "controller_identity": controller_identity(spec),
+        "anchor_id": scenario_identity(anchor),
+        "status": "completed",
+        "result": {"x": 1},
+    }
+    first = store.write_case(run_id, case_id, record)
+    assert store.write_case(run_id, case_id, record) == first
+    assert (
+        store.write_case(
+            run_id, case_id, {**record, "result": {"x": 1}, "semantic_hash": "ignored"}
+        )
+        == first
+    )
+    with pytest.raises(RobustnessStorageError, match="immutable"):
+        store.write_case(run_id, case_id, {**record, "result": {"x": 2}})
+    assert store.read_case(run_id, case_id)["semantic_hash"] == first["semantic_hash"]
+    for changed in (
+        {**record, "controller_identity": "other"},
+        {**record, "anchor_id": "other"},
+    ):
+        with pytest.raises(RobustnessStorageError, match="identity"):
+            store.write_case(run_id, case_id, changed)
+    with pytest.raises(RobustnessStorageError, match="incompatible"):
+        store.open_run({**p, "grid": [0, 0.2]}, run_id=run_id)
+    assert store.read_case(run_id, case_id)["semantic_hash"] == first["semantic_hash"]
+
+
+def test_corrupt_case_and_interrupted_write_refuse_replacement(tmp_path, monkeypatch):
+    store = RobustnessStore(tmp_path)
+    spec, anchor = items()[0]
+    run_id = store.open_run(protocol())
+    case_id = store.case_id(run_id, spec, anchor)
+    from sirfex.robustness.identity import scenario_identity
+    from sirfex.robustness.store import controller_identity
+
+    record = {
+        "case_id": case_id,
+        "controller_identity": controller_identity(spec),
+        "anchor_id": scenario_identity(anchor),
+        "status": "completed",
+        "result": {"x": 1},
+    }
+    import sirfex.robustness.store as module
+
+    original = module._atomic_json
+
+    def interrupt(path, value):
+        if path.name == f"{case_id}.json":
+            raise OSError("interrupted before atomic replacement")
+        return original(path, value)
+
+    monkeypatch.setattr(module, "_atomic_json", interrupt)
+    with pytest.raises(OSError, match="interrupted"):
+        store.write_case(run_id, case_id, record)
+    assert store.read_case(run_id, case_id) is None
+    monkeypatch.setattr(module, "_atomic_json", original)
+    store.write_case(run_id, case_id, record)
+    path = store.directory(run_id) / "cases" / f"{case_id}.json"
+    path.write_text(path.read_text().replace('"x": 1', '"x": 2'))
+    with pytest.raises(RobustnessStorageError, match="hash changed"):
+        store.write_case(run_id, case_id, record)
+
+
+def test_explicit_failed_recovery_and_concurrent_lock_refusal(tmp_path):
+    store = RobustnessStore(tmp_path)
+    spec, anchor = items()[0]
+    run_id = store.open_run(protocol())
+    case_id = store.case_id(run_id, spec, anchor)
+    from sirfex.robustness.identity import scenario_identity
+    from sirfex.robustness.store import controller_identity
+
+    base = {
+        "case_id": case_id,
+        "controller_identity": controller_identity(spec),
+        "anchor_id": scenario_identity(anchor),
+        "status": "failed",
+        "error_type": "RuntimeError",
+    }
+    store.write_case(run_id, case_id, base)
+    finished = {**base, "status": "completed", "result": {"ok": True}}
+    with pytest.raises(RobustnessStorageError, match="explicit recovery"):
+        store.write_case(run_id, case_id, finished)
+    store.write_case(run_id, case_id, finished, recovery=True)
+    with _exclusive_lock(store.directory(run_id) / ".run.lock"):
+        with pytest.raises(RobustnessStorageError, match="writer lock"):
+            run_items(store, run_id, items()[:1], calculation)
+    lock_path = store.directory(run_id) / "cases" / f"{case_id}.lock"
+    with _exclusive_lock(lock_path):
+        with pytest.raises(RobustnessStorageError, match="writer lock"):
+            store.write_case(run_id, case_id, finished)
+    import threading
+
+    errors = []
+    with _exclusive_lock(store.directory(run_id) / ".run.lock"):
+
+        def competing_write():
+            try:
+                store.write_case(run_id, case_id, finished)
+            except RobustnessStorageError as exc:
+                errors.append(str(exc))
+
+        competitor = threading.Thread(target=competing_write)
+        competitor.start()
+        competitor.join()
+    assert len(errors) == 1 and "writer lock" in errors[0]
+
+
+def test_checkpoint_scenario_and_protocol_change_case_identity(tmp_path):
+    from sirfex.robustness.store import controller_identity
+
+    store = RobustnessStore(tmp_path)
+    first = store.open_run(protocol())
+    spec, anchor = items()[0]
+    ppo_one = {
+        "id": "ppo",
+        "config": {"checkpoint": {"sha256": "a" * 64, "path": "machine-one.zip"}},
+    }
+    ppo_two = {
+        "id": "ppo",
+        "config": {"checkpoint": {"sha256": "b" * 64, "path": "machine-one.zip"}},
+    }
+    moved = {"id": "ppo", "config": {"checkpoint": {"sha256": "a" * 64, "path": "machine-two.zip"}}}
+    assert controller_identity(ppo_one) != controller_identity(ppo_two)
+    assert controller_identity(ppo_one) == controller_identity(moved)
+    assert store.case_id(first, ppo_one, anchor) != store.case_id(first, ppo_two, anchor)
+    other_anchor = Scenario(
+        "pump", parameters={**anchor.parameters, "demand": 0.6}, seed=anchor.seed
+    )
+    assert store.case_id(first, spec, anchor) != store.case_id(first, spec, other_anchor)
+    changed = store.open_run({**protocol(), "grid": [0, 0.2]})
+    assert store.case_id(first, spec, anchor) != store.case_id(changed, spec, anchor)

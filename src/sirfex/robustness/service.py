@@ -17,6 +17,7 @@ from sirfex.robustness.disturbance import (
     validate_direction,
     validate_grid,
 )
+from sirfex.robustness.evidence import archive_selected_findings
 from sirfex.robustness.identity import scenario_identity, semantic_hash
 from sirfex.robustness.margins import evaluate_margin
 from sirfex.robustness.report import build_report, render_markdown
@@ -173,12 +174,17 @@ def _finish(
                 if spec["id"] == "ppo"
             ],
             "deterministic_seeds": [scenario.seed for scenario in scenarios],
-            "replay_status": (
-                "deterministic_repeat_match"
-                if any(r["findings"]["class_b"] for r in differential)
-                else "not_run"
-            ),
+            "replay_status": "see_per_finding_durable_evidence" if differential else "not_run",
         },
+        case_status_counts=(
+            {
+                key: value
+                for key, value in calibration["counts"].items()
+                if key not in ("reused_completed", "semantic_results_sha256")
+            }
+            if "counts" in calibration
+            else None
+        ),
         warnings=["Software calibration only; thresholds are provisional."],
     )
     _atomic_json(directory / "report.json", report)
@@ -187,7 +193,8 @@ def _finish(
     if calibration.get("measured_episodes_this_invocation") == 0 and calibration_path.exists():
         original = json.loads(calibration_path.read_text(encoding="utf-8"))
         calibration = {
-            **original,
+            **calibration,
+            "first_measurement": original.get("first_measurement", original),
             "last_resume_reused_completed": calibration.get("counts", {}).get(
                 "reused_completed", 0
             ),
@@ -229,7 +236,9 @@ def run_tolerance(config: dict, output_dir: Path | str) -> dict:
     store = RobustnessStore(output_dir)
     run_id = store.open_run(protocol)
     prepared = {
-        (scenario_identity(anchor), direction): prepare_grid(anchor, direction, grid)
+        (scenario_identity(anchor), direction): prepare_grid(
+            anchor, direction, grid, protocol_sha256=semantic_hash(protocol)
+        )
         for anchor in anchors
         for direction in directions
     }
@@ -252,6 +261,7 @@ def run_tolerance(config: dict, output_dir: Path | str) -> dict:
                 session.evaluate,
                 prepared=prepared[(scenario_identity(anchor), direction)],
                 refine_feasibility=True,
+                protocol_sha256=semantic_hash(protocol),
             ).to_dict()
             for direction in directions
         ]
@@ -384,6 +394,18 @@ def run_differential(config: dict, output_dir: Path | str) -> dict:
             if result.get("result_sha256") != semantic_hash(result.get("result")):
                 raise ValueError("Stored differential evidence hash changed")
             result = result["result"]
+            if "durable_headline_selection" not in result:
+                result = archive_selected_findings(
+                    result, controllers, evaluate, store.directory(run_id), semantic_hash(protocol)
+                )
+                _atomic_json(
+                    path,
+                    {
+                        "protocol_sha256": semantic_hash(protocol),
+                        "result_sha256": semantic_hash(result),
+                        "result": result,
+                    },
+                )
         else:
             result = sample_differentials(
                 space,
@@ -395,6 +417,9 @@ def run_differential(config: dict, output_dir: Path | str) -> dict:
                 scenario_seed_start=config["scenario_seed_start"],
                 near_miss_delta=config["near_miss_delta"],
                 excluded_scenarios=excluded,
+            )
+            result = archive_selected_findings(
+                result, controllers, evaluate, store.directory(run_id), semantic_hash(protocol)
             )
             _atomic_json(
                 path,

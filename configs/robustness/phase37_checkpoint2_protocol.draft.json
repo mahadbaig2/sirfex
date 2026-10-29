@@ -1,0 +1,41 @@
+{
+  "status": "DRAFT — NOT FROZEN — NOT AUTHORIZED FOR EXECUTION",
+  "schema_version": "pump-robustness-checkpoint2-draft:1",
+  "executable": false,
+  "environment_id": "pump",
+  "environment_version": "sirfex-pump:1",
+  "scope": "development_only",
+  "controller_inventory": [
+    {"group": "phase32_start", "seed": 3, "source_run": "20261025T205339_64b622c146", "source_key": "ppo_3_10240", "sha256": "859c9244e83fce5cf31600d9f7fae0038e053fc8b3dc1663218ed616257e70f9", "file_available": true, "sha256_verified": true, "loadability_tested": true},
+    {"group": "phase32_start", "seed": 17, "source_run": "20261025T205339_64b622c146", "source_key": "ppo_17_10240", "sha256": "05b5fe45c1f46b7eb28699bd4a1dc693e9c11d56fba3376211c5985168a9d333", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase32_start", "seed": 41, "source_run": "20261025T205339_64b622c146", "source_key": "ppo_41_25600", "sha256": "48fe432e373aef9f64e55e0092f9b09ba95ef407bcc6d81f76a1f61432fd83f0", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase35_screen", "seed": 3, "arm": "normal", "source_run": "20261027T143749_d88d2dd37f", "source_key": "screen_3_normal", "sha256": "5d11abfd79be87e11b9576046fd6e7d279ef8ee824f4559c6eebaa1030d238d4", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase35_screen", "seed": 3, "arm": "expanded_5", "source_run": "20261027T143749_d88d2dd37f", "source_key": "screen_3_expanded_5", "sha256": "1dd1302b6e91d4227246d7eb151ec34676bf2ff2d041db78b3757f1382217557", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase35_screen", "seed": 3, "arm": "expanded_10", "source_run": "20261027T143749_d88d2dd37f", "source_key": "screen_3_expanded_10", "sha256": "f5db7f7bf937568d23a927b5ac671d270694ea291c364137b65967585167dbcf", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase35_screen", "seed": 17, "arm": "normal", "source_run": "20261027T143749_d88d2dd37f", "source_key": "screen_17_normal", "sha256": "6dd798247ad77ee718773185b542a6c91b3a43cd9e665983c512c27d2712a133", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase35_screen", "seed": 17, "arm": "expanded_5", "source_run": "20261027T143749_d88d2dd37f", "source_key": "screen_17_expanded_5", "sha256": "4fa3335b76a97569b298abb1de2f939e788320181f2eafe58b09d02dcb8cbf65", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase35_screen", "seed": 17, "arm": "expanded_10", "source_run": "20261027T143749_d88d2dd37f", "source_key": "screen_17_expanded_10", "sha256": "de4c2ea70f38b7bb25e20d1472329ea47ea9a97342b5598f005ff14664aba019", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase33_secondary", "seed": 3, "arm": "normal", "source_run": "20261026T222151_846c8296a2", "source_key": "seed_3_normal", "sha256": "cca14de90a83fa3205efb586e9c34f0b461edf12afb8cfa90e74d05659f75f27", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase33_secondary", "seed": 3, "arm": "robust_30", "source_run": "20261026T222151_846c8296a2", "source_key": "seed_3_robust", "sha256": "4b2dddc8fd2aa76b49fdffa40d3c7a6848d5a49b0a6b2949d82b53e484a0b2d1", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase33_secondary", "seed": 17, "arm": "normal", "source_run": "20261026T222151_846c8296a2", "source_key": "seed_17_normal", "sha256": "e0889617537e2278872303626f176cfad42dc4fbc4f1b6907d7c0764f6e89f54", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase33_secondary", "seed": 17, "arm": "robust_30", "source_run": "20261026T222151_846c8296a2", "source_key": "seed_17_robust", "sha256": "21f9ae78d4176d3a2817b22d641009a6a3204734c5d5a407b9b20ca59500477c", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase33_secondary", "seed": 41, "arm": "normal", "source_run": "20261026T222151_846c8296a2", "source_key": "seed_41_normal", "sha256": "d46f64ac798d83ff894eec784e3995e99d7ff80e795f860b2ca0eb4c07230fa8", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "phase33_secondary", "seed": 41, "arm": "robust_30", "source_run": "20261026T222151_846c8296a2", "source_key": "seed_41_robust", "sha256": "a04b792f77686627775bf5d421b7e4b2b92b70ed66c7e1675f7460644bd3c54f", "file_available": true, "sha256_verified": true, "loadability_tested": false},
+    {"group": "reference", "controller_id": "pump-rule", "checkpoint_required": false},
+    {"group": "reference", "controller_id": "pump-analytical", "checkpoint_required": false}
+  ],
+  "development_scenarios": {
+    "nominal_source": "Phase 3.2 development validation partition only",
+    "stress_source": "Phase 3.4 screening/development stress partition only",
+    "frozen_identity_export": "PENDING — prepare a safe development-only manifest without loading final partitions",
+    "maximum_anchors_proposed": 12
+  },
+  "disturbance": {"delta_max_proposed": 0.60, "grid_step_proposed": 0.025, "points": 25, "directions": 16, "parameter_bound_censoring": true, "grid_threshold_is_global_minimum": false},
+  "differential": {
+    "class_a_margin_gap_proposed": 0.05, "units": "normalized_tank_level_fraction", "proposal_count_per_pair_proposed": 200, "top_per_class": 5, "search_space_source": "configs/search/pump_avoidable.json", "search_seed_proposed": 3701, "scenario_seed_start_proposed": 37000000, "feasibility_filter": true, "exclude_development_duplicates": true, "exclude_final_by_content": false, "pairs": ["phase35_same_seed_normal_vs_expanded_5", "phase35_same_seed_normal_vs_expanded_10", "phase33_same_seed_normal_vs_robust_30"]},
+  "analysis": {"primary": "Phase 3.5 screening normal versus 5%/10% arms, equal-budget seed 3 and 17 comparisons", "secondary": "Phase 3.3 normal versus 30% arms, seeds 3/17/41, 25600 interactions", "pool_as_single_dose_series": false},
+  "execution_limits_proposed": {"maximum_episodes": 81600, "maximum_transitions": 16320000, "wall_hours": 8, "per_ppo_controller_minutes": 30, "artifact_storage_gb": 2, "full_trajectories": "selected_headline_findings_only", "resume": "immutable_completed_cases", "checkpoint_verification": "SHA256_before_load", "progress": "per_case_atomic_status"},
+  "authorization_gate": "human_review_of_frozen_protocol_and_explicit_checkpoint_2_approval_required",
+  "interpretation": ["development-only evidence", "simplified simulator", "observed grid thresholds are not global minima", "margins depend on declared constraints", "zero observed violations are not a safety guarantee", "descriptive controller rankings", "related PPO checkpoints are not independent experimental units", "null and negative findings remain reportable"],
+  "unresolved": ["safe development-only scenario identity export", "loadability of all candidate checkpoints", "controller set and exclusion policy", "grid domain and intensity decision", "search seeds and proposal budget", "wall/storage caps", "protocol freeze commit"]
+}

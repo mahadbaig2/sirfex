@@ -58,6 +58,16 @@ def test_avoidable_failure_requires_viability_and_repeated_evidence():
         classify_pair(
             x, y, finite_horizon_viable=True, replay_statuses=("exact_match", "exact_match")
         ).classification
+        == "class_b_unverified"
+    )
+    assert (
+        classify_pair(
+            x,
+            y,
+            finite_horizon_viable=True,
+            replay_statuses=("exact_match", "exact_match"),
+            independent_replay_verified=True,
+        ).classification
         == "class_b"
     )
     assert (
@@ -104,6 +114,7 @@ def test_class_b_ranks_above_larger_class_a_gap_and_ties_are_deterministic():
         margin("y", 0.05, scenario_id="b"),
         finite_horizon_viable=True,
         replay_statuses=("exact_match", "exact_match"),
+        independent_replay_verified=True,
     )
     assert class_b.signed_margin_gap < class_a.signed_margin_gap
     assert [r.classification for r in rank_findings([class_a, class_b])] == ["class_b", "class_a"]
@@ -146,7 +157,7 @@ def _evaluator(controller_id, scenario):
         env.close()
 
 
-def test_tiny_seeded_search_confirms_replayed_class_b_and_deduplicates():
+def test_tiny_seeded_search_keeps_in_memory_class_b_unverified_and_deduplicates():
     first = sample_differentials(
         _space(),
         "x",
@@ -172,8 +183,12 @@ def test_tiny_seeded_search_confirms_replayed_class_b_and_deduplicates():
         "excluded_overlap": 1,
         "excluded_feasibility": 0,
     }
-    assert len(first["findings"]["class_b"]) == 1
-    assert first["findings"]["class_b"][0]["replay_statuses"] == ["exact_match", "exact_match"]
+    assert first["findings"]["class_b"] == []
+    assert len(first["findings"]["class_b_unverified"]) == 1
+    assert first["findings"]["class_b_unverified"][0]["replay_statuses"] == [
+        "exact_match",
+        "exact_match",
+    ]
 
 
 def test_exclusion_uses_physical_configuration_not_only_seed():

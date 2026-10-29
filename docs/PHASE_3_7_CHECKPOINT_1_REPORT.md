@@ -15,7 +15,7 @@ The pump robustness package adds typed signed margins over recorded `EpisodeResu
 | Verification | `tests/unit/test_robustness_margins.py`, `test_robustness_disturbance.py`, `test_robustness_differential.py`, `test_robustness_store_report.py` |
 | Documentation | `docs/PHASE_3_7_DRAFT_3_IMPLEMENTATION.md`, `ROBUSTNESS_MARGIN_SPECIFICATION.md`, `DISTURBANCE_TOLERANCE_PROTOCOL.md`, `DIFFERENTIAL_CONTROLLER_TESTING.md`, `ROBUSTNESS_REPRODUCIBILITY.md`, this report |
 
-All listed changes are local and uncommitted. Calibration outputs are ignored local artifacts.
+Publication correction (Checkpoint 1.1): the Checkpoint 1 implementation was subsequently committed and pushed as [`8e1c6298ab3899436580a925fa2cc7b1c4b0880b`](https://github.com/mahadbaig2/sirfex/commit/8e1c6298ab3899436580a925fa2cc7b1c4b0880b). The tests and calibration below ran locally; this does not imply GitHub independently reran them. Calibration outputs remained ignored local artifacts. The [Checkpoint 1.1 report](PHASE_3_7_CHECKPOINT_1_1_REPORT.md) documents later hardening and supersedes the original evidence-integrity limitations.
 
 ## C. Mathematical verification
 
@@ -46,6 +46,8 @@ In the PPO run, controller-only measured episode times were 0.538 s / 7 episodes
 The protocol and each completed controller/anchor case carry canonical semantic SHA-256 identity. Checkpoint paths are local locators; PPO identity uses its verified SHA-256. Atomic case and status writes preserve completed work after interruption. A forced interruption test resumes to the same ordered semantic-result hash as an uninterrupted run; a changed protocol, duplicate case or tampered case is rejected. An actual calibration resume reused two cases and retained semantic result hash `63bf14ad…` and report hash `587b13e4…`; the original measured calibration timing was preserved. JSON is authoritative, Markdown is deterministic and regenerated only after report-hash verification. Seeds, source hashes, Git HEAD, controller and scenario identities and replay statuses are recorded where applicable. Class B uses existing episode replay comparison; no Class B is claimed without matching repeats.
 
 ## H. Known limitations
+
+Checkpoint 1.1 clarification: the original Class B repeat check was in-memory and did not itself archive full paired trajectories or independently regenerate them. The original store also did not enforce completed-case immutability at its lowest write method. Both limitations are addressed and verified separately in the Checkpoint 1.1 report; they were not established by the original 181-test run.
 
 - Only the simplified pump simulator has a signed-margin and disturbance implementation; no claim covers other environments or real hardware.
 - `delta_first` and infeasibility thresholds are first **observed grid** values; censoring, nonmonotonic outcomes and unknown feasibility remain explicit. Bisection refines only a restricted physical feasibility bracket, never controller failure.

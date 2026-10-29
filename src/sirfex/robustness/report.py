@@ -32,6 +32,7 @@ def build_report(
     differential_results: list[dict],
     reproducibility: dict,
     warnings: list[str] | None = None,
+    case_status_counts: dict | None = None,
 ) -> dict[str, Any]:
     if profile not in ("synthetic", "software_calibration_only"):
         raise ValueError("Checkpoint 1 reports only synthetic or software calibration evidence")
@@ -68,6 +69,7 @@ def build_report(
             "observed_violations": sum(item["constraint_violated"] for item in valid_margins),
         },
         "disturbance_cells": disturbance_cells,
+        "case_status_counts": case_status_counts,
         "disturbance_coverage": {
             "cells": len(disturbance_cells),
             "requested_grid_points": sum(c["requested_grid_points"] for c in disturbance_cells),
@@ -88,6 +90,9 @@ def build_report(
             "searches": len(differential_results),
             "class_a": sum(len(r["findings"]["class_a"]) for r in differential_results),
             "class_b": sum(len(r["findings"]["class_b"]) for r in differential_results),
+            "class_b_unverified": sum(
+                len(r["findings"]["class_b_unverified"]) for r in differential_results
+            ),
         },
         "reproducibility": reproducibility,
         "warnings": list(warnings or []),
@@ -135,7 +140,9 @@ def render_markdown(record: dict) -> str:
     ]
     for controller in record["controllers"]:
         lines.append(
-            f"- `{controller['id']}` — checkpoint `{controller.get('checkpoint_sha256') or 'none'}`"
+            f"- `{controller['id']}` — identity "
+            f"`{controller.get('identity_sha256') or 'unavailable'}`; "
+            f"checkpoint `{controller.get('checkpoint_sha256') or 'none'}`"
         )
     lines += [
         "",
@@ -174,6 +181,7 @@ def render_markdown(record: dict) -> str:
         "",
         "## Disturbance tolerance",
         "",
+        f"Case status counts: `{record.get('case_status_counts') or 'not_applicable'}`.",
         f"Cells: {coverage['cells']}; evaluated grid points: "
         f"{coverage['evaluated_grid_points']}/{coverage['requested_grid_points']}.",
         "",
@@ -194,18 +202,31 @@ def render_markdown(record: dict) -> str:
         "## Differential findings",
         "",
         f"Class B actual avoidable failures: {differential['class_b']}; "
-        f"Class A near-misses: {differential['class_a']}.",
+        f"Class A near-misses: {differential['class_a']}; "
+        f"unverified B candidates: {differential['class_b_unverified']}.",
     ]
-    if differential["class_b"] + differential["class_a"] == 0:
+    if sum(differential[key] for key in ("class_b", "class_a", "class_b_unverified")) == 0:
         lines.append("No qualifying differential finding was observed in this bounded run.")
     for search in record["differential_results"]:
-        for classification in ("class_b", "class_a"):
+        for classification in ("class_b", "class_a", "class_b_unverified"):
             for finding in search["findings"][classification]:
+                durable = finding.get("durable_evidence") or {}
                 lines.append(
                     f"- `{classification}` `{finding['scenario_id']}`: "
                     f"post-initial margin gap {_number(finding['signed_margin_gap'])}; "
-                    f"replay `{','.join(finding['replay_statuses']) or 'not_run'}`."
+                    f"in-memory repeat `{','.join(finding['replay_statuses']) or 'not_run'}`; "
+                    f"durable verification `{durable.get('verification_status', 'not_archived')}`."
                 )
+                for role, saved in durable.get("experiments", {}).items():
+                    lines.append(
+                        f"  - {role}: experiment `{saved['experiment_id']}` "
+                        f"(episode SHA-256 `{saved['episode_sha256']}`)."
+                    )
+                if durable:
+                    lines.append(
+                        f"  - Independent regeneration: "
+                        f"`{durable['independent_regeneration_statuses']}`."
+                    )
     lines += [
         "",
         "## Reproducibility",

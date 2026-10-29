@@ -49,6 +49,7 @@ def classify_pair(
     finite_horizon_viable: bool | None,
     near_miss_delta: float = 0.05,
     replay_statuses: tuple[str, str] | None = None,
+    independent_replay_verified: bool = False,
 ) -> DifferentialFinding:
     if (
         not math.isfinite(near_miss_delta)
@@ -62,13 +63,17 @@ def classify_pair(
         raise ValueError("Differential comparison requires matching complete pump evidence")
     gap = y.post_initial_minimum_margin - x.post_initial_minimum_margin
     replay = tuple(replay_statuses or ())
-    confirmed = bool(replay) and all(item in ("exact_match", "tolerance_match") for item in replay)
+    confirmed = (
+        independent_replay_verified
+        and bool(replay)
+        and all(item in ("exact_match", "tolerance_match") for item in replay)
+    )
     if x.constraint_violated and not y.constraint_violated and finite_horizon_viable is True:
         classification = "class_b" if confirmed else "class_b_unverified"
         reason = (
-            "X violated while Y survived a viable scenario; both deterministic repeats matched"
+            "X violated while Y survived; persisted repeats and independent replay verified"
             if confirmed
-            else "X violated while Y survived, but replay is not yet verified"
+            else "X violated while Y survived; independent durable replay is not yet verified"
         )
     elif (
         not x.constraint_violated
@@ -226,7 +231,7 @@ def sample_differentials(
             ],
             "class_b_unverified": [
                 item.to_dict() for item in ranked if item.classification == "class_b_unverified"
-            ],
+            ][:top_per_class],
         },
         "records": rows,
     }
