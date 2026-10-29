@@ -451,6 +451,7 @@ class StudyEngine:
             self.store.directory / pair["id"],
             self.plan["protocol_sha256"],
             label_specs={pair["x"]: self.specs[pair["x"]], pair["y"]: self.specs[pair["y"]]},
+            storage_guard=lambda reserve: self.store.check_budget(reserve_bytes=reserve),
         )
         self.store.check_budget()
         return {"pair_id": pair["id"], "result": archived}

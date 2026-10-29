@@ -11,3 +11,11 @@ Checkpoint 1 was pushed as commit `8e1c6298ab3899436580a925fa2cc7b1c4b0880b`. It
 Prepared disturbance grids now bind anchor, direction, deltas, exact transformed scenarios, environment and analyzer versions, protocol SHA-256, feasibility classifications and viability. Revalidation uses an exact scenario-keyed analyzer cache so the same physical analysis is not repeated across controllers. A semantic hash detects accidental alteration, while recomputing expected preparation prevents a caller from legitimizing fabricated metadata by rehashing it.
 
 The Phase 3.4/3.5 sealed final partitions are outside this workflow. Use only synthetic or explicitly permitted development inputs. Inspect `docs/PHASE_3_7_CHECKPOINT_1_1_REPORT.md` for the hardening tests, revised CPU calibration, and remaining scientific protocol decisions.
+
+## Phase 3.7 Checkpoint 2A study records
+
+The Phase 3.7 candidate is unfrozen and non-executable. A future authorized study is keyed by the frozen protocol, development manifest, ordered work plan, controller checkpoint identities, scenario identities and deterministic seeds. Retain the exact protocol file and Git commit, manifest, checkpoint files and metadata, search-space file, and complete local run directory. `plan.json`, `prepared_grids.json`, `proposals_*.json`, `items/*.json`, archived experiments, budget ledger and reports together constitute the run record. A changed plan or case hash fails verification.
+
+Completed work items are never re-evaluated on resume. Incomplete items require explicit `resume`; deterministic proposal sequences and prepared-grid identities must match. Archived Class B episodes contain originals and repeats for both controllers and independent replay results. A report's semantic SHA-256 remains stable across regeneration from identical verified evidence; missing or altered selected evidence fails closed. Incomplete coverage is labeled `partial_incomplete`.
+
+Use `sirfex robustness study --mode report --protocol <protocol.json> --manifest <development-manifest.json> --output-dir <run-root>` to regenerate from an existing run. The bounded synthetic pilot is engineering evidence only, not a controller robustness result. See [study execution](ROBUSTNESS_STUDY_EXECUTION.md) and the [Checkpoint 2A completion report](PHASE_3_7_CHECKPOINT_2A_COMPLETION_REPORT.md).

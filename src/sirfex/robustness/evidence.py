@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -82,6 +84,7 @@ def _save_episode(
     scenario: Scenario,
     role: str,
     result: EpisodeResult,
+    storage_guard: Callable[[int], None] | None = None,
 ) -> dict:
     scenario_id = scenario_identity(scenario)
     if scenario_identity(result.scenario) != scenario_id or result.controller_id != spec["id"]:
@@ -121,6 +124,22 @@ def _save_episode(
         outcome=result.outcome,
         artifact_refs={"episode_sha256": digest, "protocol_sha256": protocol_sha256},
     )
+    if storage_guard is not None and not store._experiment_dir(experiment_id).exists():
+        value = result.to_dict()
+        trajectory = value.pop("trace", [])
+        estimated_bytes = sum(
+            len(payload.encode("utf-8"))
+            for payload in (
+                json.dumps(scenario.to_dict(), indent=2),
+                json.dumps(value, indent=2, allow_nan=False),
+                "".join(
+                    json.dumps(step, allow_nan=False, separators=(",", ":")) + "\n"
+                    for step in trajectory
+                ),
+                json.dumps(manifest.to_dict(), indent=2, allow_nan=False),
+            )
+        )
+        storage_guard(estimated_bytes + 4096)
     try:
         store.save(manifest, scenario, result)
     except StorageError as exc:
@@ -145,6 +164,7 @@ def archive_selected_findings(
     protocol_sha256: str,
     *,
     label_specs: dict[str, dict] | None = None,
+    storage_guard: Callable[[int], None] | None = None,
 ) -> dict:
     """Archive only ranked headlines; downgrade B unless repeats and replay verify."""
     store = ExperimentStore(directory / "experiments")
@@ -173,7 +193,13 @@ def archive_selected_findings(
                     episodes[f"{label}_{role}"] = (
                         episode,
                         _save_episode(
-                            store, protocol_sha256, spec, scenario, f"{label}_{role}", episode
+                            store,
+                            protocol_sha256,
+                            spec,
+                            scenario,
+                            f"{label}_{role}",
+                            episode,
+                            storage_guard=storage_guard,
                         ),
                     )
             repeat_statuses = {
