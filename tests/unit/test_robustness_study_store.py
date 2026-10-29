@@ -84,3 +84,18 @@ def test_cumulative_wall_controller_and_storage_budgets(tmp_path):
     path.write_text(json.dumps(value))
     with pytest.raises(RobustnessStorageError, match="hash changed"):
         store.budget()
+
+
+def test_elapsed_wall_budget_is_durable_before_rejection(tmp_path):
+    plan, _ = fixture_plan(wall=2)
+    store = StudyStore(tmp_path, plan)
+    store.open()
+    ticks = iter((10.0, 12.5))
+    budget = InvocationBudget(store, clock=lambda: next(ticks))
+    with pytest.raises(StudyBudgetExhausted, match="wall_budget"):
+        budget.check()
+    assert store.budget()["cumulative_wall_seconds"] == 2.5
+    reopened = StudyStore(tmp_path, plan)
+    reopened.open()
+    with pytest.raises(StudyBudgetExhausted, match="wall_budget"):
+        reopened.check_budget()

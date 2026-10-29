@@ -206,6 +206,9 @@ class InvocationBudget:
             self.store.budget()["cumulative_wall_seconds"] + pending
             >= self.store.plan["resource_limits"]["wall_seconds_cap"]
         ):
+            # Persist elapsed time before rejecting work so a restart cannot reset it.
+            self.store.charge(pending, {})
+            self.charged_until = now
             raise StudyBudgetExhausted("study_wall_budget_exhausted")
         self.store.check_budget(controllers, reserve_bytes=reserve_bytes)
 
