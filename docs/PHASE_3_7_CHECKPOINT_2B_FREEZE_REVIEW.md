@@ -25,7 +25,7 @@ The **proposed future frozen bytes** are defined exactly as follows, without cre
 
 ## C. Fixed controller and scenario inventory
 
-The source-run IDs are `20261025T205339_64b622c146` (Phase 3.2 start), `20261027T143749_d88d2dd37f` (Phase 3.5 screen), and `20261026T222151_846c8296a2` (Phase 3.3 secondary). Every PPO row below uses the `ppo` evaluation adapter with deterministic inference; the source artifact is `artifacts/training/<source-run>/checkpoints/<ID>.zip`. Seed and historical group are fixed by the candidate and source metadata. The Phase 3.5 rows are screening policies, not evidence of an eligible curriculum.
+The source-run IDs are `20261025T205339_64b622c146` (Phase 3.2 start), `20261027T143749_d88d2dd37f` (Phase 3.5 screen), and `20261026T222151_846c8296a2` (Phase 3.3 secondary). Every PPO row below uses the `ppo` evaluation adapter with deterministic inference; the source artifact is `artifacts/training/<source-run>/checkpoints/<ID>.zip`. Seed and historical group are fixed by the candidate; source-run and checkpoint identities match their metadata. The Phase 3.5 rows are screening policies, not evidence of an eligible curriculum.
 
 | Historical group | Seed | Controller ID | Checkpoint SHA-256 |
 |---|---:|---|---|
@@ -73,4 +73,6 @@ The [execution plan](PHASE_3_7_CHECKPOINT_2B_EXECUTION_PLAN.md) supplies exact C
 
 ## Final publication note
 
-To be completed after the Stage 1 documentation commit, push, draft PR creation and latest branch CI conclusion. This note reports repository state; it cannot grant scientific authorization.
+Stage 1 review commits: `a7d837e` (initial package), `d4f0a67` (corrected future frozen semantic/raw and work-plan hashes), followed by the documentation note commit containing this paragraph. Both named commits were pushed to `origin/phase-3.7-checkpoint-2a-completion` without force or history rewrite. [Draft PR #2](https://github.com/mahadbaig2/sirfex/pull/2) is open against `main`; PR #1 remains merged. The branch HEAD after this paragraph is committed is the exact Git object shown by `git rev-parse HEAD` and the PR head; a commit cannot contain its own hash. The [PR checks page](https://github.com/mahadbaig2/sirfex/pull/2/checks) identifies the CI run for that final head.
+
+The latest **concluded** branch workflow when this note was written was [run 40990819275](https://github.com/mahadbaig2/sirfex/actions/runs/40990819275) for full commit `d4f0a677131bfb2336c3fa5d7343789482e34191`: both `test` and `training` succeeded. The final note commit triggers a fresh PR workflow, whose result must be checked separately and cannot be inferred from the previous run. There are no outstanding local test, lint, format or dry-run failures. CI coverage and final head are reported in the Stage 1 handoff after the final push. This note records verification only; it does not grant scientific authorization.
