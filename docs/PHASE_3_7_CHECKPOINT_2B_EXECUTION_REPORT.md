@@ -1,6 +1,6 @@
 # SIRFEX Phase 3.7 Checkpoint 2B execution report
 
-**Operational status at publication:** scientific execution in progress. This is an execution checkpoint, not a scientific results report. Completion, coverage, resource use, evidence integrity and conclusions will be updated from the durable run artifacts after the process exits.
+**Final execution status:** `checkpoint_2b_partial_budget_exhausted`. This is a verified partial operational report, not a completed scientific controller comparison. The first PPO controller reached its approved evaluation-time cap before the remaining cohort could run.
 
 ## Approved identity and authorization
 
@@ -22,13 +22,15 @@ The frozen file differs from the candidate only in approved `status`, `executabl
 
 ## CI and local validation
 
-The approved review commit passed both GitHub Actions jobs in [run 40991020538](https://github.com/mahadbaig2/sirfex/actions/runs/40991020538). The frozen protocol commit passed both `test` and `training` in [run 42471643899](https://github.com/mahadbaig2/sirfex/actions/runs/42471643899). Locally, 243 tests passed with four dependency warnings; Ruff lint, Ruff format and the frozen read-only dry-run passed. PR #2 remains a draft against `main`.
+The approved review commit passed both GitHub Actions jobs in [run 40991020538](https://github.com/mahadbaig2/sirfex/actions/runs/40991020538). The frozen protocol commit passed both `test` and `training` in [run 42471643899](https://github.com/mahadbaig2/sirfex/actions/runs/42471643899). The initial execution-checkpoint documentation commit passed both jobs in [run 42472125032](https://github.com/mahadbaig2/sirfex/actions/runs/42472125032). Locally, 243 tests passed with four dependency warnings; Ruff lint, Ruff format and the frozen read-only dry-run passed. PR #2 remains a draft against `main`. The final partial-report publication commit requires its own CI verification.
 
 ## Execution host and timeline
 
 The local host is Windows 11, Intel Core i5-8350U (four cores, eight logical processors), with 17,015,459,840 bytes of physical RAM. Python is 3.12.10; installed versions include SIRFEX 0.1.0, NumPy 2.5.4, stable-baselines3 2.9.0, PyTorch 2.14.1 and Gymnasium 1.4.0. Before launch, the C: volume had approximately 16.58 GB free, exceeding the approved 2-GiB artifact cap with temporary headroom. Python-traced memory is not a measure of total native memory.
 
-- `2026-11-08 10:31:55 UTC`: a separate hidden local launcher started the guarded `scientific-execute` command after authorization and identity checks. The launcher PID was 18744 at start; its live state must be read from the local status file rather than assumed from this historical PID.
+- `2026-11-08 10:30:13 UTC`: the separate local authorization record was created and validated. This is the record creation time, not an asserted timestamp for the original conversation approval.
+- `2026-11-08 10:31:55 UTC`: a separate hidden local launcher started the guarded `scientific-execute` command after authorization and identity checks. Its historical launcher PID was 18744.
+- `2026-11-08 11:05:21 UTC`: the launcher exited with code 0 after the study runner returned `controller_budget_exhausted:ppo_3_10240`. Exit code 0 denotes a handled budget stop, not a complete study. Elapsed launcher time was approximately 33 minutes 26 seconds. The study invocation journal is closed, with no recovery events.
 - The launcher writes local stdout/stderr and its exit code to ignored files in `artifacts/robustness/phase37_checkpoint2b/`. The durable study directory is `artifacts/robustness/phase37_checkpoint2b/run/study_ead9af1ef00824016e6d/`.
 - The study's `plan.json`, `invocation.json`, `budget.json`, prepared grids, proposals, individual work items and evidence archives are retained locally. Completed work items are immutable. A stop or restart must preserve the same inputs and cumulative budget.
 
@@ -36,6 +38,26 @@ The local host is Windows 11, Intel Core i5-8350U (four cores, eight logical pro
 
 The approved caps are eight cumulative wall hours, 1,800 evaluation seconds per PPO and 2 GiB of generated artifacts; the work plan permits at most 88,168 episodes and 17,633,600 transitions. A cap stop is `partial_incomplete` and cannot be reported as a completed comparison. The scientific report must regenerate from verified stored evidence, retain all planned coverage and missing work, distinguish viable, infeasible, unknown, invalid and censored cases, and verify any selected Class B headline by independent replay. The four Phase 3.5 directed pairs are primary, the three Phase 3.3 pairs secondary, and six starting-PPO/classical pairs descriptive. The study uses three correlated training seeds and a simplified pump simulator; no independent-sample significance or real-world safety claim is justified.
 
-## Pending final verification
+## Actual coverage and resource accounting
 
-After the process exits, record the actual completion status, planned versus completed work, episodes and transitions, wall/controller/storage usage, any cap or crash accounting, evidence and replay checks, regenerated JSON/Markdown hashes, deviations, and conclusions. Publish a separate scientific results report only if every mandatory work item and report integrity gate passes. If the run is incomplete, publish an explicitly labeled partial-run report. Preserve all local evidence and do not merge PR #2 automatically.
+| Stage | Planned | Completed | Censored | Pending |
+|---|---:|---:|---:|---:|
+| Fixed development stress | 408 | 24 | 0 | 384 |
+| Disturbance grid cells | 3,264 | 119 | 27 | 3,118 |
+| Differential proposals | 1,400 | 0 | 0 | 1,400 |
+| Durable pair archives | 7 | 0 | 0 | 7 |
+| Final report work item | 1 | 0 | 0 | 1 |
+
+The completed work comprises 24 fixed-stress episodes and 3,650 evaluated grid episodes (25 for each of 146 cells), or 3,674 controller episodes. The fixed-stress records retain 3,787 actual transitions. The compact grid records do not retain episode lengths, so the **exact total transition count cannot be reconstructed** from this evidence; the approved 17,633,600-transition figure remains a plan ceiling, not actual use. Ten of 12 nominal anchors have a grid-derived result for the first controller. No other controller was evaluated.
+
+The cumulative budget ledger records 1,998.938 wall seconds and 1,833.832 evaluation seconds for `ppo_3_10240`; no other controller has charged evaluation time. The 1,800-second PPO limit was crossed within the last work item and enforced before another item was scheduled. The recorded controller usage is **33.832 seconds above the nominal cap**, a work-boundary overshoot that must not be described as strict cap compliance. No budget reset or extension occurred. The local run directory occupies 3,466,051 bytes after partial report generation, well below the 2-GiB storage cap.
+
+## Evidence and report verification
+
+The durable store verified the plan, work-item semantic hashes, stage coverage and budget ledger. All 170 recorded work items are completed or censored; none is failed, invalid or left running. The independently regenerated report is `partial_incomplete` with semantic SHA-256 `ba2c2cbe91d3acba7fb046015a4efb8abaf7049326b0132194b11d14156b5a68`. Its raw JSON SHA-256 is `cf8be4b4f050aab80e86aebd4fe428165b1a7334705d8f91ec48fdb005198ccc`; its raw Markdown SHA-256 is `2c4d2e60deeb2138372ec5b60a1e5ab7e527d95457c7b52e06bba962894c8fcf`. Repeating the supported `--mode report` command succeeded with the same report semantic hash and existing stored files. A local integrity manifest hashes 183 operator and run files and has semantic SHA-256 `45fe0ccf74b3efe4262a62148f9656acb9aec0d5a86705a1b5817bb75a03fe32`. It remains under ignored `artifacts/robustness/phase37_checkpoint2b/integrity_manifest.json`; no private or large evidence is committed.
+
+No differential proposal or archive ran, so there are no selected Class A or independently replayed Class B findings. All seven planned primary/secondary matched comparisons are incomplete. The [partial-run report](PHASE_3_7_CHECKPOINT_2B_PARTIAL_RUN_REPORT.md) describes the limited single-controller observations without making a controller-comparison claim. A small [machine-readable partial summary](evidence/phase_3_7_checkpoint_2b_partial_summary.json) records verified coverage and resource use; its semantic SHA-256 is `1776370efd00b8e934c83e712f52c4bfaca50780c6fd1c1cd306ecc7d47b4025`.
+
+## Deviation and disposition
+
+The approved per-PPO budget prevented completion much earlier than the engineering projection. The historical warm-throughput estimate did not bound this host's actual `ppo_3_10240` evaluation time. The boundary overshoot and absent compact-grid transition lengths limit claims about strict resource compliance and exact transition usage. The scientific protocol was not altered, and the run was not resumed after exhaustion. Further execution requires a separately reviewed resource decision; the current authorization does not permit an extension. PR #2 remains draft and unmerged.
