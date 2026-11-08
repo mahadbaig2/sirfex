@@ -1,0 +1,94 @@
+{
+  "schema_version": "sirfex-phase37-checkpoint2b-partial-summary:1",
+  "status": "checkpoint_2b_partial_budget_exhausted",
+  "stop_reason": "controller_budget_exhausted:ppo_3_10240",
+  "frozen_commit": "5f37c0baea944e564d2bbea2da4971d528331d33",
+  "protocol_sha256": "27a2b4ca8bb1552c22c8d0c3ad07931b14d0b676d28656a2af4796c7fb75bb04",
+  "work_plan_sha256": "ead9af1ef00824016e6dea102ef4b7a3f37b3eb6948cfff238b1dae6839947c2",
+  "manifest_sha256": "1bc850397b4f608b0cf7c75e63660b3bdfa52923d043b0b876f8720d763f88b0",
+  "report_sha256": "ba2c2cbe91d3acba7fb046015a4efb8abaf7049326b0132194b11d14156b5a68",
+  "stage_coverage": {
+    "archive": {
+      "censored": 0,
+      "completed": 0,
+      "failed": 0,
+      "invalid": 0,
+      "pending": 7,
+      "running": 0
+    },
+    "differential": {
+      "censored": 0,
+      "completed": 0,
+      "failed": 0,
+      "invalid": 0,
+      "pending": 1400,
+      "running": 0
+    },
+    "fixed_stress": {
+      "censored": 0,
+      "completed": 24,
+      "failed": 0,
+      "invalid": 0,
+      "pending": 384,
+      "running": 0
+    },
+    "grid": {
+      "censored": 27,
+      "completed": 119,
+      "failed": 0,
+      "invalid": 0,
+      "pending": 3118,
+      "running": 0
+    }
+  },
+  "observed_controller": "ppo_3_10240",
+  "nominal_anchors_observed": 10,
+  "stress_scenarios_observed": 24,
+  "grid_cells_observed": 146,
+  "grid_episodes_evaluated": 3650,
+  "fixed_episodes_evaluated": 24,
+  "actual_total_transitions": null,
+  "grid_cell_statuses": {
+    "failed": 119,
+    "censored_max": 27
+  },
+  "grid_feasibility_coverage": {
+    "infeasible": {
+      "evaluated": 1205,
+      "failures": 1205,
+      "missing_evidence": 0,
+      "scenarios": 1205,
+      "survivals": 0
+    },
+    "invalid": {
+      "evaluated": 0,
+      "failures": 0,
+      "missing_evidence": 0,
+      "scenarios": 0,
+      "survivals": 0
+    },
+    "unknown": {
+      "evaluated": 0,
+      "failures": 0,
+      "missing_evidence": 0,
+      "scenarios": 0,
+      "survivals": 0
+    },
+    "viable": {
+      "evaluated": 2445,
+      "failures": 511,
+      "missing_evidence": 0,
+      "scenarios": 2445,
+      "survivals": 1934
+    }
+  },
+  "nominal_violations": 0,
+  "stress_violations": 6,
+  "wall_seconds_charged": 1998.9380000000237,
+  "ppo_seconds_charged": {
+    "ppo_3_10240": 1833.831988402817
+  },
+  "artifact_bytes_after_report": 3466051,
+  "comparative_conclusion_supported": false,
+  "semantic_sha256": "1776370efd00b8e934c83e712f52c4bfaca50780c6fd1c1cd306ecc7d47b4025"
+}
